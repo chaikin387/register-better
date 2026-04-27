@@ -1,7 +1,6 @@
 // components/profile/profile-client.tsx
 'use client'
 
-import { Avatar, AvatarFallback } from '@/components/ui/avatar'
 import { Button } from '@/components/ui/button'
 import { Session } from '@/lib/auth'
 import { Loader2, Pencil, Trash2 } from 'lucide-react'
@@ -21,20 +20,19 @@ export const ProfileClient = ({ session }: Props) => {
 
   return (
     <div className='flex flex-col items-center gap-4'>
-      <Avatar className='relative size-32'>
+      <div className='relative'>
         {user.image ? (
           <Image
             src={user.image}
             alt=''
             width={128}
             height={128}
-            preload
-            className='rounded-full object-cover'
+            className='aspect-square rounded-full bg-background object-cover'
           />
         ) : (
-          <AvatarFallback className='bg-primary text-2xl font-bold text-primary-foreground'>
+          <span className='flex size-32 items-center justify-center rounded-full bg-primary text-2xl font-bold text-primary-foreground'>
             {getInitialsAvatar(user.name)}
-          </AvatarFallback>
+          </span>
         )}
 
         <Button
@@ -50,11 +48,11 @@ export const ProfileClient = ({ session }: Props) => {
         <input
           ref={fileRef}
           type='file'
-          hidden
+          className='hidden'
           accept='image/jpeg,image/png,image/webp'
           onChange={(e) => onUpload(e.target.files?.[0])}
         />
-      </Avatar>
+      </div>
 
       {error && (
         <p className='text-center text-sm font-medium text-destructive'>

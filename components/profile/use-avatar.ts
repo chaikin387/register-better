@@ -1,7 +1,7 @@
 // components/profile/use-avatar.ts
 'use client'
 
-import { resetAvatar, uploadAvatar } from '@/components/profile/avatar.action'
+import { resetAvatar, uploadAvatar } from '@/components/profile/action.avatar'
 import { useRef, useState } from 'react'
 
 export const useAvatar = () => {

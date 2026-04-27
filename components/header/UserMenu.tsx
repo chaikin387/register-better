@@ -1,6 +1,5 @@
 'use client'
 
-import { Avatar, AvatarFallback } from '@/components/ui/avatar'
 import { Button } from '@/components/ui/button'
 import {
   DropdownMenu,
@@ -48,26 +47,22 @@ export function UserMenu({ session }: Props) {
     <DropdownMenu>
       <DropdownMenuTrigger asChild>
         <Button
-          variant='outline'
-          size='icon'
-          className='rounded-full'
+          size='icon-lg'
+          className='overflow-hidden rounded-full'
         >
-          <Avatar>
-            {session.user.image ? (
-              <Image
-                src={session.user.image}
-                alt=''
-                width={40}
-                height={40}
-                preload
-                className='rounded-full object-cover'
-              />
-            ) : (
-              <AvatarFallback className='bg-primary font-bold text-primary-foreground'>
-                {getInitialsAvatar(session.user.name)}
-              </AvatarFallback>
-            )}
-          </Avatar>
+          {session.user.image ? (
+            <Image
+              src={session.user.image}
+              alt=''
+              width={40}
+              height={40}
+              className='aspect-square bg-background object-cover'
+            />
+          ) : (
+            <span className='text-sm font-semibold'>
+              {getInitialsAvatar(session.user.name)}
+            </span>
+          )}
         </Button>
       </DropdownMenuTrigger>
 
