@@ -40,7 +40,7 @@ function ThemeHotkey() {
   React.useEffect(() => {
     function onKeyDown(event: KeyboardEvent) {
       // Добавлена проверка в (!event.defaultPrevented || event.repeat), иначе ошибка при автозаполнении форм регистрации и входа.
-      if (!event.defaultPrevented || event.repeat) {
+      if (event.repeat) {
         return
       }
 
@@ -48,7 +48,7 @@ function ThemeHotkey() {
         return
       }
 
-      if (event.key.toLowerCase() !== 'd') {
+      if (event.key?.toLowerCase() !== 'd') {
         return
       }
 

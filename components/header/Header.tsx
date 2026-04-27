@@ -13,7 +13,7 @@ export const Header = async () => {
         <Link
           href='/'
           replace
-          className='flex cursor-pointer items-center gap-2 text-xl font-bold'
+          className='flex items-center gap-2 text-xl font-bold'
         >
           <Laugh className='size-8 text-primary' />
           <span className='tracking-tight'>Register-Better</span>

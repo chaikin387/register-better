@@ -48,10 +48,11 @@ export function UserMenu({ session }: Props) {
     <DropdownMenu>
       <DropdownMenuTrigger asChild>
         <Button
-          variant='ghost'
+          variant='outline'
           size='icon'
+          className='rounded-full'
         >
-          <Avatar size='lg'>
+          <Avatar>
             {session.user.image ? (
               <Image
                 src={session.user.image}

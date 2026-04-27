@@ -21,30 +21,28 @@ export const ProfileClient = ({ session }: Props) => {
 
   return (
     <div className='flex flex-col items-center gap-4'>
-      <div className='relative'>
-        <Avatar className='size-32'>
-          {user.image ? (
-            <Image
-              src={user.image}
-              alt=''
-              width={128}
-              height={128}
-              preload
-              className='rounded-full object-cover'
-            />
-          ) : (
-            <AvatarFallback className='bg-primary text-2xl font-bold text-primary-foreground'>
-              {getInitialsAvatar(user.name)}
-            </AvatarFallback>
-          )}
-        </Avatar>
+      <Avatar className='relative size-32'>
+        {user.image ? (
+          <Image
+            src={user.image}
+            alt=''
+            width={128}
+            height={128}
+            preload
+            className='rounded-full object-cover'
+          />
+        ) : (
+          <AvatarFallback className='bg-primary text-2xl font-bold text-primary-foreground'>
+            {getInitialsAvatar(user.name)}
+          </AvatarFallback>
+        )}
 
         <Button
           size='icon-lg'
-          variant='outline'
+          variant='secondary'
           disabled={loading}
           onClick={() => fileRef.current?.click()}
-          className='absolute right-0 bottom-0 rounded-full'
+          className='absolute -right-1 -bottom-1 rounded-full'
         >
           {loading ? <Loader2 className='animate-spin' /> : <Pencil />}
         </Button>
@@ -56,7 +54,7 @@ export const ProfileClient = ({ session }: Props) => {
           accept='image/jpeg,image/png,image/webp'
           onChange={(e) => onUpload(e.target.files?.[0])}
         />
-      </div>
+      </Avatar>
 
       {error && (
         <p className='text-center text-sm font-medium text-destructive'>
