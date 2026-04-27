@@ -67,10 +67,10 @@ export function UserMenu({ session }: Props) {
       </DropdownMenuTrigger>
 
       <DropdownMenuContent
-        className='w-56'
         align='end'
         sideOffset={8}
         onCloseAutoFocus={(e) => e.preventDefault()}
+        className='w-56'
       >
         <div className='flex flex-col space-y-1 p-2'>
           <p className='text-sm leading-none font-medium'>
