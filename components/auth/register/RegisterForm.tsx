@@ -2,7 +2,7 @@
 'use client'
 
 import { zodResolver } from '@hookform/resolvers/zod'
-import { Eye, EyeOff, Loader2, RefreshCw, Send } from 'lucide-react'
+import { Eye, EyeOff, RefreshCw, Send } from 'lucide-react'
 import Link from 'next/link'
 import { useEffect, useRef, useState } from 'react'
 import { useForm, useWatch } from 'react-hook-form'
@@ -29,6 +29,7 @@ import {
   InputOTPSlot,
 } from '@/components/ui/input-otp'
 
+import { Spinner } from '@/components/ui/spinner'
 import { registerSchema, RegisterSchema } from './register.schema'
 import { useRegister } from './use-register'
 
@@ -199,7 +200,7 @@ export function RegisterForm() {
                     ) : (
                       <>
                         {isSending ? (
-                          <Loader2 className='size-3 animate-spin' />
+                          <Spinner data-icon='inline-start' />
                         ) : codeSent ? (
                           <RefreshCw className='size-3' />
                         ) : (
@@ -249,7 +250,7 @@ export function RegisterForm() {
             disabled={disabled.submit}
             className='mt-5 w-full'
           >
-            {isSubmitting && <Loader2 className='size-4 animate-spin' />}
+            {isSubmitting && <Spinner data-icon='inline-start' />}
             Зарегистрироваться
           </Button>
         </form>

@@ -1,9 +1,9 @@
-import { Loader2 } from 'lucide-react'
+import { Spinner } from '@/components/ui/spinner'
 
 export default function Loading() {
   return (
     <div className='flex min-h-[85vh] items-center justify-center'>
-      <Loader2 className='text-muted-foreground size-12 animate-spin' />
+      <Spinner className='size-10' />
     </div>
   )
 }

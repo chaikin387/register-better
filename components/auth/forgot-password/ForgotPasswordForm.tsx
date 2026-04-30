@@ -2,7 +2,7 @@
 'use client'
 
 import { zodResolver } from '@hookform/resolvers/zod'
-import { Eye, EyeOff, Loader2, RefreshCw, Send } from 'lucide-react'
+import { Eye, EyeOff, RefreshCw, Send } from 'lucide-react'
 import Link from 'next/link'
 import { useEffect, useRef, useState } from 'react'
 import { useForm, useWatch } from 'react-hook-form'
@@ -29,6 +29,7 @@ import {
   InputOTPSlot,
 } from '@/components/ui/input-otp'
 
+import { Spinner } from '@/components/ui/spinner'
 import {
   forgotPasswordSchema,
   ForgotPasswordSchema,
@@ -190,7 +191,7 @@ export function ForgotPasswordForm() {
                     ) : (
                       <>
                         {isSending ? (
-                          <Loader2 className='size-3 animate-spin' />
+                          <Spinner data-icon='inline-start' />
                         ) : codeSent ? (
                           <RefreshCw className='size-3' />
                         ) : (
@@ -239,7 +240,7 @@ export function ForgotPasswordForm() {
             disabled={disabled.submit}
             className='mt-5 w-full'
           >
-            {isSubmitting && <Loader2 className='size-4 animate-spin' />}
+            {isSubmitting && <Spinner data-icon='inline-start' />}
             Сохранить пароль
           </Button>
         </form>

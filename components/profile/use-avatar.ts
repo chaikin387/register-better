@@ -1,37 +1,39 @@
-// components/profile/use-avatar.ts
 'use client'
 
 import { resetAvatar, uploadAvatar } from '@/components/profile/action.avatar'
 import { useRef, useState } from 'react'
 
-export const useAvatar = () => {
+export function useAvatar() {
   const fileRef = useRef<HTMLInputElement>(null)
   const [loading, setLoading] = useState(false)
   const [error, setError] = useState<string | null>(null)
 
-  const onUpload = async (file?: File) => {
+  async function onUpload(file?: File) {
     if (!file) return
     setError(null)
 
     const formData = new FormData()
     formData.append('avatar', file)
-
-    setLoading(true)
-    const res = await uploadAvatar(formData)
-    setLoading(false)
-
     if (fileRef.current) fileRef.current.value = ''
 
-    if (res?.error) setError(res.error)
+    setLoading(true)
+    try {
+      const res = await uploadAvatar(formData)
+      if (res?.error) setError(res.error)
+    } finally {
+      setLoading(false)
+    }
   }
 
-  const onReset = async () => {
+  async function onReset() {
     setError(null)
     setLoading(true)
-    const res = await resetAvatar()
-    setLoading(false)
-
-    if (res?.error) setError(res.error)
+    try {
+      const res = await resetAvatar()
+      if (res?.error) setError(res.error)
+    } finally {
+      setLoading(false)
+    }
   }
 
   return { fileRef, loading, error, onUpload, onReset }

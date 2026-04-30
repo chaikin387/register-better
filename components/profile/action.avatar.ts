@@ -18,30 +18,30 @@ const MIME_TO_EXT: Record<string, string> = {
   'image/webp': 'webp',
 }
 
-const buildUrl = (key: string) => `${ENDPOINT}/${BUCKET}/${key}`
+const buildS3Url = (key: string) => `${ENDPOINT}/${BUCKET}/${key}`
 
-function extractKey(url: string | null) {
+function extractS3Key(url: string | null): string | null {
   if (!url) return null
   try {
     const path = new URL(url).pathname
     const prefix = `/${BUCKET}/`
-    const i = path.indexOf(prefix)
-    return i !== -1 ? path.slice(i + prefix.length) : null
+    const idx = path.indexOf(prefix)
+    return idx !== -1 ? path.slice(idx + prefix.length) : null
   } catch {
     return null
   }
 }
 
-async function deleteFromS3(key: string | null) {
+async function deleteS3Object(key: string | null): Promise<void> {
   if (!key) return
   try {
     await s3.send(new DeleteObjectCommand({ Bucket: BUCKET, Key: key }))
   } catch (e) {
-    console.warn('[s3:delete]', key, e)
+    console.warn('[s3] failed to delete:', key, e)
   }
 }
 
-async function getImage(userId: string) {
+async function getUserImage(userId: string): Promise<string | null> {
   const [row] = await db
     .select({ image: user.image })
     .from(user)
@@ -50,9 +50,16 @@ async function getImage(userId: string) {
   return row?.image ?? null
 }
 
-export async function uploadAvatar(formData: FormData) {
+async function requireUserId(): Promise<string | null> {
   const session = await getServerSession()
-  if (!session?.user) return { error: 'Не авторизован' }
+  return session?.user?.id ?? null
+}
+
+type ActionResult = { url?: string; ok?: true; error?: string }
+
+export async function uploadAvatar(formData: FormData): Promise<ActionResult> {
+  const userId = await requireUserId()
+  if (!userId) return { error: 'Не авторизован' }
 
   const parsed = avatarSchema.safeParse({ file: formData.get('avatar') })
   if (!parsed.success) return { error: parsed.error.issues[0]!.message }
@@ -61,11 +68,10 @@ export async function uploadAvatar(formData: FormData) {
   const ext = MIME_TO_EXT[file.type]
   if (!ext) return { error: 'Неподдерживаемый формат' }
 
-  const key = `avatars/${session.user.id}-${Date.now()}.${ext}`
-  const url = buildUrl(key)
-  const oldKey = extractKey(await getImage(session.user.id))
+  const key = `avatars/${userId}-${Date.now()}.${ext}`
+  const url = buildS3Url(key)
+  const oldKey = extractS3Key(await getUserImage(userId))
 
-  // 1. Загрузка в S3
   await s3.send(
     new PutObjectCommand({
       Bucket: BUCKET,
@@ -75,41 +81,33 @@ export async function uploadAvatar(formData: FormData) {
     })
   )
 
-  // 2. Обновление БД
   try {
-    await db
-      .update(user)
-      .set({ image: url })
-      .where(eq(user.id, session.user.id))
+    await db.update(user).set({ image: url }).where(eq(user.id, userId))
   } catch (e) {
-    // ВАЖНО: Ждем завершения удаления, чтобы не оставить "мусор" при сбое БД
-    await deleteFromS3(key)
+    console.error('[uploadAvatar] db error:', e)
+    await deleteS3Object(key)
     return { error: 'Ошибка сохранения в базу данных' }
   }
 
-  // 3. Успех: фоновая очистка старого файла
-  void deleteFromS3(oldKey)
+  void deleteS3Object(oldKey)
   revalidatePath('/', 'layout')
   return { url }
 }
 
-export async function resetAvatar() {
-  const session = await getServerSession()
-  if (!session?.user) return { error: 'Не авторизован' }
+export async function resetAvatar(): Promise<ActionResult> {
+  const userId = await requireUserId()
+  if (!userId) return { error: 'Не авторизован' }
 
-  const oldKey = extractKey(await getImage(session.user.id))
+  const oldKey = extractS3Key(await getUserImage(userId))
 
   try {
-    await db
-      .update(user)
-      .set({ image: null })
-      .where(eq(user.id, session.user.id))
+    await db.update(user).set({ image: null }).where(eq(user.id, userId))
   } catch (e) {
+    console.error('[resetAvatar] db error:', e)
     return { error: 'Ошибка удаления из базы данных' }
   }
 
-  // Очистка старого файла
-  void deleteFromS3(oldKey)
+  void deleteS3Object(oldKey)
   revalidatePath('/', 'layout')
   return { ok: true }
 }

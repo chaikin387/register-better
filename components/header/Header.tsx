@@ -2,7 +2,7 @@ import { getServerSession } from '@/lib/auth-session'
 import { Laugh } from 'lucide-react'
 import Link from 'next/link'
 import Container from '../container/Container'
-import { ModeToggle } from './ModeTogle'
+import { ModeToggle } from './ModeToggle'
 import { UserMenu } from './UserMenu'
 
 export const Header = async () => {
@@ -16,7 +16,7 @@ export const Header = async () => {
           replace
           className='flex items-center gap-2 text-xl font-bold'
         >
-          <Laugh className='size-8 text-primary' />
+          <Laugh className='size-8' />
           <span className='tracking-tight'>Register-Better</span>
         </Link>
         <ModeToggle />

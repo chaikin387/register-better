@@ -1,7 +1,7 @@
 'use client'
 
 import { zodResolver } from '@hookform/resolvers/zod'
-import { Eye, EyeOff, Loader2 } from 'lucide-react'
+import { Eye, EyeOff } from 'lucide-react'
 import Link from 'next/link'
 import { useState } from 'react'
 import { useForm } from 'react-hook-form'
@@ -23,6 +23,7 @@ import {
 } from '@/components/ui/field'
 import { Input } from '@/components/ui/input'
 
+import { Spinner } from '@/components/ui/spinner'
 import { loginSchema, LoginSchema } from './login.schema'
 import { useLogin } from './use-login'
 
@@ -120,7 +121,7 @@ export function LoginForm() {
               </>
             ) : (
               <>
-                {isSubmitting && <Loader2 className='size-4 animate-spin' />}
+                {isSubmitting && <Spinner data-icon='inline-start' />}
                 Войти
               </>
             )}

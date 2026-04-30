@@ -2,7 +2,7 @@
 'use client'
 
 import { zodResolver } from '@hookform/resolvers/zod'
-import { Loader2, RefreshCw, Send } from 'lucide-react'
+import { RefreshCw, Send } from 'lucide-react'
 import { useEffect, useRef } from 'react'
 import { useForm, useWatch } from 'react-hook-form'
 
@@ -27,6 +27,7 @@ import {
   InputOTPGroup,
   InputOTPSlot,
 } from '@/components/ui/input-otp'
+import { Spinner } from '@/components/ui/spinner'
 import { useVerifyEmail } from './use-verify-email'
 import { verifyEmailSchema, VerifyEmailSchema } from './verify-email.schema'
 
@@ -129,7 +130,7 @@ export function VerifyEmailForm({ emailFromUrl }: { emailFromUrl: string }) {
                     ) : (
                       <>
                         {isSending ? (
-                          <Loader2 className='size-3 animate-spin' />
+                          <Spinner data-icon='inline-start' />
                         ) : codeSent ? (
                           <RefreshCw className='size-3' />
                         ) : (
@@ -179,7 +180,7 @@ export function VerifyEmailForm({ emailFromUrl }: { emailFromUrl: string }) {
             disabled={disabled.submit}
             className='mt-5 w-full'
           >
-            {isSubmitting && <Loader2 className='size-4 animate-spin' />}
+            {isSubmitting && <Spinner data-icon='inline-start' />}
             Подтвердить и войти
           </Button>
         </form>

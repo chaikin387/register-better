@@ -37,9 +37,16 @@ export function UserMenu({ session }: Props) {
 
   if (!session) {
     return (
-      <Link href='/login'>
-        <UserIcon className='size-8 text-primary hover:text-primary/70' />
-      </Link>
+      <Button
+        asChild
+        variant='secondary'
+        size='icon-lg'
+        className='rounded-full'
+      >
+        <Link href='/login'>
+          <UserIcon />
+        </Link>
+      </Button>
     )
   }
 
@@ -47,6 +54,7 @@ export function UserMenu({ session }: Props) {
     <DropdownMenu>
       <DropdownMenuTrigger asChild>
         <Button
+          variant='secondary'
           size='icon-lg'
           className='overflow-hidden rounded-full'
         >
@@ -54,9 +62,9 @@ export function UserMenu({ session }: Props) {
             <Image
               src={session.user.image}
               alt=''
-              width={40}
-              height={40}
-              className='aspect-square bg-background object-cover'
+              width={36}
+              height={36}
+              className='aspect-square bg-secondary object-cover'
             />
           ) : (
             <span className='text-sm font-semibold'>
@@ -88,7 +96,7 @@ export function UserMenu({ session }: Props) {
             href='/profile'
             replace
           >
-            <User size={16} />
+            <User />
             <span>Мой аккаунт</span>
           </Link>
         </DropdownMenuItem>
@@ -99,7 +107,7 @@ export function UserMenu({ session }: Props) {
           onSelect={handleSignOut}
           variant='destructive'
         >
-          <LogOut size={16} />
+          <LogOut />
           <span>Выйти</span>
         </DropdownMenuItem>
       </DropdownMenuContent>

@@ -3,9 +3,10 @@
 
 import { Button } from '@/components/ui/button'
 import { Session } from '@/lib/auth'
-import { Loader2, Pencil, Trash2 } from 'lucide-react'
+import { Pencil, Trash2 } from 'lucide-react'
 import Image from 'next/image'
 import { getInitialsAvatar } from '../header/initials-avatar'
+import { Spinner } from '../ui/spinner'
 import { useAvatar } from './use-avatar'
 
 interface Props {
@@ -27,22 +28,22 @@ export const ProfileClient = ({ session }: Props) => {
             alt=''
             width={128}
             height={128}
-            className='aspect-square rounded-full bg-background object-cover'
+            className='aspect-square rounded-full bg-secondary object-cover'
           />
         ) : (
-          <span className='flex size-32 items-center justify-center rounded-full bg-primary text-2xl font-bold text-primary-foreground'>
+          <span className='flex size-32 items-center justify-center rounded-full bg-secondary text-2xl font-bold text-secondary-foreground'>
             {getInitialsAvatar(user.name)}
           </span>
         )}
 
         <Button
           size='icon-lg'
-          variant='secondary'
+          variant='outline'
           disabled={loading}
           onClick={() => fileRef.current?.click()}
           className='absolute -right-1 -bottom-1 rounded-full'
         >
-          {loading ? <Loader2 className='animate-spin' /> : <Pencil />}
+          {loading ? <Spinner data-icon='inline-start' /> : <Pencil />}
         </Button>
 
         <input
@@ -67,13 +68,13 @@ export const ProfileClient = ({ session }: Props) => {
 
       {user.image && (
         <Button
-          size='sm'
           variant='destructive'
+          size='sm'
           disabled={loading}
           onClick={onReset}
         >
-          <Trash2 />
-          Удалить
+          <Trash2 data-icon='inline-start' />
+          Удалить аватар
         </Button>
       )}
     </div>
