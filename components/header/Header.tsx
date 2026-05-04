@@ -1,26 +1,38 @@
+// components/layout/Header.tsx
 import { getServerSession } from '@/lib/auth-session'
 import { Laugh } from 'lucide-react'
 import Link from 'next/link'
 import Container from '../container/Container'
+
+import { CatalogMenu } from '../menu-category/CatalogMenu'
+import { getCatalogMenu } from '../menu-category/category.service'
 import { ModeToggle } from './ModeToggle'
 import { UserMenu } from './UserMenu'
 
 export const Header = async () => {
   const session = await getServerSession()
 
+  const categories = await getCatalogMenu()
+
   return (
-    <header className='mb-12 w-full border-b bg-background/95 backdrop-blur supports-backdrop-filter:bg-background/60'>
+    <header className='w-full border-b'>
       <Container className='flex h-16 items-center justify-between'>
-        <Link
-          href='/'
-          replace
-          className='flex items-center gap-2 text-xl font-bold'
-        >
-          <Laugh className='size-8' />
-          <span className='tracking-tight'>Register-Better</span>
-        </Link>
-        <ModeToggle />
-        <UserMenu session={session} />
+        <div className='flex items-center gap-6'>
+          <Link
+            href='/'
+            replace
+            className='flex items-center gap-2 transition-opacity hover:opacity-80'
+          >
+            <Laugh className='size-8' />
+          </Link>
+
+          <CatalogMenu categories={categories} />
+        </div>
+
+        <div className='z-50 flex items-center gap-2'>
+          <ModeToggle />
+          <UserMenu session={session} />
+        </div>
       </Container>
     </header>
   )

@@ -1,10 +1,10 @@
-import { db } from '@/db'
 import { betterAuth } from 'better-auth'
-import { drizzleAdapter } from 'better-auth/adapters/drizzle'
+import { prismaAdapter } from 'better-auth/adapters/prisma'
 import { emailOTP } from 'better-auth/plugins'
+import prisma from './prisma'
 
 export const auth = betterAuth({
-  database: drizzleAdapter(db, { provider: 'pg' }),
+  database: prismaAdapter(prisma, { provider: 'postgresql' }),
 
   advanced: {
     cookiePrefix: 'register-better', // Позже уберем и из proxy.ts тоже

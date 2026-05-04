@@ -32,7 +32,7 @@ export default function RootLayout({
       <body>
         <ThemeProvider>
           <Header />
-          {children}
+          <main>{children}</main>
           <Toaster
             position='top-center'
             richColors
