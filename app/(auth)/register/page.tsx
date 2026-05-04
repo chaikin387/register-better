@@ -9,7 +9,7 @@ export const metadata: Metadata = {
 
 export default async function RegisterPage() {
   return (
-    <Container className='flex items-center justify-center'>
+    <Container className='flex min-h-[calc(100vh-65px)] items-center justify-center'>
       <RegisterForm />
     </Container>
   )

@@ -28,6 +28,7 @@ export const ProfileClient = ({ session }: Props) => {
             alt=''
             width={128}
             height={128}
+            preload
             className='aspect-square rounded-full bg-secondary object-cover'
           />
         ) : (
@@ -73,7 +74,7 @@ export const ProfileClient = ({ session }: Props) => {
           disabled={loading}
           onClick={onReset}
         >
-          <Trash2 data-icon='inline-start' />
+          <Trash2 />
           Удалить аватар
         </Button>
       )}

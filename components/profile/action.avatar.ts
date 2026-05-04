@@ -1,12 +1,11 @@
 'use server'
 
 import { avatarSchema } from '@/components/profile/avatar.schema'
-import { db } from '@/db'
-import { user } from '@/db/schema'
+
 import { getServerSession } from '@/lib/auth-session'
+import prisma from '@/lib/prisma'
 import { s3 } from '@/lib/s3'
 import { DeleteObjectCommand, PutObjectCommand } from '@aws-sdk/client-s3'
-import { eq } from 'drizzle-orm'
 import { revalidatePath } from 'next/cache'
 
 const BUCKET = process.env.YANDEX_S3_BUCKET!
@@ -42,11 +41,10 @@ async function deleteS3Object(key: string | null): Promise<void> {
 }
 
 async function getUserImage(userId: string): Promise<string | null> {
-  const [row] = await db
-    .select({ image: user.image })
-    .from(user)
-    .where(eq(user.id, userId))
-    .limit(1)
+  const row = await prisma.user.findUnique({
+    where: { id: userId },
+    select: { image: true },
+  })
   return row?.image ?? null
 }
 
@@ -82,7 +80,10 @@ export async function uploadAvatar(formData: FormData): Promise<ActionResult> {
   )
 
   try {
-    await db.update(user).set({ image: url }).where(eq(user.id, userId))
+    await prisma.user.update({
+      where: { id: userId },
+      data: { image: url },
+    })
   } catch (e) {
     console.error('[uploadAvatar] db error:', e)
     await deleteS3Object(key)
@@ -101,7 +102,10 @@ export async function resetAvatar(): Promise<ActionResult> {
   const oldKey = extractS3Key(await getUserImage(userId))
 
   try {
-    await db.update(user).set({ image: null }).where(eq(user.id, userId))
+    await prisma.user.update({
+      where: { id: userId },
+      data: { image: null },
+    })
   } catch (e) {
     console.error('[resetAvatar] db error:', e)
     return { error: 'Ошибка удаления из базы данных' }

@@ -64,6 +64,7 @@ export function UserMenu({ session }: Props) {
               alt=''
               width={36}
               height={36}
+              preload
               className='aspect-square bg-secondary object-cover'
             />
           ) : (
