@@ -10,6 +10,10 @@ const nextConfig = {
         protocol: 'https',
         hostname: 'storage.yandexcloud.net',
       },
+      {
+        protocol: 'https',
+        hostname: 'your-storage.com',
+      },
     ],
   },
   reactCompiler: true,

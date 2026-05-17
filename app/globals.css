@@ -125,5 +125,9 @@
   }
   html {
     @apply font-sans;
+    scrollbar-gutter: stable;
+  }
+  html:has([data-state='open']) {
+    overflow: hidden;
   }
 }

@@ -1,8 +1,8 @@
-import { Geist, Geist_Mono } from 'next/font/google'
-
-import { Header } from '@/components/header/Header'
+import Header from '@/components/header/Header'
 import { ThemeProvider } from '@/components/theme-provider'
 import { cn } from '@/lib/utils'
+import { Geist, Geist_Mono } from 'next/font/google'
+import NextTopLoader from 'nextjs-toploader'
 import { Toaster } from 'sonner'
 import './globals.css'
 
@@ -29,10 +29,11 @@ export default function RootLayout({
         geist.variable
       )}
     >
-      <body>
+      <body className='flex min-h-dvh flex-col'>
         <ThemeProvider>
+          <NextTopLoader showSpinner={false} />
           <Header />
-          <main>{children}</main>
+          <main className='flex-1'>{children}</main>
           <Toaster
             position='top-center'
             richColors

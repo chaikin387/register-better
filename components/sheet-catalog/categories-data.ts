@@ -82,31 +82,15 @@ export const categoriesData: CategorySeed[] = [
         name: 'Навесные замки',
         sortOrder: 2,
         children: [
-          {
-            slug: 'navesnye-malenkie',
-            name: 'Маленькие',
-            sortOrder: 0,
-          },
-          {
-            slug: 'navesnye-srednie',
-            name: 'Средние',
-            sortOrder: 1,
-          },
-          {
-            slug: 'navesnye-usilennye',
-            name: 'Усиленные',
-            sortOrder: 2,
-          },
+          { slug: 'navesnye-malenkie', name: 'Маленькие', sortOrder: 0 },
+          { slug: 'navesnye-srednie', name: 'Средние', sortOrder: 1 },
+          { slug: 'navesnye-usilennye', name: 'Усиленные', sortOrder: 2 },
           {
             slug: 'navesnye-kodovye',
             name: 'С кодовым механизмом',
             sortOrder: 3,
           },
-          {
-            slug: 'navesnye-zashita',
-            name: 'Защищённые',
-            sortOrder: 4,
-          },
+          { slug: 'navesnye-zashita', name: 'Защищённые', sortOrder: 4 },
         ],
       },
       {
@@ -115,26 +99,77 @@ export const categoriesData: CategorySeed[] = [
         sortOrder: 3,
         children: [
           {
-            slug: 'umnye-bluetooth',
-            name: 'С Bluetooth',
-            sortOrder: 0,
-          },
-          {
-            slug: 'umnye-wifi',
-            name: 'С WiFi',
-            sortOrder: 1,
-          },
-          {
             slug: 'umnye-biometrika',
             name: 'Биометрические',
-            sortOrder: 2,
+            sortOrder: 0,
+            children: [
+              {
+                slug: 'biometrika-fingerprint',
+                name: 'По отпечатку пальца',
+                sortOrder: 0,
+                children: [
+                  {
+                    slug: 'fingerprint-optical',
+                    name: 'Оптические сенсоры',
+                    sortOrder: 0,
+                  },
+                  {
+                    slug: 'fingerprint-semiconductor',
+                    name: 'Полупроводниковые',
+                    sortOrder: 1,
+                  },
+                  {
+                    slug: 'fingerprint-hidden',
+                    name: 'Со скрытым сканером',
+                    sortOrder: 2,
+                  },
+                ],
+              },
+              {
+                slug: 'biometrika-faceid',
+                name: 'Распознавание лиц (FaceID)',
+                sortOrder: 1,
+              },
+              {
+                slug: 'biometrika-palm',
+                name: 'Сканирование ладони',
+                sortOrder: 2,
+              },
+            ],
           },
-          { slug: 'umnye-karta', name: 'С картой / брелоком', sortOrder: 3 },
           {
-            slug: 'umnye-komplekt',
-            name: 'Комплекты для умного дома',
-            sortOrder: 4,
+            slug: 'umnye-ecosystem',
+            name: 'Экосистемы',
+            sortOrder: 1,
+            children: [
+              {
+                slug: 'ecosystem-xiaomi',
+                name: 'Xiaomi Mi Home',
+                sortOrder: 0,
+                children: [
+                  {
+                    slug: 'xiaomi-zigbee',
+                    name: 'Zigbee версии',
+                    sortOrder: 0,
+                  },
+                  {
+                    slug: 'xiaomi-bluetooth',
+                    name: 'Bluetooth версии',
+                    sortOrder: 1,
+                  },
+                ],
+              },
+              { slug: 'ecosystem-aqara', name: 'Aqara Home', sortOrder: 1 },
+              {
+                slug: 'ecosystem-tuya',
+                name: 'Tuya Smart / Smart Life',
+                sortOrder: 2,
+              },
+            ],
           },
+          { slug: 'umnye-bluetooth', name: 'С Bluetooth', sortOrder: 2 },
+          { slug: 'umnye-wifi', name: 'С WiFi', sortOrder: 3 },
+          { slug: 'umnye-karta', name: 'С картой / брелоком', sortOrder: 4 },
         ],
       },
     ],
@@ -166,16 +201,6 @@ export const categoriesData: CategorySeed[] = [
             name: 'Для накладных замков',
             sortOrder: 1,
           },
-        ],
-      },
-      {
-        slug: 'furnitura-dovodchiki',
-        name: 'Доводчики и петли',
-        sortOrder: 2,
-        children: [
-          { slug: 'dov-dovodchiki', name: 'Дверные доводчики', sortOrder: 0 },
-          { slug: 'dov-petli-skrytye', name: 'Скрытые петли', sortOrder: 1 },
-          { slug: 'dov-petli', name: 'Обычные петли', sortOrder: 2 },
         ],
       },
     ],

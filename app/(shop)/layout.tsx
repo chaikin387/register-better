@@ -1,4 +1,4 @@
-export default function AuthLayout({
+export default function ShopLayout({
   children,
 }: Readonly<{
   children: React.ReactNode

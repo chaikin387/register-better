@@ -1,5 +1,4 @@
 import { LoginForm } from '@/components/auth/login/LoginForm'
-import { Container } from '@/components/container/Container'
 import { Metadata } from 'next'
 
 export const metadata: Metadata = {
@@ -9,8 +8,8 @@ export const metadata: Metadata = {
 
 export default async function LoginPage() {
   return (
-    <Container className='flex min-h-[calc(100vh-65px)] items-center justify-center'>
+    <section className='container mx-auto flex min-h-[calc(100dvh-65px)] items-center justify-center px-4 py-8'>
       <LoginForm />
-    </Container>
+    </section>
   )
 }

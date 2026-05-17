@@ -1,4 +1,3 @@
-import Container from '@/components/container/Container'
 import { ProfileClient } from '@/components/profile/ProfileClient'
 import { getServerSession } from '@/lib/auth-session'
 
@@ -13,8 +12,8 @@ export default async function ProfilePage() {
   const session = await getServerSession()
 
   return (
-    <Container>
+    <section className='container mx-auto px-4 py-8'>
       <ProfileClient session={session} />
-    </Container>
+    </section>
   )
 }

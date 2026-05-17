@@ -1,3 +1,4 @@
+// UserMenu.tsx
 'use client'
 
 import { Button } from '@/components/ui/button'
@@ -8,9 +9,8 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu'
-import { authClient } from '@/lib/auth-client'
-
 import { Session } from '@/lib/auth'
+import { authClient } from '@/lib/auth-client'
 import { LogOut, User, UserIcon } from 'lucide-react'
 import Image from 'next/image'
 import Link from 'next/link'
@@ -19,9 +19,10 @@ import { getInitialsAvatar } from './initials-avatar'
 
 interface Props {
   session: Session | null
+  navigate: (href: string) => (e: React.MouseEvent) => void
 }
 
-export function UserMenu({ session }: Props) {
+export const UserMenu = ({ session, navigate }: Props) => {
   const router = useRouter()
 
   const handleSignOut = async () => {
@@ -43,7 +44,10 @@ export function UserMenu({ session }: Props) {
         size='icon-lg'
         className='rounded-full'
       >
-        <Link href='/login'>
+        <Link
+          href='/login'
+          onClick={navigate('/login')}
+        >
           <UserIcon />
         </Link>
       </Button>
@@ -51,7 +55,7 @@ export function UserMenu({ session }: Props) {
   }
 
   return (
-    <DropdownMenu>
+    <DropdownMenu modal={false}>
       <DropdownMenuTrigger asChild>
         <Button
           variant='secondary'
@@ -78,8 +82,11 @@ export function UserMenu({ session }: Props) {
       <DropdownMenuContent
         align='end'
         sideOffset={8}
-        onCloseAutoFocus={(e) => e.preventDefault()}
         className='w-56'
+        onInteractOutside={(e) => {
+          const target = e.target as HTMLElement
+          if (target.closest('[data-outside-allowed]')) e.preventDefault()
+        }}
       >
         <div className='flex flex-col space-y-1 p-2'>
           <p className='text-sm leading-none font-medium'>

@@ -1,6 +1,5 @@
 // verify/page.tsx
 import { VerifyEmailForm } from '@/components/auth/verify-email/VerifyForm'
-import { Container } from '@/components/container/Container'
 import { Metadata } from 'next'
 
 export const metadata: Metadata = {
@@ -16,8 +15,8 @@ export default async function VerifyEmailPage({
   const { email } = await searchParams
 
   return (
-    <Container className='flex items-center justify-center'>
+    <section className='container mx-auto flex min-h-[calc(100dvh-65px)] items-center justify-center px-4 py-8'>
       <VerifyEmailForm emailFromUrl={email} />
-    </Container>
+    </section>
   )
 }
