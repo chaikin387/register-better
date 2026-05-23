@@ -18,7 +18,7 @@ export default function Page() {
             key={item}
             className='flex aspect-square items-center justify-center rounded-xl border bg-muted/30 text-lg font-medium'
           >
-            Card {item}
+            Карточка {item}
           </div>
         ))}
       </div>

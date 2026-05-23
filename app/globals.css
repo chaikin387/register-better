@@ -127,7 +127,7 @@
     @apply font-sans;
     scrollbar-gutter: stable;
   }
-  html:has([data-state='open']) {
+  html:has([data-catalog-open]) {
     overflow: hidden;
   }
 }

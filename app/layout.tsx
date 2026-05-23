@@ -33,7 +33,7 @@ export default function RootLayout({
         <ThemeProvider>
           <NextTopLoader showSpinner={false} />
           <Header />
-          <main className='flex-1'>{children}</main>
+          <main className='flex flex-1'>{children}</main>
           <Toaster
             position='top-center'
             richColors

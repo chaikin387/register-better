@@ -1,4 +1,4 @@
-import { CategoryView } from '@/components/sheet-catalog/CategoryView'
+import { CategoryView } from '@/components/catalog/CategoryView'
 import { Metadata } from 'next'
 
 type Props = {
@@ -12,9 +12,5 @@ export const metadata: Metadata = {
 
 export default async function Page({ params }: Props) {
   const { slug } = await params
-  return (
-    <section className='container mx-auto px-4 py-8'>
-      <CategoryView slug={slug} />
-    </section>
-  )
+  return <CategoryView slug={slug} />
 }

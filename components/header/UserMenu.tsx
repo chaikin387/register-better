@@ -85,7 +85,7 @@ export const UserMenu = ({ session, navigate }: Props) => {
         className='w-56'
         onInteractOutside={(e) => {
           const target = e.target as HTMLElement
-          if (target.closest('[data-outside-allowed]')) e.preventDefault()
+          if (target.closest('[data-keep-profile]')) e.preventDefault()
         }}
       >
         <div className='flex flex-col space-y-1 p-2'>

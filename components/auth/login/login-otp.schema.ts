@@ -1,6 +1,7 @@
+// login-otp.schema.ts
 import { z } from 'zod'
 
-export const verifyEmailSchema = z.object({
+export const loginOtpSchema = z.object({
   email: z
     .string()
     .min(1, 'Введите email')
@@ -13,4 +14,4 @@ export const verifyEmailSchema = z.object({
     .length(6, 'Код состоит из 6 цифр'),
 })
 
-export type VerifyEmailSchema = z.infer<typeof verifyEmailSchema>
+export type LoginOtpSchema = z.infer<typeof loginOtpSchema>

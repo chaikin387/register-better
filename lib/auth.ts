@@ -12,12 +12,6 @@ export const auth = betterAuth({
 
   rateLimit: {
     enabled: true,
-    window: 60,
-    max: 100,
-    customRules: {
-      '/sign-up/email': { window: 60, max: 3 },
-      '/email-otp/send-verification-otp': { window: 60, max: 1 },
-    },
   },
 
   emailAndPassword: {
@@ -35,6 +29,7 @@ export const auth = betterAuth({
       allowedAttempts: 3,
       expiresIn: 300,
       resendStrategy: 'reuse',
+      disableSignUp: true,
       async sendVerificationOTP({ email, otp, type }) {
         console.log(`[OTP] email: ${email} | type: ${type} | otp: ${otp}`)
       },

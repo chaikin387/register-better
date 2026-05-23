@@ -16,14 +16,16 @@ export const L3Item = ({ l3, navigate }: Props) => {
     useCatalogFloat(hasChildren)
 
   return (
-    <li {...getReferenceProps()}>
+    <li>
       <Link
+        ref={refs.setReference}
         href={`/catalog/${l3.slug}`}
         onClick={navigate(`/catalog/${l3.slug}`)}
+        {...getReferenceProps()}
         className='block text-sm text-secondary-foreground hover:no-underline'
       >
         <span
-          ref={refs.setReference}
+          ref={refs.setPositionReference}
           className='inline-flex items-center gap-2'
         >
           {l3.name}
@@ -38,7 +40,7 @@ export const L3Item = ({ l3, navigate }: Props) => {
           ref={refs.setFloating}
           style={floatingStyles}
           {...getFloatingProps()}
-          className='z-50 w-64 rounded-md border bg-popover p-4 shadow-md'
+          className='z-50 w-64 rounded-lg border bg-popover p-4 shadow-md'
         >
           <ul className='flex flex-col gap-1.5'>
             {l3.children.map((l4) => (

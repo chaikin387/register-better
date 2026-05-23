@@ -1,4 +1,4 @@
-import { CatalogView } from '@/components/sheet-catalog/CatalogView'
+import { CatalogView } from '@/components/catalog/CatalogView'
 import { Metadata } from 'next'
 
 export const metadata: Metadata = {
@@ -7,9 +7,5 @@ export const metadata: Metadata = {
 }
 
 export default function Page() {
-  return (
-    <section className='container mx-auto px-4 py-8'>
-      <CatalogView />
-    </section>
-  )
+  return <CatalogView />
 }

@@ -6,7 +6,7 @@ import { useState } from 'react'
 import { UseFormReturn } from 'react-hook-form'
 
 import { useCountdown } from '../hooks/use-countdown'
-import { VerifyEmailSchema } from './verify-email.schema'
+import { LoginOtpSchema } from './login-otp.schema'
 
 const OTP_ERRORS: Record<string, string> = {
   INVALID_OTP: 'Неверный код. Попробуйте ещё раз.',
@@ -18,7 +18,7 @@ const OTP_ERRORS: Record<string, string> = {
 
 type Status = 'idle' | 'sending' | 'otp-ready' | 'submitting' | 'blocked'
 
-export function useVerifyEmail(form: UseFormReturn<VerifyEmailSchema>) {
+export function useLoginOtp(form: UseFormReturn<LoginOtpSchema>) {
   const router = useRouter()
   const { setError, trigger, getValues, clearErrors } = form
 
@@ -43,7 +43,7 @@ export function useVerifyEmail(form: UseFormReturn<VerifyEmailSchema>) {
 
     const { error } = await authClient.emailOtp.sendVerificationOtp({
       email: getValues('email'),
-      type: 'email-verification',
+      type: 'sign-in',
     })
 
     if (error) {
@@ -68,7 +68,7 @@ export function useVerifyEmail(form: UseFormReturn<VerifyEmailSchema>) {
     start()
   }
 
-  const onSubmit = async ({ email, otp }: VerifyEmailSchema) => {
+  const onSubmit = async ({ email, otp }: LoginOtpSchema) => {
     if (!isOtpReady) {
       setError('otp', { message: 'Введите код из email' })
       return
@@ -76,7 +76,7 @@ export function useVerifyEmail(form: UseFormReturn<VerifyEmailSchema>) {
 
     setStatus('submitting')
 
-    const { error } = await authClient.emailOtp.verifyEmail({ email, otp })
+    const { error } = await authClient.signIn.emailOtp({ email, otp })
 
     if (error) {
       form.setValue('otp', '')

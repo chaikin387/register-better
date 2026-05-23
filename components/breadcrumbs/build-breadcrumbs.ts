@@ -1,22 +1,3 @@
-// import { type CategoryPage } from '@/types/category-selects'
-
-// type Breadcrumb = {
-//   slug: string
-//   name: string
-// }
-
-// export function buildBreadcrumbs(category: CategoryPage): Breadcrumb[] {
-//   const crumbs: Breadcrumb[] = []
-//   let parent = category.parent
-
-//   while (parent) {
-//     crumbs.unshift({ slug: parent.slug, name: parent.name })
-//     parent = parent.parent ?? null
-//   }
-
-//   return crumbs
-// }
-
 import { type CategoryPage } from '@/types/category-selects'
 
 type Breadcrumb = {
@@ -25,11 +6,18 @@ type Breadcrumb = {
 }
 
 export function buildBreadcrumbs(category: CategoryPage): Breadcrumb[] {
-  const crumbs: Breadcrumb[] = []
+  const breadcrumbs: Breadcrumb[] = []
 
-  for (let node = category.parent; node; node = node.parent) {
-    crumbs.push({ slug: node.slug, name: node.name })
+  let current = category.parent
+
+  while (current) {
+    breadcrumbs.push({
+      slug: current.slug,
+      name: current.name,
+    })
+
+    current = current.parent
   }
 
-  return crumbs.reverse()
+  return breadcrumbs.reverse()
 }

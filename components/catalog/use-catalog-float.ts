@@ -24,8 +24,7 @@ export const useCatalogFloat = (enabled: boolean) => {
   const { getReferenceProps, getFloatingProps } = useInteractions([
     useHover(context, {
       enabled,
-      move: false,
-      delay: { open: 100, close: 50 },
+      delay: { open: 50, close: 100 },
       handleClose: safePolygon({ buffer: 1 }),
     }),
   ])

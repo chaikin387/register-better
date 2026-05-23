@@ -23,7 +23,7 @@ export const registerSchema = z
     otp: z
       .string()
       .trim()
-      .min(1, 'Отправьте код на email')
+      .min(1, 'Нажмите "Отправить код" или введите полученный')
       .length(6, 'Код состоит из 6 цифр'),
   })
   .refine((data) => data.password === data.confirmPassword, {

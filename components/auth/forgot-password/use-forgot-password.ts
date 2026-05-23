@@ -9,10 +9,11 @@ import { useCountdown } from '../hooks/use-countdown'
 import { ForgotPasswordSchema } from './forgot-password.schema'
 
 const OTP_ERRORS: Record<string, string> = {
-  INVALID_OTP: 'Неверный код',
-  OTP_EXPIRED: 'Код истёк. Запросите новый',
-  TOO_MANY_ATTEMPTS: 'Слишком много попыток. Получите новый код.',
-  TOO_MANY_REQUESTS: 'Слишком много запросов. Получите новый код.',
+  INVALID_OTP: 'Неверный код. Попробуйте ещё раз.',
+  OTP_EXPIRED: 'Код истёк. Получите новый код.',
+  TOO_MANY_ATTEMPTS: 'Слишком много попыток. Пожалуйста, попробуйте позже.',
+  TOO_MANY_REQUESTS: 'Слишком много попыток. Пожалуйста, попробуйте позже.',
+  SEND_RATE_LIMIT: 'Слишком много попыток. Пожалуйста, попробуйте позже.',
 }
 
 type Status = 'idle' | 'sending' | 'otp-ready' | 'submitting' | 'blocked'
@@ -36,7 +37,8 @@ export function useForgotPassword(form: UseFormReturn<ForgotPasswordSchema>) {
     if (!isValid) return
 
     setStatus('sending')
-    clearErrors()
+    clearErrors('otp')
+    clearErrors('root')
     form.setValue('otp', '')
 
     const { error } = await authClient.emailOtp.requestPasswordReset({
@@ -44,8 +46,18 @@ export function useForgotPassword(form: UseFormReturn<ForgotPasswordSchema>) {
     })
 
     if (error) {
+      if (error.status === 429) {
+        setError('root', { message: OTP_ERRORS.SEND_RATE_LIMIT })
+        setStatus('otp-ready')
+        start()
+        return
+      }
+
       setError('root', {
-        message: error.message ?? 'Не удалось отправить код. Попробуйте позже',
+        message:
+          OTP_ERRORS[error.code ?? ''] ??
+          error.message ??
+          'Не удалось отправить код',
       })
       setStatus('idle')
       return
@@ -74,15 +86,15 @@ export function useForgotPassword(form: UseFormReturn<ForgotPasswordSchema>) {
 
       if (error.status === 429) {
         setError('otp', { message: OTP_ERRORS.TOO_MANY_REQUESTS })
-        start()
         setStatus('blocked')
+        start()
         return
       }
 
       if (error.code === 'TOO_MANY_ATTEMPTS') {
         setError('otp', { message: OTP_ERRORS.TOO_MANY_ATTEMPTS })
-        start()
         setStatus('blocked')
+        start()
         return
       }
 

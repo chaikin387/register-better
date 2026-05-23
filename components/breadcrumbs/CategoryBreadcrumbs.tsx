@@ -12,7 +12,11 @@ import Link from 'next/link'
 import { Fragment } from 'react'
 import { buildBreadcrumbs } from './build-breadcrumbs'
 
-export function CategoryBreadcrumbs({ category }: { category: CategoryPage }) {
+interface Props {
+  category: CategoryPage
+}
+
+export const CategoryBreadcrumbs = ({ category }: Props) => {
   const breadcrumbs = buildBreadcrumbs(category)
 
   return (

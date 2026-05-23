@@ -8,7 +8,7 @@ import {
 } from '@/components/ui/breadcrumb'
 import Link from 'next/link'
 
-export function CatalogBreadcrumbs() {
+export const CatalogBreadcrumbs = () => {
   return (
     <Breadcrumb>
       <BreadcrumbList>

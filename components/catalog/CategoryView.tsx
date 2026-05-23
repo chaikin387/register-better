@@ -13,7 +13,7 @@ export const CategoryView = async ({ slug }: Props) => {
   if (!category) notFound()
 
   return (
-    <>
+    <section className='container mx-auto px-4 pt-2 pb-8'>
       <CategoryBreadcrumbs category={category} />
 
       <h1 className='mt-4 mb-6 text-2xl font-bold'>{category.name}</h1>
@@ -30,6 +30,6 @@ export const CategoryView = async ({ slug }: Props) => {
       ) : (
         <p className='text-muted-foreground'>Товары появятся здесь</p>
       )}
-    </>
+    </section>
   )
 }

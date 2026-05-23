@@ -9,7 +9,7 @@ export const CatalogView = async () => {
   if (!categories?.length) notFound()
 
   return (
-    <>
+    <section className='container mx-auto px-4 pt-2 pb-8'>
       <CatalogBreadcrumbs />
 
       <h1 className='mt-4 mb-6 text-2xl font-bold'>Каталог</h1>
@@ -22,6 +22,6 @@ export const CatalogView = async () => {
           />
         ))}
       </div>
-    </>
+    </section>
   )
 }

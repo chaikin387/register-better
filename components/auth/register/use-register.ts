@@ -12,13 +12,15 @@ const SIGN_UP_ERRORS: Record<string, string> = {
   FAILED_TO_CREATE_USER: 'Не удалось создать аккаунт.',
   USER_ALREADY_EXISTS_USE_ANOTHER_EMAIL:
     'Email уже зарегистрирован. Попробуйте войти или восстановить пароль.',
+  RATE_LIMIT: 'Слишком много попыток регистрации. Подождите немного.',
 }
 
 const OTP_ERRORS: Record<string, string> = {
-  INVALID_OTP: 'Неверный код',
+  INVALID_OTP: 'Неверный код. Попробуйте ещё раз.',
   OTP_EXPIRED: 'Код истёк. Получите новый код.',
-  TOO_MANY_ATTEMPTS: 'Слишком много попыток. Получите новый код.',
-  TOO_MANY_REQUESTS: 'Слишком много запросов. Попробуйте позже.',
+  TOO_MANY_ATTEMPTS: 'Слишком много попыток. Пожалуйста, попробуйте позже.',
+  TOO_MANY_REQUESTS: 'Слишком много попыток. Пожалуйста, попробуйте позже.',
+  SEND_RATE_LIMIT: 'Слишком много попыток. Пожалуйста, попробуйте позже.',
 }
 
 type Status = 'idle' | 'sending' | 'otp-ready' | 'submitting' | 'blocked'
@@ -28,7 +30,6 @@ export function useRegister(form: UseFormReturn<RegisterSchema>) {
   const { setError, trigger, getValues, clearErrors } = form
 
   const [status, setStatus] = useState<Status>('idle')
-
   const { countdown, start } = useCountdown(60)
 
   const isSending = status === 'sending'
@@ -48,6 +49,7 @@ export function useRegister(form: UseFormReturn<RegisterSchema>) {
 
     setStatus('sending')
     clearErrors('otp')
+    clearErrors('root')
     form.setValue('otp', '')
 
     const { error: signUpError } = await authClient.signUp.email({
@@ -57,6 +59,13 @@ export function useRegister(form: UseFormReturn<RegisterSchema>) {
     })
 
     if (signUpError) {
+      if (signUpError.status === 429) {
+        setError('root', { message: SIGN_UP_ERRORS.RATE_LIMIT })
+        setStatus('idle')
+        start()
+        return
+      }
+
       setError('root', {
         message: SIGN_UP_ERRORS[signUpError.code ?? ''] ?? 'Ошибка регистрации',
       })
@@ -70,8 +79,15 @@ export function useRegister(form: UseFormReturn<RegisterSchema>) {
     })
 
     if (otpError) {
+      if (otpError.status === 429) {
+        setError('root', { message: OTP_ERRORS.SEND_RATE_LIMIT })
+        setStatus('otp-ready')
+        start()
+        return
+      }
+
       setError('root', {
-        message: otpError.message ?? 'Не удалось отправить код',
+        message: OTP_ERRORS[otpError.code ?? ''] ?? 'Не удалось отправить код',
       })
       setStatus('idle')
       return
@@ -96,15 +112,15 @@ export function useRegister(form: UseFormReturn<RegisterSchema>) {
 
       if (error.status === 429) {
         setError('otp', { message: OTP_ERRORS.TOO_MANY_REQUESTS })
-        start()
         setStatus('blocked')
+        start()
         return
       }
 
       if (error.code === 'TOO_MANY_ATTEMPTS') {
         setError('otp', { message: OTP_ERRORS.TOO_MANY_ATTEMPTS })
-        start()
         setStatus('blocked')
+        start()
         return
       }
 
