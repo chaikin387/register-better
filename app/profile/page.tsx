@@ -11,9 +11,5 @@ export const metadata: Metadata = {
 export default async function ProfilePage() {
   const session = await getServerSession()
 
-  return (
-    <section className='container mx-auto px-4 py-8'>
-      <ProfileClient session={session} />
-    </section>
-  )
+  return <ProfileClient session={session} />
 }

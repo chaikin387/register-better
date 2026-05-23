@@ -1,34 +1,50 @@
-// components/profile/profile-client.tsx
 'use client'
 
 import { Button } from '@/components/ui/button'
+import { Input } from '@/components/ui/input'
 import { Session } from '@/lib/auth'
-import { Pencil, Trash2 } from 'lucide-react'
+import { Check, Pencil, Trash2, X } from 'lucide-react'
 import Image from 'next/image'
 import { getInitialsAvatar } from '../header/initials-avatar'
 import { Spinner } from '../ui/spinner'
-import { useAvatar } from './use-avatar'
+import { useAvatar } from './avatar/use-avatar'
+import { useName } from './name/use-name'
 
 interface Props {
   session: Session | null
 }
 
-export const ProfileClient = ({ session }: Props) => {
-  const { fileRef, loading, error, onUpload, onReset } = useAvatar()
-
+export function ProfileClient({ session }: Props) {
   const user = session?.user
+  const {
+    fileRef,
+    loading: avatarLoading,
+    error: avatarError,
+    onUpload,
+    onReset,
+  } = useAvatar()
+  const {
+    value,
+    setValue,
+    editing,
+    setEditing,
+    loading: nameLoading,
+    error: nameError,
+    onSave,
+    onCancel,
+  } = useName(user?.name ?? '')
+
   if (!user) return null
 
   return (
-    <div className='flex flex-col items-center gap-4'>
-      <div className='relative'>
+    <section className='container mx-auto flex flex-col items-center gap-4 px-4 py-8'>
+      <div className='group/avatar relative'>
         {user.image ? (
           <Image
             src={user.image}
             alt=''
             width={128}
             height={128}
-            preload
             className='aspect-square rounded-full bg-secondary object-cover'
           />
         ) : (
@@ -40,12 +56,24 @@ export const ProfileClient = ({ session }: Props) => {
         <Button
           size='icon-lg'
           variant='outline'
-          disabled={loading}
+          disabled={avatarLoading}
           onClick={() => fileRef.current?.click()}
           className='absolute -right-1 -bottom-1 rounded-full'
         >
-          {loading ? <Spinner data-icon='inline-start' /> : <Pencil />}
+          {avatarLoading ? <Spinner data-icon='inline-start' /> : <Pencil />}
         </Button>
+
+        {user.image && (
+          <Button
+            size='icon-lg'
+            variant='outline'
+            disabled={avatarLoading}
+            onClick={onReset}
+            className='absolute -bottom-1 -left-1 rounded-full text-destructive opacity-0 transition-opacity group-hover/avatar:opacity-100 hover:text-destructive'
+          >
+            <Trash2 />
+          </Button>
+        )}
 
         <input
           ref={fileRef}
@@ -56,28 +84,56 @@ export const ProfileClient = ({ session }: Props) => {
         />
       </div>
 
-      {error && (
+      {(avatarError || nameError) && (
         <p className='text-center text-sm font-medium text-destructive'>
-          {error}
+          {avatarError ?? nameError}
         </p>
       )}
 
-      <div className='text-center'>
-        <p className='font-semibold'>{user.name}</p>
+      <div className='mt-4 flex flex-col items-center gap-2'>
+        {editing ? (
+          <div className='flex items-center gap-2'>
+            <Input
+              value={value}
+              onChange={(e) => setValue(e.target.value)}
+              autoFocus
+              disabled={nameLoading}
+            />
+            <div className='flex gap-1'>
+              <Button
+                size='icon-lg'
+                variant='secondary'
+                disabled={nameLoading}
+                onClick={onSave}
+              >
+                {nameLoading ? <Spinner data-icon='inline-start' /> : <Check />}
+              </Button>
+              <Button
+                size='icon-lg'
+                variant='ghost'
+                disabled={nameLoading}
+                onClick={onCancel}
+              >
+                <X />
+              </Button>
+            </div>
+          </div>
+        ) : (
+          <div className='flex items-center gap-2'>
+            <h2 className='text-xl font-semibold tracking-tight'>
+              {user.name}
+            </h2>
+            <Button
+              size='icon-lg'
+              variant='ghost'
+              onClick={() => setEditing(true)}
+            >
+              <Pencil />
+            </Button>
+          </div>
+        )}
         <p className='text-sm text-muted-foreground'>{user.email}</p>
       </div>
-
-      {user.image && (
-        <Button
-          variant='destructive'
-          size='sm'
-          disabled={loading}
-          onClick={onReset}
-        >
-          <Trash2 />
-          Удалить аватар
-        </Button>
-      )}
-    </div>
+    </section>
   )
 }

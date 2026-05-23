@@ -1,7 +1,7 @@
 'use client'
 
-import { resetAvatar, uploadAvatar } from '@/components/profile/action.avatar'
 import { useRef, useState } from 'react'
+import { resetAvatar, uploadAvatar } from './action.avatar'
 
 export function useAvatar() {
   const fileRef = useRef<HTMLInputElement>(null)

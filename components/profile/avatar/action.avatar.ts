@@ -1,12 +1,12 @@
 'use server'
 
-import { avatarSchema } from '@/components/profile/avatar.schema'
-
+import { auth } from '@/lib/auth'
 import { getServerSession } from '@/lib/auth-session'
-import prisma from '@/lib/prisma'
 import { s3 } from '@/lib/s3'
 import { DeleteObjectCommand, PutObjectCommand } from '@aws-sdk/client-s3'
 import { revalidatePath } from 'next/cache'
+import { headers } from 'next/headers'
+import { avatarSchema } from './avatar.schema'
 
 const BUCKET = process.env.YANDEX_S3_BUCKET!
 const ENDPOINT = process.env.YANDEX_S3_ENDPOINT!.replace(/\/$/, '')
@@ -40,23 +40,11 @@ async function deleteS3Object(key: string | null): Promise<void> {
   }
 }
 
-async function getUserImage(userId: string): Promise<string | null> {
-  const row = await prisma.user.findUnique({
-    where: { id: userId },
-    select: { image: true },
-  })
-  return row?.image ?? null
-}
-
-async function requireUserId(): Promise<string | null> {
-  const session = await getServerSession()
-  return session?.user?.id ?? null
-}
-
 type ActionResult = { url?: string; ok?: true; error?: string }
 
 export async function uploadAvatar(formData: FormData): Promise<ActionResult> {
-  const userId = await requireUserId()
+  const session = await getServerSession()
+  const userId = session?.user?.id
   if (!userId) return { error: 'Не авторизован' }
 
   const parsed = avatarSchema.safeParse({ file: formData.get('avatar') })
@@ -68,7 +56,7 @@ export async function uploadAvatar(formData: FormData): Promise<ActionResult> {
 
   const key = `avatars/${userId}-${Date.now()}.${ext}`
   const url = buildS3Url(key)
-  const oldKey = extractS3Key(await getUserImage(userId))
+  const oldKey = extractS3Key(session.user.image ?? null)
 
   await s3.send(
     new PutObjectCommand({
@@ -80,12 +68,12 @@ export async function uploadAvatar(formData: FormData): Promise<ActionResult> {
   )
 
   try {
-    await prisma.user.update({
-      where: { id: userId },
-      data: { image: url },
+    await auth.api.updateUser({
+      body: { image: url },
+      headers: await headers(),
     })
   } catch (e) {
-    console.error('[uploadAvatar] db error:', e)
+    console.error('[uploadAvatar] error:', e)
     await deleteS3Object(key)
     return { error: 'Ошибка сохранения в базу данных' }
   }
@@ -96,18 +84,19 @@ export async function uploadAvatar(formData: FormData): Promise<ActionResult> {
 }
 
 export async function resetAvatar(): Promise<ActionResult> {
-  const userId = await requireUserId()
+  const session = await getServerSession()
+  const userId = session?.user?.id
   if (!userId) return { error: 'Не авторизован' }
 
-  const oldKey = extractS3Key(await getUserImage(userId))
+  const oldKey = extractS3Key(session.user.image ?? null)
 
   try {
-    await prisma.user.update({
-      where: { id: userId },
-      data: { image: null },
+    await auth.api.updateUser({
+      body: { image: null },
+      headers: await headers(),
     })
   } catch (e) {
-    console.error('[resetAvatar] db error:', e)
+    console.error('[resetAvatar] error:', e)
     return { error: 'Ошибка удаления из базы данных' }
   }
 
