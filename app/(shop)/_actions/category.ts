@@ -1,14 +1,16 @@
+'use server'
+
 import prisma from '@/lib/prisma'
 import {
   categoryCatalogSelect,
   categoryPageSelect,
   categoryTreeSelect,
-  type CategoryCatalog,
-  type CategoryPage,
-  type CategoryTree,
 } from '@/types/category-selects'
 
-export async function getCategoriesMenu(): Promise<CategoryTree[]> {
+/**
+ * Получение облегченного дерева для CatalogMenu в шапке (до 4-х уровней)
+ */
+export async function getCategoryTree() {
   return prisma.category.findMany({
     where: { parentId: null, isActive: true },
     orderBy: { sortOrder: 'asc' },
@@ -16,7 +18,10 @@ export async function getCategoriesMenu(): Promise<CategoryTree[]> {
   })
 }
 
-export async function getCategoriesCatalog(): Promise<CategoryCatalog[]> {
+/**
+ * Получение структуры для главной страницы каталога /catalog
+ */
+export async function getCategoryCatalog() {
   return prisma.category.findMany({
     where: { parentId: null, isActive: true },
     orderBy: { sortOrder: 'asc' },
@@ -24,9 +29,10 @@ export async function getCategoriesCatalog(): Promise<CategoryCatalog[]> {
   })
 }
 
-export async function getCategoryBySlug(
-  slug: string
-): Promise<CategoryPage | null> {
+/**
+ * Получение конкретной категории по слагу для страницы /catalog/[slug]
+ */
+export async function getCategoryBySlug(slug: string) {
   return prisma.category.findUnique({
     where: { slug, isActive: true },
     select: categoryPageSelect,

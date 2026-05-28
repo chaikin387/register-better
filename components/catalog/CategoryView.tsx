@@ -1,4 +1,4 @@
-import { getCategoryBySlug } from '@/services/category.service'
+import { getCategoryBySlug } from '@/app/(shop)/_actions/category'
 import { notFound } from 'next/navigation'
 import { CategoryBreadcrumbs } from '../breadcrumbs/CategoryBreadcrumbs'
 import { CategoryCard } from './CategoryCard'

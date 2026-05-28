@@ -22,40 +22,36 @@ export const L3Item = ({ l3, navigate }: Props) => {
         href={`/catalog/${l3.slug}`}
         onClick={navigate(`/catalog/${l3.slug}`)}
         {...getReferenceProps()}
-        className='block text-sm text-secondary-foreground hover:no-underline'
+        className='flex w-full items-center gap-2 text-sm text-secondary-foreground hover:no-underline'
       >
-        <span
-          ref={refs.setPositionReference}
-          className='inline-flex items-center gap-2'
-        >
-          {l3.name}
-          {hasChildren && (
-            <ChevronRight className='size-3 shrink-0 text-muted-foreground' />
-          )}
-        </span>
+        {l3.name}
+        {hasChildren && (
+          <ChevronRight
+            ref={refs.setPositionReference}
+            className='size-3 shrink-0 text-muted-foreground'
+          />
+        )}
       </Link>
 
       {open && hasChildren && (
-        <div
+        <ul
           ref={refs.setFloating}
           style={floatingStyles}
           {...getFloatingProps()}
-          className='z-50 w-64 rounded-lg border bg-popover p-4 shadow-md'
+          className='flex flex-col gap-1.5 rounded-lg border bg-popover p-4 shadow-lg'
         >
-          <ul className='flex flex-col gap-1.5'>
-            {l3.children.map((l4) => (
-              <li key={l4.id}>
-                <Link
-                  href={`/catalog/${l4.slug}`}
-                  onClick={navigate(`/catalog/${l4.slug}`)}
-                  className='block text-sm text-secondary-foreground hover:no-underline'
-                >
-                  {l4.name}
-                </Link>
-              </li>
-            ))}
-          </ul>
-        </div>
+          {l3.children.map((l4) => (
+            <li key={l4.id}>
+              <Link
+                href={`/catalog/${l4.slug}`}
+                onClick={navigate(`/catalog/${l4.slug}`)}
+                className='flex w-full text-sm text-secondary-foreground hover:no-underline'
+              >
+                {l4.name}
+              </Link>
+            </li>
+          ))}
+        </ul>
       )}
     </li>
   )

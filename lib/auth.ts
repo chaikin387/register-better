@@ -1,6 +1,6 @@
 import { betterAuth } from 'better-auth'
 import { prismaAdapter } from 'better-auth/adapters/prisma'
-import { emailOTP } from 'better-auth/plugins'
+import { admin, emailOTP } from 'better-auth/plugins'
 import prisma from './prisma'
 
 export const auth = betterAuth({
@@ -34,6 +34,7 @@ export const auth = betterAuth({
         console.log(`[OTP] email: ${email} | type: ${type} | otp: ${otp}`)
       },
     }),
+    admin(),
   ],
 })
 

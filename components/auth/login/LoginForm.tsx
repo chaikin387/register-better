@@ -1,7 +1,7 @@
 'use client'
 
 import { zodResolver } from '@hookform/resolvers/zod'
-import { Eye, EyeOff, RefreshCw, Send } from 'lucide-react'
+import { ArrowLeft, Eye, EyeOff, RefreshCw, Send } from 'lucide-react'
 import Link from 'next/link'
 import { useEffect, useRef, useState } from 'react'
 import { useForm, useWatch } from 'react-hook-form'
@@ -95,7 +95,15 @@ export const LoginForm = () => {
   }, [disabledOtp.otp])
 
   return (
-    <section className='container mx-auto flex items-start justify-center px-4 py-8'>
+    <section className='relative container mx-auto flex min-h-dvh items-center justify-center px-4'>
+      <Link
+        href='/'
+        className='absolute top-4 left-4 flex items-center gap-2 text-sm text-muted-foreground transition-colors hover:text-foreground md:top-8 md:left-8'
+      >
+        <ArrowLeft className='size-4' />
+        <span>На главную</span>
+      </Link>
+
       <Card className='w-full max-w-sm'>
         <CardHeader className='p-4'>
           <CardTitle>Войти в аккаунт</CardTitle>

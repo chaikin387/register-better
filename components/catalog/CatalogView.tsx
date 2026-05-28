@@ -1,10 +1,10 @@
-import { getCategoriesCatalog } from '@/services/category.service'
+import { getCategoryCatalog } from '@/app/(shop)/_actions/category'
 import { notFound } from 'next/navigation'
 import { CatalogBreadcrumbs } from '../breadcrumbs/CatalogBreadcrumbs'
 import { CategoryCard } from './CategoryCard'
 
 export const CatalogView = async () => {
-  const categories = await getCategoriesCatalog()
+  const categories = await getCategoryCatalog()
 
   if (!categories?.length) notFound()
 

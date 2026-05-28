@@ -17,20 +17,14 @@ export const CatalogMenu = ({ categories, navigate }: CatalogMenuProps) => {
   const currentCategory = categories.find((c) => c.slug === activeL1)
 
   return (
-    <nav
-      className='flex gap-8 overflow-hidden'
-      aria-label='Каталог товаров'
-    >
-      <ul className='flex-2/12 overflow-y-auto border-r p-2'>
+    <nav className='flex gap-8'>
+      <ul className='flex flex-2/12 flex-col gap-1.5 overflow-y-auto border-r p-2'>
         {categories.map((cat) => {
           const Icon = (Icons[cat.icon as keyof typeof Icons] ??
             Icons.Package) as Icons.LucideIcon
 
           return (
-            <li
-              key={cat.id}
-              className='mb-1.5'
-            >
+            <li key={cat.id}>
               <Button
                 asChild
                 variant={activeL1 === cat.slug ? 'secondary' : 'ghost'}

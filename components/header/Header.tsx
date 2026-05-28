@@ -1,12 +1,13 @@
 // components/header/Header.tsx — Server Component
 import { getServerSession } from '@/lib/auth-session'
-import { getCategoriesMenu } from '@/services/category.service'
+
+import { getCategoryTree } from '@/app/(shop)/_actions/category'
 import { HeaderClient } from './HeaderClient'
 
 const Header = async () => {
   const [session, categories] = await Promise.all([
     getServerSession(),
-    getCategoriesMenu(),
+    getCategoryTree(),
   ])
 
   return (

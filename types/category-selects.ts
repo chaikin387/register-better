@@ -1,6 +1,6 @@
 import { Prisma } from '@/app/generated/prisma/client'
 
-// ── Для CategoryCard — минимальный набор полей ────────────────────────────────
+// 1. Для простых карточек категорий (например, популярные на главной)
 export const categoryBaseSelect = {
   id: true,
   slug: true,
@@ -9,7 +9,7 @@ export const categoryBaseSelect = {
   image: true,
 } satisfies Prisma.CategorySelect
 
-// ── Для CatalogMenu — 4 уровня вложенности ───────────────────────────────────
+// 2. Для CatalogMenu в шапке сайта (полные 4 уровня вложенности активных категорий)
 export const categoryTreeSelect = {
   id: true,
   slug: true,
@@ -48,7 +48,7 @@ export const categoryTreeSelect = {
   },
 } satisfies Prisma.CategorySelect
 
-// ── Для страницы /catalog — корневые + 2 уровня детей (hover эффект) ──────────
+// 3. Для большой страницы /catalog (корневые + 2 уровня детей для hover-сетки)
 export const categoryCatalogSelect = {
   id: true,
   slug: true,
@@ -75,7 +75,7 @@ export const categoryCatalogSelect = {
   },
 } satisfies Prisma.CategorySelect
 
-// ── Для страницы /catalog/[slug] — категория + предки + дети ─────────────────
+// 4. Для динамической страницы /catalog/[slug] (категория + предки для крошек + прямые дети)
 export const categoryPageSelect = {
   id: true,
   slug: true,
@@ -118,7 +118,7 @@ export const categoryPageSelect = {
   },
 } satisfies Prisma.CategorySelect
 
-// ── Типы ─────────────────────────────────────────────────────────────────────
+// ── Автоматически сгенерированные типы на основе селектов ────────────────────
 export type CategoryBase = Prisma.CategoryGetPayload<{
   select: typeof categoryBaseSelect
 }>

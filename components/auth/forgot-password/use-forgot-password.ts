@@ -11,9 +11,9 @@ import { ForgotPasswordSchema } from './forgot-password.schema'
 const OTP_ERRORS: Record<string, string> = {
   INVALID_OTP: 'Неверный код. Попробуйте ещё раз.',
   OTP_EXPIRED: 'Код истёк. Получите новый код.',
-  TOO_MANY_ATTEMPTS: 'Слишком много попыток. Пожалуйста, попробуйте позже.',
+  TOO_MANY_ATTEMPTS: 'Слишком много попыток. Введите другой код.',
   TOO_MANY_REQUESTS: 'Слишком много попыток. Пожалуйста, попробуйте позже.',
-  SEND_RATE_LIMIT: 'Слишком много попыток. Пожалуйста, попробуйте позже.',
+  SEND_RATE_LIMIT: 'Слишком много попыток. Отправьте код позже.',
 }
 
 type Status = 'idle' | 'sending' | 'otp-ready' | 'submitting' | 'blocked'
@@ -48,7 +48,7 @@ export function useForgotPassword(form: UseFormReturn<ForgotPasswordSchema>) {
     if (error) {
       if (error.status === 429) {
         setError('root', { message: OTP_ERRORS.SEND_RATE_LIMIT })
-        setStatus('otp-ready')
+        setStatus('blocked')
         start()
         return
       }
@@ -113,7 +113,7 @@ export function useForgotPassword(form: UseFormReturn<ForgotPasswordSchema>) {
 
   const disabled = {
     sendCode: isSending || isSubmitting || countdown > 0,
-    otp: !isOtpReady || isSubmitting,
+    otp: !isOtpReady || isSubmitting || isBlocked,
     submit: isSubmitting || isBlocked,
   }
 

@@ -11,7 +11,7 @@ import { LoginSchema } from './login.schema'
 const LOGIN_ERRORS: Record<string, string> = {
   INVALID_EMAIL_OR_PASSWORD: 'Неверный email или пароль.',
   TOO_MANY_REQUESTS: 'Слишком много попыток. Пожалуйста, попробуйте позже.',
-  CHANGE_CREDENTIALS: 'Сначала измените email или пароль.',
+  CHANGE_CREDENTIALS: 'Пожалуйста, исправьте email или пароль.',
 }
 
 type Status = 'idle' | 'submitting' | 'blocked'

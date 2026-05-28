@@ -18,9 +18,9 @@ const SIGN_UP_ERRORS: Record<string, string> = {
 const OTP_ERRORS: Record<string, string> = {
   INVALID_OTP: 'Неверный код. Попробуйте ещё раз.',
   OTP_EXPIRED: 'Код истёк. Получите новый код.',
-  TOO_MANY_ATTEMPTS: 'Слишком много попыток. Пожалуйста, попробуйте позже.',
+  TOO_MANY_ATTEMPTS: 'Слишком много попыток. Введите другой код.',
   TOO_MANY_REQUESTS: 'Слишком много попыток. Пожалуйста, попробуйте позже.',
-  SEND_RATE_LIMIT: 'Слишком много попыток. Пожалуйста, попробуйте позже.',
+  SEND_RATE_LIMIT: 'Слишком много попыток. Отправьте код позже.',
 }
 
 type Status = 'idle' | 'sending' | 'otp-ready' | 'submitting' | 'blocked'
@@ -81,7 +81,7 @@ export function useRegister(form: UseFormReturn<RegisterSchema>) {
     if (otpError) {
       if (otpError.status === 429) {
         setError('root', { message: OTP_ERRORS.SEND_RATE_LIMIT })
-        setStatus('otp-ready')
+        setStatus('blocked')
         start()
         return
       }
@@ -137,7 +137,7 @@ export function useRegister(form: UseFormReturn<RegisterSchema>) {
 
   const disabled = {
     sendCode: isSending || isSubmitting || countdown > 0,
-    otp: !isOtpReady || isSubmitting,
+    otp: !isOtpReady || isSubmitting || isBlocked,
     submit: isSubmitting || isBlocked,
   }
 

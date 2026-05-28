@@ -1,5 +1,5 @@
-import Header from '@/components/header/Header'
 import { ThemeProvider } from '@/components/theme-provider'
+import { TooltipProvider } from '@/components/ui/tooltip'
 import { cn } from '@/lib/utils'
 import { Geist, Geist_Mono } from 'next/font/google'
 import NextTopLoader from 'nextjs-toploader'
@@ -29,15 +29,16 @@ export default function RootLayout({
         geist.variable
       )}
     >
-      <body className='flex min-h-dvh flex-col'>
+      <body>
         <ThemeProvider>
-          <NextTopLoader showSpinner={false} />
-          <Header />
-          <main className='flex flex-1'>{children}</main>
-          <Toaster
-            position='top-center'
-            richColors
-          />
+          <TooltipProvider delayDuration={300}>
+            <NextTopLoader showSpinner={false} />
+            {children}
+            <Toaster
+              position='top-center'
+              richColors
+            />
+          </TooltipProvider>
         </ThemeProvider>
       </body>
     </html>

@@ -1,4 +1,3 @@
-// UserMenu.tsx
 'use client'
 
 import { Button } from '@/components/ui/button'
@@ -11,7 +10,7 @@ import {
 } from '@/components/ui/dropdown-menu'
 import { Session } from '@/lib/auth'
 import { authClient } from '@/lib/auth-client'
-import { LogOut, User, UserIcon } from 'lucide-react'
+import { LogOut, ShieldAlert, User, UserIcon } from 'lucide-react' // Добавил ShieldAlert
 import Image from 'next/image'
 import Link from 'next/link'
 import { useRouter } from 'next/navigation'
@@ -87,6 +86,7 @@ export const UserMenu = ({ session, navigate }: Props) => {
           const target = e.target as HTMLElement
           if (target.closest('[data-keep-profile]')) e.preventDefault()
         }}
+        onCloseAutoFocus={(e) => e.preventDefault()}
       >
         <div className='flex flex-col space-y-1 p-2'>
           <p className='text-sm leading-none font-medium'>
@@ -98,6 +98,23 @@ export const UserMenu = ({ session, navigate }: Props) => {
         </div>
 
         <DropdownMenuSeparator />
+
+        {/* Пункт админки: показывается только если роль "admin" */}
+        {session.user.role === 'admin' && (
+          <>
+            <DropdownMenuItem asChild>
+              <Link
+                href='/admin-panel'
+                onClick={navigate('/admin-panel')}
+                className='text-destructive focus:bg-destructive/10 focus:text-destructive'
+              >
+                <ShieldAlert className='size-4' />
+                <span>Админ-панель</span>
+              </Link>
+            </DropdownMenuItem>
+            <DropdownMenuSeparator />
+          </>
+        )}
 
         <DropdownMenuItem asChild>
           <Link

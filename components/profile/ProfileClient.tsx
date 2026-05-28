@@ -14,7 +14,7 @@ interface Props {
   session: Session | null
 }
 
-export function ProfileClient({ session }: Props) {
+export const ProfileClient = ({ session }: Props) => {
   const user = session?.user
   const {
     fileRef,
