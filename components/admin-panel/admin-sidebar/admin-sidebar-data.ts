@@ -1,9 +1,15 @@
-import { FolderTree, Users, type LucideIcon } from 'lucide-react'
+import {
+  FolderTree,
+  ShoppingBag,
+  Tag,
+  Users,
+  type LucideIcon,
+} from 'lucide-react'
 
 export interface AdminMenuItem {
   title: string
   url: string
-  icon: LucideIcon // ◄── Жестко привязываем к типу иконок Lucide
+  icon: LucideIcon
 }
 
 export interface AdminMenuGroup {
@@ -21,9 +27,19 @@ export const adminMenuGroups: AdminMenuGroup[] = [
         icon: Users,
       },
       {
-        title: 'Каталог товаров',
-        url: '/admin-panel/admin-catalog',
+        title: 'Категории',
+        url: '/admin-panel/categories',
         icon: FolderTree,
+      },
+      {
+        title: 'Бренды',
+        url: '/admin-panel/brands',
+        icon: Tag,
+      },
+      {
+        title: 'Товары',
+        url: '/admin-panel/products',
+        icon: ShoppingBag,
       },
     ],
   },

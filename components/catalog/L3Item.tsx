@@ -1,12 +1,12 @@
 'use client'
 
-import { CategoryTree } from '@/types/category-selects'
+import { CategoryTreeSelect } from '@/types/category-selects'
 import { ChevronRight } from 'lucide-react'
 import Link from 'next/link'
 import { useCatalogFloat } from './use-catalog-float'
 
 interface Props {
-  l3: CategoryTree['children'][number]['children'][number]
+  l3: CategoryTreeSelect['children'][number]['children'][number]
   navigate: (href: string) => (e: React.MouseEvent) => void
 }
 

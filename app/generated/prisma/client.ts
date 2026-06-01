@@ -62,7 +62,52 @@ export type Account = Prisma.AccountModel
  */
 export type Verification = Prisma.VerificationModel
 /**
+ * Model Brand
+ * 
+ */
+export type Brand = Prisma.BrandModel
+/**
  * Model Category
  * 
  */
 export type Category = Prisma.CategoryModel
+/**
+ * Model CategoryAttribute
+ * 
+ */
+export type CategoryAttribute = Prisma.CategoryAttributeModel
+/**
+ * Model Attribute
+ * 
+ */
+export type Attribute = Prisma.AttributeModel
+/**
+ * Model AttributeValue
+ * 
+ */
+export type AttributeValue = Prisma.AttributeValueModel
+/**
+ * Model Product
+ * 
+ */
+export type Product = Prisma.ProductModel
+/**
+ * Model ProductVariant
+ * 
+ */
+export type ProductVariant = Prisma.ProductVariantModel
+/**
+ * Model ProductImage
+ * 
+ */
+export type ProductImage = Prisma.ProductImageModel
+/**
+ * Model ProductAttributeValue
+ * 
+ */
+export type ProductAttributeValue = Prisma.ProductAttributeValueModel
+/**
+ * Model VariantAttributeValue
+ * 
+ */
+export type VariantAttributeValue = Prisma.VariantAttributeValueModel

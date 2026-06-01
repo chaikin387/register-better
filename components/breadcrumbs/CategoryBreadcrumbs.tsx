@@ -6,14 +6,14 @@ import {
   BreadcrumbPage,
   BreadcrumbSeparator,
 } from '@/components/ui/breadcrumb'
-import { type CategoryPage } from '@/types/category-selects'
+import { CategoryPageSelect } from '@/types/category-selects'
 
 import Link from 'next/link'
 import { Fragment } from 'react'
 import { buildBreadcrumbs } from './build-breadcrumbs'
 
 interface Props {
-  category: CategoryPage
+  category: CategoryPageSelect
 }
 
 export const CategoryBreadcrumbs = ({ category }: Props) => {

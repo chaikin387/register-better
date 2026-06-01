@@ -107,23 +107,7 @@ export const categoriesData: CategorySeed[] = [
                 slug: 'biometrika-fingerprint',
                 name: 'По отпечатку пальца',
                 sortOrder: 0,
-                children: [
-                  {
-                    slug: 'fingerprint-optical',
-                    name: 'Оптические сенсоры',
-                    sortOrder: 0,
-                  },
-                  {
-                    slug: 'fingerprint-semiconductor',
-                    name: 'Полупроводниковые',
-                    sortOrder: 1,
-                  },
-                  {
-                    slug: 'fingerprint-hidden',
-                    name: 'Со скрытым сканером',
-                    sortOrder: 2,
-                  },
-                ],
+                // Убрал 5-й уровень (раньше здесь были optical, semiconductor, hidden)
               },
               {
                 slug: 'biometrika-faceid',
@@ -146,18 +130,7 @@ export const categoriesData: CategorySeed[] = [
                 slug: 'ecosystem-xiaomi',
                 name: 'Xiaomi Mi Home',
                 sortOrder: 0,
-                children: [
-                  {
-                    slug: 'xiaomi-zigbee',
-                    name: 'Zigbee версии',
-                    sortOrder: 0,
-                  },
-                  {
-                    slug: 'xiaomi-bluetooth',
-                    name: 'Bluetooth версии',
-                    sortOrder: 1,
-                  },
-                ],
+                // Убрал 5-й уровень (zigbee, bluetooth)
               },
               { slug: 'ecosystem-aqara', name: 'Aqara Home', sortOrder: 1 },
               {

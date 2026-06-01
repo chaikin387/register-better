@@ -1,16 +1,13 @@
 'use client'
 
-import {
-  type CategoryBase,
-  type CategoryCatalog,
-} from '@/types/category-selects'
+import { CategoryCardSelect } from '@/types/category-selects'
 import { ChevronRight } from 'lucide-react'
 import Image from 'next/image'
 import Link from 'next/link'
 import { useState } from 'react'
 
 interface Props {
-  category: CategoryBase & { children?: CategoryCatalog['children'] }
+  category: CategoryCardSelect
 }
 
 export const CategoryCard = ({ category }: Props) => {

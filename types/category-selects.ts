@@ -1,15 +1,32 @@
 import { Prisma } from '@/app/generated/prisma/client'
 
-// 1. Для простых карточек категорий (например, популярные на главной)
-export const categoryBaseSelect = {
+// 1. Для карточки категории в каталоге
+export const categoryCardSelect = {
   id: true,
   slug: true,
   name: true,
   icon: true,
   image: true,
+
+  children: {
+    where: { isActive: true },
+    orderBy: { sortOrder: 'asc' },
+
+    select: {
+      id: true,
+      slug: true,
+      name: true,
+
+      children: {
+        select: {
+          id: true,
+        },
+      },
+    },
+  },
 } satisfies Prisma.CategorySelect
 
-// 2. Для CatalogMenu в шапке сайта (полные 4 уровня вложенности активных категорий)
+// 2. Для CatalogMenu в Header (полные 4 уровня вложенности активных категорий)
 export const categoryTreeSelect = {
   id: true,
   slug: true,
@@ -17,25 +34,31 @@ export const categoryTreeSelect = {
   icon: true,
   image: true,
   sortOrder: true,
+
   children: {
     where: { isActive: true },
     orderBy: { sortOrder: 'asc' },
+
     select: {
       id: true,
       slug: true,
       name: true,
       sortOrder: true,
+
       children: {
         where: { isActive: true },
         orderBy: { sortOrder: 'asc' },
+
         select: {
           id: true,
           slug: true,
           name: true,
           sortOrder: true,
+
           children: {
             where: { isActive: true },
             orderBy: { sortOrder: 'asc' },
+
             select: {
               id: true,
               slug: true,
@@ -55,16 +78,20 @@ export const categoryCatalogSelect = {
   name: true,
   icon: true,
   image: true,
+
   children: {
     where: { isActive: true },
     orderBy: { sortOrder: 'asc' },
+
     select: {
       id: true,
       slug: true,
       name: true,
+
       children: {
         where: { isActive: true },
         orderBy: { sortOrder: 'asc' },
+
         select: {
           id: true,
           slug: true,
@@ -75,7 +102,7 @@ export const categoryCatalogSelect = {
   },
 } satisfies Prisma.CategorySelect
 
-// 4. Для динамической страницы /catalog/[slug] (категория + предки для крошек + прямые дети)
+// 4. Для динамической страницы /catalog/[slug]
 export const categoryPageSelect = {
   id: true,
   slug: true,
@@ -83,21 +110,25 @@ export const categoryPageSelect = {
   icon: true,
   image: true,
   parentId: true,
+
   parent: {
     select: {
       id: true,
       slug: true,
       name: true,
+
       parent: {
         select: {
           id: true,
           slug: true,
           name: true,
+
           parent: {
             select: {
               id: true,
               slug: true,
               name: true,
+
               parent: {
                 select: {
                   id: true,
@@ -111,26 +142,27 @@ export const categoryPageSelect = {
       },
     },
   },
+
   children: {
     where: { isActive: true },
     orderBy: { sortOrder: 'asc' },
-    select: { id: true, slug: true, name: true, image: true, icon: true },
+
+    select: categoryCardSelect,
   },
 } satisfies Prisma.CategorySelect
 
-// ── Автоматически сгенерированные типы на основе селектов ────────────────────
-export type CategoryBase = Prisma.CategoryGetPayload<{
-  select: typeof categoryBaseSelect
+export type CategoryCardSelect = Prisma.CategoryGetPayload<{
+  select: typeof categoryCardSelect
 }>
 
-export type CategoryTree = Prisma.CategoryGetPayload<{
+export type CategoryTreeSelect = Prisma.CategoryGetPayload<{
   select: typeof categoryTreeSelect
 }>
 
-export type CategoryCatalog = Prisma.CategoryGetPayload<{
+export type CategoryCatalogSelect = Prisma.CategoryGetPayload<{
   select: typeof categoryCatalogSelect
 }>
 
-export type CategoryPage = Prisma.CategoryGetPayload<{
+export type CategoryPageSelect = Prisma.CategoryGetPayload<{
   select: typeof categoryPageSelect
 }>

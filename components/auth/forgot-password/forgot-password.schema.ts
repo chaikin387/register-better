@@ -7,24 +7,26 @@ export const forgotPasswordSchema = z
       .string()
       .trim()
       .toLowerCase()
-      .min(1, 'Введите email')
-      .email('Некорректный email'),
+      .min(1, { error: 'Введите email' })
+      .pipe(z.email({ error: 'Некорректный email' })),
 
     password: z
       .string()
-      .min(1, 'Введите пароль')
-      .min(8, 'Пароль от 8 до 128 символов')
+      .min(1, { error: 'Введите пароль' })
+      .min(8, { error: 'Пароль от 8 до 128 символов' })
       .max(128),
-    confirmPassword: z.string().min(1, 'Подтвердите пароль'),
+
+    confirmPassword: z.string().min(1, { error: 'Подтвердите пароль' }),
+
     otp: z
       .string()
       .trim()
-      .min(1, 'Нажмите "Отправить код" или введите полученный')
-      .length(6, 'Код состоит из 6 символов'),
+      .min(1, { error: 'Нажмите "Отправить код" или введите полученный' })
+      .length(6, { error: 'Код состоит из 6 символов' }),
   })
   .refine((data) => data.password === data.confirmPassword, {
-    message: 'Пароли не совпадают',
+    error: 'Пароли не совпадают',
     path: ['confirmPassword'],
   })
 
-export type ForgotPasswordSchema = z.infer<typeof forgotPasswordSchema>
+export type ForgotPasswordSchema = z.input<typeof forgotPasswordSchema>

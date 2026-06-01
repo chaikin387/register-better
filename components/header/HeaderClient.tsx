@@ -2,7 +2,7 @@
 
 import { Button } from '@/components/ui/button'
 import { Session } from '@/lib/auth'
-import { CategoryTree } from '@/types/category-selects'
+import { CategoryTreeSelect } from '@/types/category-selects'
 import { Menu, ShoppingBag } from 'lucide-react'
 import Link from 'next/link'
 import { useState } from 'react'
@@ -14,7 +14,7 @@ import { useNavigate } from './use-navigate'
 
 interface Props {
   session: Session | null
-  categories: CategoryTree[]
+  categories: CategoryTreeSelect[]
 }
 
 export const HeaderClient = ({ session, categories }: Props) => {

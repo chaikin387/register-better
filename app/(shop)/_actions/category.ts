@@ -30,7 +30,7 @@ export async function getCategoryCatalog() {
 }
 
 /**
- * Получение конкретной категории по слагу для страницы /catalog/[slug]
+ * Получение конкретной категории по slug для страницы /catalog/[slug]
  */
 export async function getCategoryBySlug(slug: string) {
   return prisma.category.findUnique({

@@ -4,14 +4,16 @@ import { z } from 'zod'
 export const loginOtpSchema = z.object({
   email: z
     .string()
-    .min(1, 'Введите email')
-    .email('Некорректный email')
     .trim()
-    .toLowerCase(),
+    .toLowerCase()
+    .min(1, { error: 'Введите email' })
+    .pipe(z.email({ error: 'Некорректный email' })),
+
   otp: z
     .string()
-    .min(1, 'Нажмите "Отправить код" или введите полученный')
-    .length(6, 'Код состоит из 6 цифр'),
+    .trim()
+    .min(1, { error: 'Нажмите "Отправить код" или введите полученный' })
+    .length(6, { error: 'Код состоит из 6 цифр' }),
 })
 
-export type LoginOtpSchema = z.infer<typeof loginOtpSchema>
+export type LoginOtpSchema = z.input<typeof loginOtpSchema>

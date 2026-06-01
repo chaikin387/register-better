@@ -1,7 +1,6 @@
 import { Prisma } from '@/app/generated/prisma/client'
 
-// Полное дерево категорий для управления структурой (БЕЗ фильтрации isActive)
-export const adminCategoryTreeSelect = {
+export const adminCategorySelect = {
   id: true,
   slug: true,
   name: true,
@@ -51,7 +50,6 @@ export const adminCategoryTreeSelect = {
   },
 } satisfies Prisma.CategorySelect
 
-// Тип генерируется автоматически по селекту и идеально подходит для рекурсивного стейта
-export type AdminCategoryTree = Prisma.CategoryGetPayload<{
-  select: typeof adminCategoryTreeSelect
+export type AdminCategoryTreeSelect = Prisma.CategoryGetPayload<{
+  select: typeof adminCategorySelect
 }>
