@@ -86,9 +86,9 @@ model Brand {
    slug      String   @unique @db.VarChar(100)
    name      String   @db.VarChar(150)
    image     String?  @db.VarChar(255)
-   isActive  Boolean  @default(true) @map("is_active")
-   createdAt DateTime @default(now()) @map("created_at")
-   updatedAt DateTime @updatedAt @map("updated_at")
+   isActive  Boolean  @default(true)
+   createdAt DateTime @default(now())
+   updatedAt DateTime @updatedAt
 
    products Product[]
 
@@ -106,11 +106,11 @@ model Category {
    name      String   @db.VarChar(150)
    image     String?  @db.VarChar(255)
    icon      String?  @db.VarChar(50)
-   parentId  Int?     @map("parent_id")
-   sortOrder Int      @default(0) @map("sort_order")
-   isActive  Boolean  @default(true) @map("is_active")
-   createdAt DateTime @default(now()) @map("created_at")
-   updatedAt DateTime @updatedAt @map("updated_at")
+   parentId  Int?
+   sortOrder Int      @default(0)
+   isActive  Boolean  @default(true)
+   createdAt DateTime @default(now())
+   updatedAt DateTime @updatedAt
 
    parent   Category?  @relation("children", fields: [parentId], references: [id])
    children Category[] @relation("children")
@@ -125,9 +125,9 @@ model Category {
 
 model CategoryAttribute {
    id          Int @id @default(autoincrement())
-   categoryId  Int @map("category_id")
-   attributeId Int @map("attribute_id")
-   sortOrder   Int @default(0) @map("sort_order")
+   categoryId  Int
+   attributeId Int
+   sortOrder   Int @default(0)
 
    category  Category  @relation(fields: [categoryId], references: [id], onDelete: Cascade)
    attribute Attribute @relation(fields: [attributeId], references: [id], onDelete: Cascade)
@@ -146,8 +146,8 @@ model Attribute {
    id        Int      @id @default(autoincrement())
    slug      String   @unique @db.VarChar(100)
    name      String   @db.VarChar(150)
-   createdAt DateTime @default(now()) @map("created_at")
-   updatedAt DateTime @updatedAt @map("updated_at")
+   createdAt DateTime @default(now())
+   updatedAt DateTime @updatedAt
 
    values             AttributeValue[]
    categoryAttributes CategoryAttribute[]
@@ -157,11 +157,11 @@ model Attribute {
 
 model AttributeValue {
    id          Int      @id @default(autoincrement())
-   attributeId Int      @map("attribute_id")
+   attributeId Int
    value       String   @db.VarChar(150)
    slug        String   @db.VarChar(150)
-   createdAt   DateTime @default(now()) @map("created_at")
-   updatedAt   DateTime @updatedAt @map("updated_at")
+   createdAt   DateTime @default(now())
+   updatedAt   DateTime @updatedAt
 
    attribute     Attribute               @relation(fields: [attributeId], references: [id], onDelete: Cascade)
    productValues ProductAttributeValue[]
@@ -177,16 +177,16 @@ model AttributeValue {
 // =========================================================================
 
 model Product {
-   id          Int      @id @default(autoincrement())
-   categoryId  Int      @map("category_id")
-   brandId     Int?     @map("brand_id")
-   slug        String   @unique @db.VarChar(150)
-   name        String   @db.VarChar(255)
-   shortDesc   String?  @map("short_desc") @db.VarChar(500)
-   description String?  @db.Text
-   isActive    Boolean  @default(true) @map("is_active")
-   createdAt   DateTime @default(now()) @map("created_at")
-   updatedAt   DateTime @updatedAt @map("updated_at")
+   id               Int      @id @default(autoincrement())
+   categoryId       Int
+   brandId          Int?
+   slug             String   @unique @db.VarChar(150)
+   name             String   @db.VarChar(255)
+   shortDescription String?  @db.VarChar(500)
+   description      String?  @db.Text
+   isActive         Boolean  @default(true)
+   createdAt        DateTime @default(now())
+   updatedAt        DateTime @updatedAt
 
    category   Category                @relation(fields: [categoryId], references: [id])
    brand      Brand?                  @relation(fields: [brandId], references: [id])
@@ -201,14 +201,17 @@ model Product {
 
 model ProductVariant {
    id        Int      @id @default(autoincrement())
-   productId Int      @map("product_id")
+   productId Int
    sku       String   @unique @db.VarChar(100)
-   price     Decimal  @db.Decimal(10, 2)
+   price     Int      @default(0)
    stock     Int      @default(0)
    weight    Int      @default(0)
-   isActive  Boolean  @default(true) @map("is_active")
-   createdAt DateTime @default(now()) @map("created_at")
-   updatedAt DateTime @updatedAt @map("updated_at")
+   length    Int?
+   width     Int?
+   height    Int?
+   isActive  Boolean  @default(true)
+   createdAt DateTime @default(now())
+   updatedAt DateTime @updatedAt
 
    product    Product                 @relation(fields: [productId], references: [id], onDelete: Cascade)
    attributes VariantAttributeValue[]
@@ -221,9 +224,9 @@ model ProductVariant {
 
 model ProductImage {
    id        Int    @id @default(autoincrement())
-   variantId Int    @map("variant_id")
+   variantId Int
    url       String @db.VarChar(255)
-   sortOrder Int    @default(0) @map("sort_order")
+   sortOrder Int    @default(0)
 
    variant ProductVariant @relation(fields: [variantId], references: [id], onDelete: Cascade)
 
@@ -236,8 +239,8 @@ model ProductImage {
 // =========================================================================
 
 model ProductAttributeValue {
-   productId        Int @map("product_id")
-   attributeValueId Int @map("attribute_value_id")
+   productId        Int
+   attributeValueId Int
 
    product        Product        @relation(fields: [productId], references: [id], onDelete: Cascade)
    attributeValue AttributeValue @relation(fields: [attributeValueId], references: [id], onDelete: Cascade)
@@ -248,8 +251,8 @@ model ProductAttributeValue {
 }
 
 model VariantAttributeValue {
-   variantId        Int @map("variant_id")
-   attributeValueId Int @map("attribute_value_id")
+   variantId        Int
+   attributeValueId Int
 
    variant        ProductVariant @relation(fields: [variantId], references: [id], onDelete: Cascade)
    attributeValue AttributeValue @relation(fields: [attributeValueId], references: [id], onDelete: Cascade)

@@ -2,7 +2,7 @@ import { z } from 'zod'
 import { createCategorySchema } from './create-category.schema'
 
 export const updateCategorySchema = createCategorySchema.extend({
-  id: z.number(),
+  id: z.number().int().positive(),
 })
 
 export type UpdateCategoryInput = z.input<typeof updateCategorySchema>

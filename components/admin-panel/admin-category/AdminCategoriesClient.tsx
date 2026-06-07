@@ -6,10 +6,9 @@ import { Button } from '@/components/ui/button'
 import type { AdminCategoryTreeSelect } from '@/types/admin-category-selects'
 
 import { AdminCategoryProvider } from './AdminCategoryContext'
-import { AdminCategoryCreateDialog } from './AdminCategoryCreateDialog'
 import { AdminCategoryDeleteDialog } from './AdminCategoryDeleteDialog'
+import { AdminCategoryDialog } from './AdminCategoryDialog'
 import { AdminCategoryTree } from './AdminCategoryTree'
-import { AdminCategoryUpdateDialog } from './AdminCategoryUpdateDialog'
 import { useAdminCatalog } from './use-admin-catalog'
 
 interface Props {
@@ -23,10 +22,10 @@ export function AdminCategoriesClient({ initialCategories }: Props) {
     UpdateDialog,
     deleteDialog,
     openCreateDialog,
-    closeCreateDialog,
     openUpdateDialog,
-    closeUpdateDialog,
     openDeleteDialog,
+    closeCreateDialog,
+    closeUpdateDialog,
     closeDeleteDialog,
     handleCreateSuccess,
     handleUpdateSuccess,
@@ -83,7 +82,7 @@ export function AdminCategoriesClient({ initialCategories }: Props) {
         </div>
       </div>
 
-      <AdminCategoryCreateDialog
+      <AdminCategoryDialog
         isOpen={createDialog.isOpen}
         parentId={createDialog.parentId}
         level={createDialog.level}
@@ -92,7 +91,7 @@ export function AdminCategoriesClient({ initialCategories }: Props) {
       />
 
       {UpdateDialog.category && (
-        <AdminCategoryUpdateDialog
+        <AdminCategoryDialog
           isOpen={UpdateDialog.isOpen}
           category={UpdateDialog.category}
           onClose={closeUpdateDialog}

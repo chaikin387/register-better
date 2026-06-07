@@ -11,9 +11,7 @@ import {
 import { cn } from '@/lib/utils'
 import type { AdminBrandSelectItem } from '@/types/admin-brand.selects'
 
-import { AdminBrandCreateDialog } from './AdminBrandCreateDialog'
-import { AdminBrandDeleteDialog } from './AdminBrandDeleteDialog'
-import { AdminBrandUpdateDialog } from './AdminBrandUpdateDialog'
+import { AdminBrandDialog } from './AdminBrandDialog'
 import { useAdminBrands } from './use-admin-brands'
 
 interface Props {
@@ -139,27 +137,18 @@ export function AdminBrandsClient({ initialBrands }: Props) {
         </div>
       </div>
 
-      <AdminBrandCreateDialog
+      <AdminBrandDialog
         isOpen={createDialog.isOpen}
         onClose={closeCreateDialog}
         onSuccess={handleCreateSuccess}
       />
 
       {updateDialog.brand && (
-        <AdminBrandUpdateDialog
+        <AdminBrandDialog
           isOpen={updateDialog.isOpen}
           brand={updateDialog.brand}
           onClose={closeUpdateDialog}
           onSuccess={handleUpdateSuccess}
-        />
-      )}
-
-      {deleteDialog.brand && (
-        <AdminBrandDeleteDialog
-          isOpen={deleteDialog.isOpen}
-          brand={deleteDialog.brand}
-          onClose={closeDeleteDialog}
-          onSuccess={handleDeleteSuccess}
         />
       )}
     </>

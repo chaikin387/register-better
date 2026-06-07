@@ -1,5 +1,7 @@
+import { getAdminBrands } from '@/app/(admin)/_actions/brand/get-brand'
 import { getAdminCategories } from '@/app/(admin)/_actions/categories/get-category'
-import { AdminProductCreateForm } from '@/components/admin-panel/admin-product/AdminProductCreateForm'
+import { AdminProductForm } from '@/components/admin-panel/admin-product/AdminProductForm'
+
 import { Metadata } from 'next'
 
 export const metadata: Metadata = {
@@ -8,7 +10,15 @@ export const metadata: Metadata = {
 }
 
 export default async function CreateProductPage() {
-  const categoriesTree = await getAdminCategories()
+  const [categories, brands] = await Promise.all([
+    getAdminCategories(),
+    getAdminBrands(),
+  ])
 
-  return <AdminProductCreateForm categories={categoriesTree} />
+  return (
+    <AdminProductForm
+      categories={categories}
+      brands={brands}
+    />
+  )
 }

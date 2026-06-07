@@ -1,17 +1,18 @@
+// @/app/(admin)/_actions/brands/create-brand.ts
 'use server'
 
 import { Prisma } from '@/app/generated/prisma/client'
 import { revalidatePath } from 'next/cache'
 
 import {
-  CreateBrandInput,
-  CreateBrandOutput,
   createBrandSchema,
+  type CreateBrandInput,
+  type CreateBrandOutput,
 } from '@/components/admin-panel/admin-brand/create-brand.schema'
 import prisma from '@/lib/prisma'
 import {
   adminBrandSelectItem,
-  AdminBrandSelectItem,
+  type AdminBrandSelectItem,
 } from '@/types/admin-brand.selects'
 
 type ActionResult =
@@ -28,11 +29,13 @@ export async function createAdminBrand(
       data: {
         name: validatedData.name,
         slug: validatedData.slug,
+        isActive: validatedData.isActive,
       },
       select: adminBrandSelectItem,
     })
 
     revalidatePath('/admin-panel/brands')
+    revalidatePath('/')
 
     return { success: true, data: brand }
   } catch (error) {

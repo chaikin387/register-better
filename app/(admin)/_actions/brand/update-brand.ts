@@ -1,3 +1,4 @@
+// @/app/(admin)/_actions/brands/update-brand.ts
 'use server'
 
 import { Prisma } from '@/app/generated/prisma/client'
@@ -35,6 +36,7 @@ export async function updateAdminBrand(
     })
 
     revalidatePath('/admin-panel/brands')
+    revalidatePath('/')
 
     return { success: true, data: brand }
   } catch (error) {
@@ -50,6 +52,6 @@ export async function updateAdminBrand(
       }
     }
 
-    return { success: false, error: 'Не удалось обновить бренд.' }
+    return { success: false, error: 'Не удалось update бренд.' }
   }
 }

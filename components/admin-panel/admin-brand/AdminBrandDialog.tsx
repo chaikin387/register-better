@@ -1,3 +1,4 @@
+// AdminBrandDialog.tsx
 'use client'
 
 import { zodResolver } from '@hookform/resolvers/zod'
@@ -5,6 +6,8 @@ import { useTransition } from 'react'
 import { Controller, useForm } from 'react-hook-form'
 import { toast } from 'sonner'
 
+import { createAdminBrand } from '@/app/(admin)/_actions/brand/create-brand'
+import { updateAdminBrand } from '@/app/(admin)/_actions/brand/update-brand'
 import { Button } from '@/components/ui/button'
 import {
   Dialog,
@@ -18,20 +21,21 @@ import { Field, FieldError, FieldGroup, FieldSet } from '@/components/ui/field'
 import { Input } from '@/components/ui/input'
 import { Spinner } from '@/components/ui/spinner'
 import { Switch } from '@/components/ui/switch'
-import { generateSlug } from '@/lib/slugify'
+import { generateSlug } from '@/lib/slugify-generator'
+import type { AdminBrandSelectItem } from '@/types/admin-brand.selects'
 
-import { createAdminBrand } from '@/app/(admin)/_actions/brand/create-brand'
-import { AdminBrandSelectItem } from '@/types/admin-brand.selects'
 import { createBrandSchema, type CreateBrandInput } from './create-brand.schema'
 
 interface Props {
   isOpen: boolean
   onClose: () => void
   onSuccess: (brand: AdminBrandSelectItem) => void
+  brand?: AdminBrandSelectItem
 }
 
-export function AdminBrandCreateDialog({ isOpen, onClose, onSuccess }: Props) {
+export function AdminBrandDialog({ isOpen, onClose, onSuccess, brand }: Props) {
   const [isPending, startTransition] = useTransition()
+  const isUpdateMode = !!brand
 
   const {
     register,
@@ -43,7 +47,11 @@ export function AdminBrandCreateDialog({ isOpen, onClose, onSuccess }: Props) {
   } = useForm<CreateBrandInput>({
     resolver: zodResolver(createBrandSchema),
     mode: 'onChange',
-    defaultValues: { name: '', slug: '', isActive: true },
+    defaultValues: {
+      name: brand?.name ?? '',
+      slug: brand?.slug ?? '',
+      isActive: brand?.isActive ?? true,
+    },
   })
 
   function handleClose() {
@@ -53,14 +61,16 @@ export function AdminBrandCreateDialog({ isOpen, onClose, onSuccess }: Props) {
 
   function onSubmit(values: CreateBrandInput) {
     startTransition(async () => {
-      const result = await createAdminBrand(values)
+      const result = isUpdateMode
+        ? await updateAdminBrand({ id: brand.id, ...values })
+        : await createAdminBrand(values)
 
       if (!result.success) {
         toast.error(result.error)
         return
       }
 
-      toast.success('Бренд создан')
+      toast.success(isUpdateMode ? 'Бренд обновлён' : 'Бренд создан')
       onSuccess(result.data)
       handleClose()
     })
@@ -73,9 +83,20 @@ export function AdminBrandCreateDialog({ isOpen, onClose, onSuccess }: Props) {
     >
       <DialogContent className='sm:max-w-110'>
         <DialogHeader>
-          <DialogTitle>Создать бренд</DialogTitle>
+          <DialogTitle>
+            {isUpdateMode ? 'Редактировать бренд' : 'Создать бренд'}
+          </DialogTitle>
           <DialogDescription>
-            Добавление нового бренда в каталог
+            {isUpdateMode ? (
+              <>
+                Изменение параметров бренда{' '}
+                <span className='font-mono font-bold text-foreground'>
+                  {brand.name}
+                </span>
+              </>
+            ) : (
+              'Добавление нового бренда в каталог'
+            )}
           </DialogDescription>
         </DialogHeader>
 
@@ -86,7 +107,11 @@ export function AdminBrandCreateDialog({ isOpen, onClose, onSuccess }: Props) {
                 <Input
                   type='text'
                   autoComplete='off'
-                  placeholder='Название бренда (например, Apple)'
+                  placeholder={
+                    isUpdateMode
+                      ? 'Название бренда'
+                      : 'Название бренда (например, Apple)'
+                  }
                   {...register('name', {
                     onChange: (e) =>
                       setValue('slug', generateSlug(e.target.value), {
@@ -151,7 +176,7 @@ export function AdminBrandCreateDialog({ isOpen, onClose, onSuccess }: Props) {
               className='gap-2'
             >
               {isPending && <Spinner data-icon='inline-start' />}
-              Создать
+              {isUpdateMode ? 'Сохранить' : 'Создать'}
             </Button>
           </DialogFooter>
         </form>

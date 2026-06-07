@@ -214,7 +214,7 @@ export const ProductScalarFieldEnum = {
   brandId: 'brandId',
   slug: 'slug',
   name: 'name',
-  shortDesc: 'shortDesc',
+  shortDescription: 'shortDescription',
   description: 'description',
   isActive: 'isActive',
   createdAt: 'createdAt',
@@ -231,6 +231,9 @@ export const ProductVariantScalarFieldEnum = {
   price: 'price',
   stock: 'stock',
   weight: 'weight',
+  length: 'length',
+  width: 'width',
+  height: 'height',
   isActive: 'isActive',
   createdAt: 'createdAt',
   updatedAt: 'updatedAt'

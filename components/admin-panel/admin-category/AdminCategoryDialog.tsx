@@ -6,6 +6,7 @@ import { Controller, useForm } from 'react-hook-form'
 import { toast } from 'sonner'
 
 import { createAdminCategory } from '@/app/(admin)/_actions/categories/create-category'
+import { updateAdminCategory } from '@/app/(admin)/_actions/categories/update-category'
 import { Button } from '@/components/ui/button'
 import {
   Dialog,
@@ -19,7 +20,7 @@ import { Field, FieldError, FieldGroup, FieldSet } from '@/components/ui/field'
 import { Input } from '@/components/ui/input'
 import { Spinner } from '@/components/ui/spinner'
 import { Switch } from '@/components/ui/switch'
-import { generateSlug } from '@/lib/slugify'
+import { generateSlug } from '@/lib/slugify-generator'
 import type { AdminCategoryTreeSelect } from '@/types/admin-category-selects'
 
 import {
@@ -30,19 +31,22 @@ import {
 interface Props {
   isOpen: boolean
   onClose: () => void
-  parentId: number | null
-  level: number
   onSuccess: (category: AdminCategoryTreeSelect) => void
+  category?: AdminCategoryTreeSelect
+  parentId?: number | null
+  level?: number
 }
 
-export function AdminCategoryCreateDialog({
+export function AdminCategoryDialog({
   isOpen,
   onClose,
+  onSuccess,
+  category,
   parentId,
   level,
-  onSuccess,
 }: Props) {
   const [isPending, startTransition] = useTransition()
+  const isUpdateMode = !!category
 
   const {
     register,
@@ -54,7 +58,11 @@ export function AdminCategoryCreateDialog({
   } = useForm<CreateCategoryInput>({
     resolver: zodResolver(createCategorySchema),
     mode: 'onChange',
-    defaultValues: { name: '', slug: '', isActive: true },
+    defaultValues: {
+      name: category?.name ?? '',
+      slug: category?.slug ?? '',
+      isActive: category?.isActive ?? true,
+    },
   })
 
   function handleClose() {
@@ -64,14 +72,16 @@ export function AdminCategoryCreateDialog({
 
   function onSubmit(values: CreateCategoryInput) {
     startTransition(async () => {
-      const result = await createAdminCategory({ ...values, parentId })
+      const result = isUpdateMode
+        ? await updateAdminCategory({ id: category.id, ...values })
+        : await createAdminCategory({ ...values, parentId: parentId ?? null })
 
       if (!result.success) {
         toast.error(result.error)
         return
       }
 
-      toast.success('Категория создана')
+      toast.success(isUpdateMode ? 'Категория обновлена' : 'Категория создана')
       onSuccess(result.data)
       handleClose()
     })
@@ -84,12 +94,25 @@ export function AdminCategoryCreateDialog({
     >
       <DialogContent className='sm:max-w-110'>
         <DialogHeader>
-          <DialogTitle>Создать категорию</DialogTitle>
+          <DialogTitle>
+            {isUpdateMode ? 'Редактировать категорию' : 'Создать категорию'}
+          </DialogTitle>
           <DialogDescription>
-            Добавление новой категории на уровень{' '}
-            <span className='font-mono font-bold text-foreground'>
-              L{level}
-            </span>
+            {isUpdateMode ? (
+              <>
+                Изменение параметров категории{' '}
+                <span className='font-mono font-bold text-foreground'>
+                  {category.name}
+                </span>
+              </>
+            ) : (
+              <>
+                Добавление новой категории на уровень{' '}
+                <span className='font-mono font-bold text-foreground'>
+                  L{level}
+                </span>
+              </>
+            )}
           </DialogDescription>
         </DialogHeader>
 
@@ -100,7 +123,11 @@ export function AdminCategoryCreateDialog({
                 <Input
                   type='text'
                   autoComplete='off'
-                  placeholder='Название категории (например, Электроника)'
+                  placeholder={
+                    isUpdateMode
+                      ? 'Название категории'
+                      : 'Название категории (например, Электроника)'
+                  }
                   {...register('name', {
                     onChange: (e) =>
                       setValue('slug', generateSlug(e.target.value), {
@@ -165,7 +192,7 @@ export function AdminCategoryCreateDialog({
               className='gap-2'
             >
               {isPending && <Spinner data-icon='inline-start' />}
-              Создать
+              {isUpdateMode ? 'Сохранить' : 'Создать'}
             </Button>
           </DialogFooter>
         </form>

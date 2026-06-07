@@ -1,6 +1,9 @@
+// @/app/(admin)/_actions/categories/create-category.ts
 'use server'
 
 import { Prisma } from '@/app/generated/prisma/client'
+import { revalidatePath } from 'next/cache'
+
 import {
   createCategorySchema,
   type CreateCategoryInput,
@@ -9,10 +12,8 @@ import {
 import prisma from '@/lib/prisma'
 import {
   adminCategorySelect,
-  AdminCategoryTreeSelect,
+  type AdminCategoryTreeSelect,
 } from '@/types/admin-category-selects'
-
-import { revalidatePath } from 'next/cache'
 
 type ActionResult =
   | { success: true; data: AdminCategoryTreeSelect }
