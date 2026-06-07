@@ -91,6 +91,7 @@ export function AdminProductForm({ product, categories, brands }: Props) {
             id='name'
             {...register('name')}
             placeholder='Введите название товара'
+            autoFocus
             autoComplete='off'
             disabled={isPending}
           />

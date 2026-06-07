@@ -22,9 +22,9 @@ import type { AdminBrandSelectItem } from '@/types/admin-brand.selects'
 
 interface Props {
   brands: AdminBrandSelectItem[]
-  value?: number | null // Возвращаем null
+  value?: number | null
   onChange: (id: number) => void
-  onClear: () => void // Возвращаем onClear
+  onClear: () => void
   disabled?: boolean
 }
 

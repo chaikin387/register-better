@@ -11,6 +11,7 @@ import {
 import { cn } from '@/lib/utils'
 import type { AdminBrandSelectItem } from '@/types/admin-brand.selects'
 
+import { AdminBrandDeleteDialog } from './AdminBrandDeleteDialog'
 import { AdminBrandDialog } from './AdminBrandDialog'
 import { useAdminBrands } from './use-admin-brands'
 
@@ -110,7 +111,7 @@ export function AdminBrandsClient({ initialBrands }: Props) {
                           type='button'
                           variant='ghost'
                           size='icon'
-                          onClick={() => openDeleteDialog(brand)}
+                          onClick={() => openDeleteDialog(brand)} // Передаем бренд для удаления
                           className='size-8 text-muted-foreground hover:text-destructive'
                         >
                           <Trash2 className='size-4' />
@@ -137,18 +138,30 @@ export function AdminBrandsClient({ initialBrands }: Props) {
         </div>
       </div>
 
+      {/* Диалог создания */}
       <AdminBrandDialog
         isOpen={createDialog.isOpen}
         onClose={closeCreateDialog}
         onSuccess={handleCreateSuccess}
       />
 
+      {/* Диалог редактирования */}
       {updateDialog.brand && (
         <AdminBrandDialog
           isOpen={updateDialog.isOpen}
           brand={updateDialog.brand}
           onClose={closeUpdateDialog}
           onSuccess={handleUpdateSuccess}
+        />
+      )}
+
+      {/* Диалог удаления */}
+      {deleteDialog.brand && (
+        <AdminBrandDeleteDialog
+          isOpen={deleteDialog.isOpen}
+          brand={deleteDialog.brand}
+          onClose={closeDeleteDialog}
+          onSuccess={handleDeleteSuccess}
         />
       )}
     </>

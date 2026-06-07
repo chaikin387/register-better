@@ -30,11 +30,17 @@ export function AdminCategoriesClient({ initialCategories }: Props) {
     handleCreateSuccess,
     handleUpdateSuccess,
     handleDeleteSuccess,
+    handleSwapSuccess,
   } = useAdminCatalog(initialCategories)
 
   return (
     <AdminCategoryProvider
-      value={{ openCreateDialog, openUpdateDialog, openDeleteDialog }}
+      value={{
+        openCreateDialog,
+        openUpdateDialog,
+        openDeleteDialog,
+        handleSwapSuccess,
+      }}
     >
       <div className='space-y-6 px-4 py-8'>
         <div className='flex items-center justify-between border-b pb-4'>
@@ -60,10 +66,12 @@ export function AdminCategoriesClient({ initialCategories }: Props) {
             </p>
           ) : (
             <div className='space-y-2'>
-              {categories.map((category) => (
+              {categories.map((category, i) => (
                 <AdminCategoryTree
                   key={category.id}
                   category={category}
+                  prev={categories[i - 1]}
+                  next={categories[i + 1]}
                 />
               ))}
             </div>
