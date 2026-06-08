@@ -1,3 +1,4 @@
+// create-category.schema.ts
 import { z } from 'zod'
 
 export const createCategorySchema = z.object({
@@ -5,7 +6,6 @@ export const createCategorySchema = z.object({
     .string()
     .trim()
     .min(2, { error: 'Название должно быть от 2 символов' }),
-
   slug: z
     .string()
     .trim()
@@ -13,7 +13,6 @@ export const createCategorySchema = z.object({
     .regex(/^[a-z0-9-]+$/, {
       error: 'Используйте только латиницу, цифры и дефис',
     }),
-
   isActive: z.boolean().default(true),
 })
 

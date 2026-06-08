@@ -10,7 +10,7 @@ import {
  * Получение одного товара по ID для админ-панели
  */
 export async function getAdminProductById(
-  id: number
+  id: string
 ): Promise<AdminProductItemSelect | null> {
   try {
     return await prisma.product.findUnique({

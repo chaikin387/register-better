@@ -1,6 +1,9 @@
+// update-category.ts
 'use server'
 
 import { Prisma } from '@/app/generated/prisma/client'
+import { revalidatePath } from 'next/cache'
+
 import {
   updateCategorySchema,
   type UpdateCategoryInput,
@@ -9,10 +12,8 @@ import {
 import prisma from '@/lib/prisma'
 import {
   adminCategorySelect,
-  AdminCategoryTreeSelect,
+  type AdminCategoryTreeSelect,
 } from '@/types/admin-category-selects'
-
-import { revalidatePath } from 'next/cache'
 
 type ActionResult =
   | { success: true; data: AdminCategoryTreeSelect }
@@ -46,12 +47,9 @@ export async function updateAdminCategory(
       error instanceof Prisma.PrismaClientKnownRequestError &&
       error.code === 'P2002'
     ) {
-      const target = error.meta?.target
-      if (Array.isArray(target) && target.includes('slug')) {
-        return {
-          success: false,
-          error: 'Категория с таким slug уже существует.',
-        }
+      return {
+        success: false,
+        error: 'Категория с таким названием уже существует в этом разделе.',
       }
     }
 

@@ -12,22 +12,19 @@ export const metadata: Metadata = {
 }
 
 type Props = {
-  params: Promise<{ id: string }>
+  params: Promise<{ id: string; slug: string }>
 }
 
 export default async function UpdateProductPage({ params }: Props) {
-  const { id } = await params
-  const productId = parseInt(id, 10)
+  const { id } = await params // slug не нужен — ищем только по id
 
   const [product, categories, brands] = await Promise.all([
-    getAdminProductById(productId),
+    getAdminProductById(id),
     getAdminCategories(),
     getAdminBrands(),
   ])
 
-  if (!product) {
-    notFound()
-  }
+  if (!product) notFound()
 
   return (
     <AdminProductForm

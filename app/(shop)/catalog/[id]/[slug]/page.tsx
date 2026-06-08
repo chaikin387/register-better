@@ -2,7 +2,7 @@ import { CategoryView } from '@/components/catalog/CategoryView'
 import { Metadata } from 'next'
 
 type Props = {
-  params: Promise<{ slug: string }>
+  params: Promise<{ id: string; slug: string }>
 }
 
 export const metadata: Metadata = {
@@ -11,6 +11,6 @@ export const metadata: Metadata = {
 }
 
 export default async function Page({ params }: Props) {
-  const { slug } = await params
-  return <CategoryView slug={slug} />
+  const { id } = await params
+  return <CategoryView id={id} />
 }

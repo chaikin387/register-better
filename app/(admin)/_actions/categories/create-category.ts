@@ -1,4 +1,4 @@
-// @/app/(admin)/_actions/categories/create-category.ts
+// create-category.ts
 'use server'
 
 import { Prisma } from '@/app/generated/prisma/client'
@@ -20,7 +20,7 @@ type ActionResult =
   | { success: false; error: string }
 
 export async function createAdminCategory(
-  input: CreateCategoryInput & { parentId: number | null }
+  input: CreateCategoryInput & { parentId: string | null }
 ): Promise<ActionResult> {
   try {
     const validatedData: CreateCategoryOutput =
@@ -57,12 +57,9 @@ export async function createAdminCategory(
       error instanceof Prisma.PrismaClientKnownRequestError &&
       error.code === 'P2002'
     ) {
-      const target = error.meta?.target
-      if (Array.isArray(target) && target.includes('slug')) {
-        return {
-          success: false,
-          error: 'Категория с таким slug уже существует.',
-        }
+      return {
+        success: false,
+        error: 'Категория с таким названием уже существует в этом разделе.',
       }
     }
 

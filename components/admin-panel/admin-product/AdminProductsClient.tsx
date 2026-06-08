@@ -14,6 +14,8 @@ import { cn } from '@/lib/utils'
 import type { AdminProductItemSelect } from '@/types/admin-product-selects'
 
 import { AdminProductDeleteDialog } from './AdminProductDeleteDialog'
+
+import { adminProductBreadcrumbs } from './admin-product-breadcrumbs'
 import { useAdminProducts } from './use-admin-products'
 
 interface Props {
@@ -32,7 +34,6 @@ export function AdminProductsClient({ initialProducts }: Props) {
   return (
     <>
       <div className='space-y-6 px-4 py-8'>
-        {/* Шапка */}
         <div className='flex items-center justify-between border-b pb-4'>
           <div>
             <h1 className='flex items-center gap-2 text-2xl font-bold tracking-tight'>
@@ -51,7 +52,6 @@ export function AdminProductsClient({ initialProducts }: Props) {
           </Button>
         </div>
 
-        {/* Список */}
         <div className='rounded-xl border bg-card p-6'>
           {products.length === 0 ? (
             <div className='flex flex-col items-center justify-center py-10 text-center'>
@@ -62,6 +62,7 @@ export function AdminProductsClient({ initialProducts }: Props) {
             <div className='space-y-2'>
               {products.map((product) => {
                 const mainSku = product.variants?.[0]?.sku ?? 'Нет SKU'
+                const breadcrumbs = adminProductBreadcrumbs(product.category)
 
                 return (
                   <div
@@ -71,20 +72,18 @@ export function AdminProductsClient({ initialProducts }: Props) {
                       !product.isActive && 'bg-muted/20 opacity-60'
                     )}
                   >
-                    {/* Левая часть */}
                     <div className='flex min-w-0 flex-col gap-1'>
+                      {/* Верхняя строка: название, артикул, индикатор */}
                       <div className='flex items-center gap-2'>
                         <span className='truncate text-sm font-medium tracking-tight'>
                           {product.name}
                         </span>
-
                         <Badge
                           variant='secondary'
                           className='px-1.5 py-0 font-mono text-[11px] font-normal tracking-wider select-all'
                         >
-                          {mainSku}
+                          Арт: {mainSku}
                         </Badge>
-
                         <span
                           className={cn(
                             'size-2 shrink-0 rounded-full',
@@ -95,14 +94,26 @@ export function AdminProductsClient({ initialProducts }: Props) {
                         />
                       </div>
 
+                      {/* Нижняя строка: путь категорий + бренд */}
                       <div className='flex items-center gap-1 text-[11px] text-muted-foreground/90'>
-                        <span className='truncate'>
-                          {product.category.name}
-                        </span>
+                        {breadcrumbs.map((cat, i) => (
+                          <span
+                            key={cat.id}
+                            className='flex items-center gap-1'
+                          >
+                            {i > 0 && (
+                              <ChevronRight className='size-3 text-muted-foreground/30' />
+                            )}
+                            <span>{cat.name}</span>
+                          </span>
+                        ))}
+
                         {product.brand && (
                           <>
-                            <ChevronRight className='size-3.5 shrink-0 opacity-50' />
-                            <span className='truncate'>
+                            <span className='mx-1 text-muted-foreground/30'>
+                              ·
+                            </span>
+                            <span className='font-medium text-foreground/70'>
                               {product.brand.name}
                             </span>
                           </>
@@ -110,7 +121,6 @@ export function AdminProductsClient({ initialProducts }: Props) {
                       </div>
                     </div>
 
-                    {/* Правая часть: Действия */}
                     <div className='ml-4 flex shrink-0 items-center gap-0.5'>
                       <Tooltip>
                         <TooltipTrigger asChild>
@@ -122,7 +132,7 @@ export function AdminProductsClient({ initialProducts }: Props) {
                             className='size-8 text-muted-foreground hover:text-foreground'
                           >
                             <Link
-                              href={`/admin-panel/products/${product.id}/update`}
+                              href={`/admin-panel/products/${product.id}/${product.slug}/update`}
                             >
                               <Pencil className='size-4' />
                             </Link>
@@ -153,7 +163,6 @@ export function AdminProductsClient({ initialProducts }: Props) {
           )}
         </div>
 
-        {/* Легенда */}
         <div className='flex items-center gap-4 text-xs text-muted-foreground'>
           <span className='flex items-center gap-1.5'>
             <span className='size-2 rounded-full bg-green-500' />
@@ -166,7 +175,6 @@ export function AdminProductsClient({ initialProducts }: Props) {
         </div>
       </div>
 
-      {/* Диалог удаления */}
       {deleteDialog.product && (
         <AdminProductDeleteDialog
           isOpen={deleteDialog.isOpen}

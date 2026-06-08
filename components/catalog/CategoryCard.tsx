@@ -13,6 +13,7 @@ interface Props {
 export const CategoryCard = ({ category }: Props) => {
   const [hovered, setHovered] = useState(false)
   const hasChildren = (category.children?.length ?? 0) > 0
+  const href = `/catalog/${category.id}/${category.slug}`
 
   return (
     <div
@@ -22,7 +23,7 @@ export const CategoryCard = ({ category }: Props) => {
     >
       <div className='relative aspect-square overflow-hidden rounded-lg bg-muted'>
         <Link
-          href={`/catalog/${category.slug}`}
+          href={href}
           className={`block h-full w-full transition-all duration-500 ease-in-out ${
             hovered && hasChildren
               ? 'scale-110 opacity-0 blur-sm'
@@ -52,7 +53,7 @@ export const CategoryCard = ({ category }: Props) => {
             }`}
           >
             <Link
-              href={`/catalog/${category.slug}`}
+              href={href}
               className='mb-3 text-sm font-bold hover:text-primary'
             >
               {category.name}
@@ -62,7 +63,7 @@ export const CategoryCard = ({ category }: Props) => {
               {category.children!.map((child) => (
                 <Link
                   key={child.id}
-                  href={`/catalog/${child.slug}`}
+                  href={`/catalog/${child.id}/${child.slug}`}
                   className='flex items-center justify-between text-xs text-muted-foreground transition-colors hover:text-foreground'
                 >
                   <span className='mr-2 truncate'>{child.name}</span>
@@ -80,7 +81,7 @@ export const CategoryCard = ({ category }: Props) => {
         className={`transition-opacity duration-300 ${hovered && hasChildren ? 'opacity-0' : 'opacity-100'}`}
       >
         <Link
-          href={`/catalog/${category.slug}`}
+          href={href}
           className='text-sm leading-tight font-semibold'
         >
           {category.name}

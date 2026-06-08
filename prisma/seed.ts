@@ -11,7 +11,7 @@ const prisma = new PrismaClient({
 // ── Рекурсивная вставка категории и её детей ──────────────────────────────────
 async function seedCategory(
   cat: CategorySeed,
-  parentId?: number
+  parentId?: string
 ): Promise<void> {
   const { children, ...data } = cat
 

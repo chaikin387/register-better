@@ -1,5 +1,7 @@
+// create-product.ts
 'use server'
 
+import { Prisma } from '@/app/generated/prisma/client'
 import { revalidatePath } from 'next/cache'
 
 import {
@@ -8,9 +10,7 @@ import {
   type CreateProductOutput,
 } from '@/components/admin-panel/admin-product/create-product.schema'
 import prisma from '@/lib/prisma'
-import { generateSku } from '@/lib/sku-generator'
-
-import { generateProductSlug } from '@/lib/slugify-generator'
+import { generateUniqueSku } from '@/lib/sku-generator'
 import {
   adminProductSelect,
   type AdminProductItemSelect,
@@ -27,10 +27,12 @@ export async function createAdminProduct(
     const validatedData: CreateProductOutput = createProductSchema.parse(input)
 
     const product = await prisma.$transaction(async (tx) => {
+      const sku = await generateUniqueSku()
+
       const { id } = await tx.product.create({
         data: {
           name: validatedData.name,
-          slug: crypto.randomUUID(),
+          slug: validatedData.slug,
           isActive: validatedData.isActive,
           categoryId: validatedData.categoryId,
           brandId: validatedData.brandId ?? null,
@@ -39,26 +41,32 @@ export async function createAdminProduct(
       })
 
       await tx.productVariant.create({
-        data: {
-          productId: id,
-          sku: generateSku(id),
-          price: 0,
-          stock: 0,
-        },
+        data: { productId: id, sku, price: 0, stock: 0 },
       })
 
-      return tx.product.update({
+      return tx.product.findUniqueOrThrow({
         where: { id },
-        data: { slug: generateProductSlug(validatedData.name, id) },
         select: adminProductSelect,
       })
     })
 
     revalidatePath('/admin-panel/products')
+    revalidatePath('/')
 
     return { success: true, data: product }
   } catch (error) {
     console.error('Ошибка при создании товара:', error)
+
+    if (
+      error instanceof Prisma.PrismaClientKnownRequestError &&
+      error.code === 'P2002'
+    ) {
+      return {
+        success: false,
+        error: 'Товар с таким названием уже существует в этой категории.',
+      }
+    }
+
     return { success: false, error: 'Не удалось создать товар.' }
   }
 }

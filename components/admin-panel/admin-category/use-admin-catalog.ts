@@ -6,7 +6,7 @@ import { AdminCategoryTreeSelect } from '@/types/admin-category-selects'
 
 interface CreateDialogState {
   isOpen: boolean
-  parentId: number | null
+  parentId: string | null
   level: number
 }
 
@@ -33,8 +33,6 @@ const DELETE_DIALOG_CLOSED: DeleteDialogState = {
   isOpen: false,
   category: null,
 }
-
-// --- Мутации дерева ---
 
 function insertChild(
   list: AdminCategoryTreeSelect[],
@@ -64,7 +62,7 @@ function updateItem(
 
 function removeItem(
   list: AdminCategoryTreeSelect[],
-  id: number
+  id: string
 ): AdminCategoryTreeSelect[] {
   return list
     .filter((item) => item.id !== id)
@@ -74,12 +72,10 @@ function removeItem(
     }))
 }
 
-// Меняет два элемента местами на любом уровне дерева.
-// Повторный вызов с теми же id — автоматический откат.
 function swapItems(
   list: AdminCategoryTreeSelect[],
-  idA: number,
-  idB: number
+  idA: string,
+  idB: string
 ): AdminCategoryTreeSelect[] {
   const idxA = list.findIndex((c) => c.id === idA)
   const idxB = list.findIndex((c) => c.id === idB)
@@ -90,15 +86,12 @@ function swapItems(
     return next
   }
 
-  // Не нашли на этом уровне — ищем глубже
   return list.map((item) =>
     item.children?.length
       ? { ...item, children: swapItems(item.children, idA, idB) }
       : item
   )
 }
-
-// --- Хук ---
 
 export function useAdminCatalog(initialCategories: AdminCategoryTreeSelect[]) {
   const [categories, setCategories] = useState(initialCategories)
@@ -109,9 +102,7 @@ export function useAdminCatalog(initialCategories: AdminCategoryTreeSelect[]) {
   const [deleteDialog, setDeleteDialog] =
     useState<DeleteDialogState>(DELETE_DIALOG_CLOSED)
 
-  // --- Диалоги ---
-
-  const openCreateDialog = (parentId: number | null, targetLevel: number) =>
+  const openCreateDialog = (parentId: string | null, targetLevel: number) =>
     setCreateDialog({ isOpen: true, parentId, level: targetLevel })
   const closeCreateDialog = () => setCreateDialog(CREATE_DIALOG_CLOSED)
 
@@ -123,8 +114,6 @@ export function useAdminCatalog(initialCategories: AdminCategoryTreeSelect[]) {
     setDeleteDialog({ isOpen: true, category })
   const closeDeleteDialog = () => setDeleteDialog(DELETE_DIALOG_CLOSED)
 
-  // --- Мутации ---
-
   const handleCreateSuccess = (newCat: AdminCategoryTreeSelect) =>
     setCategories((prev) =>
       newCat.parentId === null ? [...prev, newCat] : insertChild(prev, newCat)
@@ -133,12 +122,10 @@ export function useAdminCatalog(initialCategories: AdminCategoryTreeSelect[]) {
   const handleUpdateSuccess = (updated: AdminCategoryTreeSelect) =>
     setCategories((prev) => updateItem(prev, updated))
 
-  const handleDeleteSuccess = (id: number) =>
+  const handleDeleteSuccess = (id: string) =>
     setCategories((prev) => removeItem(prev, id))
 
-  // Оптимистичный swap: применяется до ответа сервера.
-  // При ошибке вызывается повторно — swap идемпотентен относительно пары id.
-  const handleSwapSuccess = (idA: number, idB: number) =>
+  const handleSwapSuccess = (idA: string, idB: string) =>
     setCategories((prev) => swapItems(prev, idA, idB))
 
   return {

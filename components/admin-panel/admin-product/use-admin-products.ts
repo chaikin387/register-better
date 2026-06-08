@@ -22,7 +22,7 @@ export function useAdminProducts(initialProducts: AdminProductItemSelect[]) {
   // На будущее: если при создании/апдейте товаров тоже решишь сделать диалоги вместо страниц,
   // стейты под них уже будут легко расширяться здесь.
 
-  const handleDeleteSuccess = (id: number) =>
+  const handleDeleteSuccess = (id: string) =>
     setProducts((prev) => prev.filter((p) => p.id !== id))
 
   return {

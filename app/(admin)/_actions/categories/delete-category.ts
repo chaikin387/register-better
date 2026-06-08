@@ -4,10 +4,10 @@ import prisma from '@/lib/prisma'
 import { revalidatePath } from 'next/cache'
 
 type ActionResult =
-  | { success: true; id: number }
+  | { success: true; id: string }
   | { success: false; error: string }
 
-export async function deleteAdminCategory(id: number): Promise<ActionResult> {
+export async function deleteAdminCategory(id: string): Promise<ActionResult> {
   try {
     const hasChildren = await prisma.category.findFirst({
       where: { parentId: id },

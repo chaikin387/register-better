@@ -22,8 +22,8 @@ import type { AdminBrandSelectItem } from '@/types/admin-brand.selects'
 
 interface Props {
   brands: AdminBrandSelectItem[]
-  value?: number | null
-  onChange: (id: number) => void
+  value?: string | null
+  onChange: (id: string) => void
   onClear: () => void
   disabled?: boolean
 }
@@ -61,10 +61,7 @@ export function AdminBrandSelect({
             <ChevronDown className='size-4 shrink-0 opacity-50' />
           </Button>
         </PopoverTrigger>
-        <PopoverContent
-          align='start'
-          className='w-64 p-0'
-        >
+        <PopoverContent align='start'>
           <Command>
             <CommandInput placeholder='Поиск бренда...' />
             <CommandList>
@@ -93,7 +90,6 @@ export function AdminBrandSelect({
           type='button'
           variant='ghost'
           size='icon'
-          className='size-8 shrink-0'
           disabled={disabled}
           onClick={onClear}
         >

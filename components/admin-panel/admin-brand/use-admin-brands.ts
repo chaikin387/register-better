@@ -35,7 +35,7 @@ export function useAdminBrands(initialBrands: AdminBrandSelectItem[]) {
   const handleUpdateSuccess = (updated: AdminBrandSelectItem) =>
     setBrands((prev) => prev.map((b) => (b.id === updated.id ? updated : b)))
 
-  const handleDeleteSuccess = (id: number) =>
+  const handleDeleteSuccess = (id: string) =>
     setBrands((prev) => prev.filter((b) => b.id !== id))
 
   return {

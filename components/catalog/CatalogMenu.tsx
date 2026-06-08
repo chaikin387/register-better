@@ -13,8 +13,8 @@ interface CatalogMenuProps {
 }
 
 export const CatalogMenu = ({ categories, navigate }: CatalogMenuProps) => {
-  const [activeL1, setActiveL1] = useState(categories[0]?.slug ?? '')
-  const currentCategory = categories.find((c) => c.slug === activeL1)
+  const [activeL1, setActiveL1] = useState(categories[0]?.id ?? '')
+  const currentCategory = categories.find((c) => c.id === activeL1)
 
   return (
     <nav className='flex gap-8'>
@@ -27,14 +27,14 @@ export const CatalogMenu = ({ categories, navigate }: CatalogMenuProps) => {
             <li key={cat.id}>
               <Button
                 asChild
-                variant={activeL1 === cat.slug ? 'secondary' : 'ghost'}
+                variant={activeL1 === cat.id ? 'secondary' : 'ghost'}
                 size='lg'
                 className='flex w-full justify-start gap-3'
-                onMouseEnter={() => setActiveL1(cat.slug)}
+                onMouseEnter={() => setActiveL1(cat.id)}
               >
                 <Link
-                  href={`/catalog/${cat.slug}`}
-                  onClick={navigate(`/catalog/${cat.slug}`)}
+                  href={`/catalog/${cat.id}/${cat.slug}`}
+                  onClick={navigate(`/catalog/${cat.id}/${cat.slug}`)}
                   className='text-muted-foreground'
                 >
                   <Icon className='size-5 shrink-0' />
@@ -53,8 +53,8 @@ export const CatalogMenu = ({ categories, navigate }: CatalogMenuProps) => {
             className='flex flex-col gap-3 p-2'
           >
             <Link
-              href={`/catalog/${l2.slug}`}
-              onClick={navigate(`/catalog/${l2.slug}`)}
+              href={`/catalog/${l2.id}/${l2.slug}`}
+              onClick={navigate(`/catalog/${l2.id}/${l2.slug}`)}
               className='text-base font-semibold text-foreground hover:no-underline'
             >
               {l2.name}

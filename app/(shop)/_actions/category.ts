@@ -7,9 +7,6 @@ import {
   categoryTreeSelect,
 } from '@/types/category-selects'
 
-/**
- * Получение облегченного дерева для CatalogMenu в шапке (до 4-х уровней)
- */
 export async function getCategoryTree() {
   return prisma.category.findMany({
     where: { parentId: null, isActive: true },
@@ -18,9 +15,6 @@ export async function getCategoryTree() {
   })
 }
 
-/**
- * Получение структуры для главной страницы каталога /catalog
- */
 export async function getCategoryCatalog() {
   return prisma.category.findMany({
     where: { parentId: null, isActive: true },
@@ -29,12 +23,9 @@ export async function getCategoryCatalog() {
   })
 }
 
-/**
- * Получение конкретной категории по slug для страницы /catalog/[slug]
- */
-export async function getCategoryBySlug(slug: string) {
+export async function getCategoryById(id: string) {
   return prisma.category.findUnique({
-    where: { slug, isActive: true },
+    where: { id, isActive: true },
     select: categoryPageSelect,
   })
 }

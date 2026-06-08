@@ -5,10 +5,10 @@ import { revalidatePath } from 'next/cache'
 import prisma from '@/lib/prisma'
 
 type ActionResult =
-  | { success: true; id: number }
+  | { success: true; id: string }
   | { success: false; error: string }
 
-export async function deleteAdminBrand(id: number): Promise<ActionResult> {
+export async function deleteAdminBrand(id: string): Promise<ActionResult> {
   try {
     const hasProducts = await prisma.product.findFirst({
       where: { brandId: id },

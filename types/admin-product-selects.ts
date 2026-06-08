@@ -10,7 +10,32 @@ export const adminProductSelect = {
   category: {
     select: {
       id: true,
+      slug: true,
       name: true,
+
+      parent: {
+        select: {
+          id: true,
+          slug: true,
+          name: true,
+
+          parent: {
+            select: {
+              id: true,
+              slug: true,
+              name: true,
+
+              parent: {
+                select: {
+                  id: true,
+                  slug: true,
+                  name: true,
+                },
+              },
+            },
+          },
+        },
+      },
     },
   },
 

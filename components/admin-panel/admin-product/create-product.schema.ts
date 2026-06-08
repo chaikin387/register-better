@@ -7,8 +7,16 @@ export const createProductSchema = z.object({
     .trim()
     .min(3, { error: 'Название должно быть от 3 символов' })
     .max(255),
-  categoryId: z.number({ error: 'Выберите категорию' }).int().positive(),
-  brandId: z.number({ error: 'Выберите бренд' }).int().positive().nullable(),
+  slug: z
+    .string()
+    .trim()
+    .min(3, { error: 'Slug должен быть от 3 символов' })
+    .max(150)
+    .regex(/^[a-z0-9-]+$/, {
+      error: 'Используйте только строчную латиницу, цифры и дефис',
+    }),
+  categoryId: z.string({ error: 'Выберите категорию' }),
+  brandId: z.string({ error: 'Выберите бренд' }).nullable(),
   isActive: z.boolean().default(true),
 })
 

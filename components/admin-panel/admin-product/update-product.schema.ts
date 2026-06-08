@@ -1,9 +1,9 @@
-// @/components/admin-panel/admin-product/update-product.schema.ts
+// update-product.schema.ts
 import { z } from 'zod'
 import { createProductSchema } from './create-product.schema'
 
 export const updateProductSchema = createProductSchema.extend({
-  id: z.number().int().positive(),
+  id: z.string(),
 })
 
 export type UpdateProductInput = z.input<typeof updateProductSchema>

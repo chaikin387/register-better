@@ -1,5 +1,7 @@
+// update-product.ts
 'use server'
 
+import { Prisma } from '@/app/generated/prisma/client'
 import { revalidatePath } from 'next/cache'
 
 import {
@@ -8,8 +10,6 @@ import {
   type UpdateProductOutput,
 } from '@/components/admin-panel/admin-product/update-product.schema'
 import prisma from '@/lib/prisma'
-
-import { generateProductSlug } from '@/lib/slugify-generator'
 import {
   adminProductSelect,
   type AdminProductItemSelect,
@@ -29,7 +29,7 @@ export async function updateAdminProduct(
       where: { id: validatedData.id },
       data: {
         name: validatedData.name,
-        slug: generateProductSlug(validatedData.name, validatedData.id),
+        slug: validatedData.slug,
         isActive: validatedData.isActive,
         categoryId: validatedData.categoryId,
         brandId: validatedData.brandId ?? null,
@@ -43,6 +43,17 @@ export async function updateAdminProduct(
     return { success: true, data: updatedProduct }
   } catch (error) {
     console.error('Ошибка при обновлении товара:', error)
+
+    if (
+      error instanceof Prisma.PrismaClientKnownRequestError &&
+      error.code === 'P2002'
+    ) {
+      return {
+        success: false,
+        error: 'Товар с таким названием уже существует в этой категории.',
+      }
+    }
+
     return { success: false, error: 'Не удалось обновить товар.' }
   }
 }

@@ -1,14 +1,14 @@
-import { getCategoryBySlug } from '@/app/(shop)/_actions/category'
+import { getCategoryById } from '@/app/(shop)/_actions/category'
 import { notFound } from 'next/navigation'
 import { CategoryBreadcrumbs } from '../breadcrumbs/CategoryBreadcrumbs'
 import { CategoryCard } from './CategoryCard'
 
 interface Props {
-  slug: string
+  id: string
 }
 
-export const CategoryView = async ({ slug }: Props) => {
-  const category = await getCategoryBySlug(slug)
+export const CategoryView = async ({ id }: Props) => {
+  const category = await getCategoryById(id)
 
   if (!category) notFound()
 

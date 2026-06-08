@@ -1,12 +1,13 @@
 'use server'
 
-import prisma from '@/lib/prisma'
 import { revalidatePath } from 'next/cache'
 
+import prisma from '@/lib/prisma'
+
 export async function swapCategoryOrder(
-  idA: number,
+  idA: string,
   sortOrderA: number,
-  idB: number,
+  idB: string,
   sortOrderB: number
 ): Promise<{ success: boolean; error?: string }> {
   try {
@@ -20,8 +21,10 @@ export async function swapCategoryOrder(
         data: { sortOrder: sortOrderA },
       }),
     ])
+
     revalidatePath('/admin-panel/categories')
     revalidatePath('/')
+
     return { success: true }
   } catch {
     return { success: false, error: 'Не удалось изменить порядок.' }

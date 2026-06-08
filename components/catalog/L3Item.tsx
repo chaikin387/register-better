@@ -19,8 +19,8 @@ export const L3Item = ({ l3, navigate }: Props) => {
     <li>
       <Link
         ref={refs.setReference}
-        href={`/catalog/${l3.slug}`}
-        onClick={navigate(`/catalog/${l3.slug}`)}
+        href={`/catalog/${l3.id}/${l3.slug}`}
+        onClick={navigate(`/catalog/${l3.id}/${l3.slug}`)}
         {...getReferenceProps()}
         className='flex w-full items-center gap-2 text-sm text-secondary-foreground hover:no-underline'
       >
@@ -43,8 +43,8 @@ export const L3Item = ({ l3, navigate }: Props) => {
           {l3.children.map((l4) => (
             <li key={l4.id}>
               <Link
-                href={`/catalog/${l4.slug}`}
-                onClick={navigate(`/catalog/${l4.slug}`)}
+                href={`/catalog/${l4.id}/${l4.slug}`}
+                onClick={navigate(`/catalog/${l4.id}/${l4.slug}`)}
                 className='flex w-full text-sm text-secondary-foreground hover:no-underline'
               >
                 {l4.name}

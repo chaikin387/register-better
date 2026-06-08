@@ -23,7 +23,7 @@ interface Props {
   isOpen: boolean
   brand: AdminBrandSelectItem
   onClose: () => void
-  onSuccess: (id: number) => void
+  onSuccess: (id: string) => void
 }
 
 const MAX_ATTEMPTS = 3

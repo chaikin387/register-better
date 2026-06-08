@@ -1,13 +1,17 @@
 import type { CategoryPageSelect } from '@/types/category-selects'
 
-type Breadcrumb = Pick<CategoryPageSelect, 'slug' | 'name'>
+type Breadcrumb = Pick<CategoryPageSelect, 'id' | 'slug' | 'name'>
 
 export function buildBreadcrumbs({ parent }: CategoryPageSelect): Breadcrumb[] {
   const breadcrumbs: Breadcrumb[] = []
 
   for (let current = parent; current; current = current.parent) {
-    breadcrumbs.push({ slug: current.slug, name: current.name })
+    breadcrumbs.unshift({
+      id: current.id,
+      slug: current.slug,
+      name: current.name,
+    })
   }
 
-  return breadcrumbs.reverse()
+  return breadcrumbs
 }

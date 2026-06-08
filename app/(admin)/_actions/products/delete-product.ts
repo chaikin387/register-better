@@ -4,10 +4,10 @@ import prisma from '@/lib/prisma'
 import { revalidatePath } from 'next/cache'
 
 type ActionResult =
-  | { success: true; id: number }
+  | { success: true; id: string }
   | { success: false; error: string }
 
-export async function deleteAdminProduct(id: number): Promise<ActionResult> {
+export async function deleteAdminProduct(id: string): Promise<ActionResult> {
   try {
     // 1. Проверяем, есть ли этот товар или его варианты в оформленных заказах (защита данных)
     // Если у тебя есть таблица OrderItem или подобная, раскомментируй эту проверку:

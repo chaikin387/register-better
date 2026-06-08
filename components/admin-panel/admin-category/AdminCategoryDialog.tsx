@@ -33,7 +33,7 @@ interface Props {
   onClose: () => void
   onSuccess: (category: AdminCategoryTreeSelect) => void
   category?: AdminCategoryTreeSelect
-  parentId?: number | null
+  parentId?: string | null
   level?: number
 }
 

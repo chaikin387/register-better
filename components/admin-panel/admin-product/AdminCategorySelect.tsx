@@ -22,7 +22,7 @@ import type { AdminCategorySelectItem } from '@/types/admin-category-select-tree
 
 function findPath(
   items: AdminCategorySelectItem[],
-  id: number
+  id: string
 ): AdminCategorySelectItem[] | null {
   for (const item of items) {
     if (item.id === id) return [item]
@@ -36,8 +36,8 @@ function findPath(
 
 interface Props {
   categories: AdminCategorySelectItem[]
-  value?: number | null
-  onChange: (id: number) => void
+  value?: string | null
+  onChange: (id: string) => void
   disabled?: boolean
 }
 

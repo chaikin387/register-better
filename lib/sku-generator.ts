@@ -1,5 +1,10 @@
-export function generateSku(id: number): string {
-  const idStr = id.toString().padStart(4, '0')
-  const prefix = Math.floor(1000 + Math.random() * 9000)
-  return `${prefix}${idStr}`
+// lib/sku-generator.ts
+import prisma from '@/lib/prisma'
+
+export async function generateUniqueSku(): Promise<string> {
+  while (true) {
+    const sku = Math.floor(10000000 + Math.random() * 90000000).toString()
+    const exists = await prisma.productVariant.findUnique({ where: { sku } })
+    if (!exists) return sku
+  }
 }

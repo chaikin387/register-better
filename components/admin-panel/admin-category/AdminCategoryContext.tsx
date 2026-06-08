@@ -4,10 +4,10 @@ import type { AdminCategoryTreeSelect } from '@/types/admin-category-selects'
 import { createContext, ReactNode, useContext } from 'react'
 
 interface Props {
-  openCreateDialog: (parentId: number | null, parentLevel: number) => void
+  openCreateDialog: (parentId: string | null, parentLevel: number) => void
   openUpdateDialog: (category: AdminCategoryTreeSelect) => void
   openDeleteDialog: (category: AdminCategoryTreeSelect) => void
-  handleSwapSuccess: (idA: number, idB: number) => void
+  handleSwapSuccess: (idA: string, idB: string) => void
 }
 
 const AdminCategoryContext = createContext<Props | null>(null)

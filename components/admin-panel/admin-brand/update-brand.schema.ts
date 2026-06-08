@@ -1,8 +1,9 @@
+// update-brand.schema.ts
 import { z } from 'zod'
 import { createBrandSchema } from './create-brand.schema'
 
 export const updateBrandSchema = createBrandSchema.extend({
-  id: z.number().int().positive(),
+  id: z.string(),
 })
 
 export type UpdateBrandInput = z.input<typeof updateBrandSchema>

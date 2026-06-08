@@ -13,6 +13,12 @@ import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
 import { Spinner } from '@/components/ui/spinner'
 import { Switch } from '@/components/ui/switch'
+import {
+  Tooltip,
+  TooltipContent,
+  TooltipTrigger,
+} from '@/components/ui/tooltip'
+import { generateSlug } from '@/lib/slugify-generator'
 import type { AdminBrandSelectItem } from '@/types/admin-brand.selects'
 import type { AdminCategorySelectItem } from '@/types/admin-category-select-tree.selects'
 import type { AdminProductItemSelect } from '@/types/admin-product-selects'
@@ -43,8 +49,10 @@ export function AdminProductForm({ product, categories, brands }: Props) {
     formState: { errors },
   } = useForm<CreateProductInput>({
     resolver: zodResolver(createProductSchema),
+    mode: 'onChange',
     defaultValues: {
       name: product?.name ?? '',
+      slug: product?.slug ?? '',
       categoryId: product?.category.id,
       brandId: product?.brand?.id ?? null,
       isActive: product?.isActive ?? true,
@@ -70,37 +78,68 @@ export function AdminProductForm({ product, categories, brands }: Props) {
   return (
     <form
       onSubmit={handleSubmit(onSubmit)}
-      className='space-y-6 px-4 py-8'
+      className='space-y-5 px-4 py-6'
     >
-      <div className='border-b pb-4'>
-        <h1 className='text-2xl font-bold tracking-tight'>
-          {isUpdateMode ? 'Редактирование товара' : 'Добавление товара'}
-        </h1>
-        <p className='mt-1 text-sm text-muted-foreground'>
-          {isUpdateMode
-            ? 'Измените необходимую информацию о товаре'
-            : 'Заполните основную информацию о товаре'}
-        </p>
+      <div className='flex items-center justify-between border-b pb-3'>
+        <div>
+          <h1 className='text-xl font-bold tracking-tight'>
+            {isUpdateMode ? 'Редактирование товара' : 'Добавление товара'}
+          </h1>
+          <p className='mt-0.5 text-xs text-muted-foreground'>
+            {isUpdateMode
+              ? 'Изменение информации о товаре'
+              : 'Заполните основные поля'}
+          </p>
+        </div>
+
+        {/* Компактный переключатель активности в шапке */}
+        <Controller
+          control={control}
+          name='isActive'
+          render={({ field }) => (
+            <Tooltip>
+              <TooltipTrigger asChild>
+                <div>
+                  <Switch
+                    checked={field.value}
+                    onCheckedChange={field.onChange}
+                    disabled={isPending}
+                  />
+                </div>
+              </TooltipTrigger>
+              <TooltipContent align='end'>
+                Показывать товар на витрине сайта
+              </TooltipContent>
+            </Tooltip>
+          )}
+        />
       </div>
 
-      {/* Название товара и Бренд в одну строку */}
-      <div className='grid grid-cols-1 gap-4 sm:grid-cols-2'>
-        <div className='space-y-2'>
+      {/* Название, Бренд и Slug в одну строку */}
+      <div className='grid grid-cols-1 gap-4 md:grid-cols-3'>
+        {/* 1. Название */}
+        <div className='space-y-1.5'>
           <Label htmlFor='name'>Название товара *</Label>
           <Input
             id='name'
-            {...register('name')}
             placeholder='Введите название товара'
             autoFocus
             autoComplete='off'
             disabled={isPending}
+            {...register('name', {
+              onChange: (e) =>
+                setValue('slug', generateSlug(e.target.value), {
+                  shouldValidate: true,
+                }),
+            })}
           />
           {errors.name && (
             <p className='text-xs text-destructive'>{errors.name.message}</p>
           )}
         </div>
 
-        <div className='space-y-2'>
+        {/* 2. Бренд с лаконичной подсказкой снизу */}
+        <div className='space-y-1.5'>
           <Label>Бренд</Label>
           <Controller
             control={control}
@@ -115,14 +154,34 @@ export function AdminProductForm({ product, categories, brands }: Props) {
               />
             )}
           />
-          <p className='px-1 text-[11px] text-muted-foreground'>
-            Если бренд отсутствует — оставьте поле пустым
-          </p>
+          <span className='block px-1 text-[10px] leading-none text-muted-foreground'>
+            Если бренда нет — оставьте пустым
+          </span>
+        </div>
+
+        {/* 3. Автоматический Slug */}
+        <div className='space-y-1.5'>
+          <Label htmlFor='slug'>Адресная строка (slug) *</Label>
+          <Input
+            id='slug'
+            type='text'
+            autoComplete='off'
+            placeholder='Адресная строка (slug)'
+            disabled={isPending}
+            {...register('slug')}
+          />
+          {errors.slug ? (
+            <p className='text-xs text-destructive'>{errors.slug.message}</p>
+          ) : (
+            <span className='block px-1 text-[10px] leading-none text-muted-foreground'>
+              Автогенерация на латинице
+            </span>
+          )}
         </div>
       </div>
 
       {/* Категория */}
-      <div className='space-y-2'>
+      <div className='space-y-1.5'>
         <Label>Категория *</Label>
         <Controller
           control={control}
@@ -143,30 +202,7 @@ export function AdminProductForm({ product, categories, brands }: Props) {
         )}
       </div>
 
-      {/* Активность */}
-      <Controller
-        control={control}
-        name='isActive'
-        render={({ field }) => (
-          <div className='flex items-center justify-between rounded-lg border bg-secondary/10 p-3'>
-            <div className='space-y-0.5'>
-              <span className='text-sm leading-none font-medium'>
-                Активность
-              </span>
-              <p className='text-[11px] text-muted-foreground'>
-                Показывать товар на витрине сайта
-              </p>
-            </div>
-            <Switch
-              checked={field.value}
-              onCheckedChange={field.onChange}
-              disabled={isPending}
-            />
-          </div>
-        )}
-      />
-
-      <div className='flex gap-3'>
+      <div className='flex gap-3 border-t pt-4'>
         <Button
           type='button'
           variant='outline'
@@ -178,7 +214,6 @@ export function AdminProductForm({ product, categories, brands }: Props) {
         <Button
           type='submit'
           disabled={isPending}
-          className='gap-2'
         >
           {isPending && <Spinner data-icon='inline-start' />}
           {isUpdateMode ? 'Сохранить изменения' : 'Создать товар'}
