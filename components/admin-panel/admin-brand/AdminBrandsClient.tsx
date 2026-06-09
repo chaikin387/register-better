@@ -22,15 +22,12 @@ interface Props {
 export function AdminBrandsClient({ initialBrands }: Props) {
   const {
     brands,
-    createDialog,
-    updateDialog,
-    deleteDialog,
-    openCreateDialog,
-    closeCreateDialog,
-    openUpdateDialog,
-    closeUpdateDialog,
-    openDeleteDialog,
-    closeDeleteDialog,
+    createOpen,
+    updateBrand,
+    deleteBrand,
+    setCreateOpen,
+    setUpdateBrand,
+    setDeleteBrand,
     handleCreateSuccess,
     handleUpdateSuccess,
     handleDeleteSuccess,
@@ -49,7 +46,7 @@ export function AdminBrandsClient({ initialBrands }: Props) {
               Управление брендами товаров
             </p>
           </div>
-          <Button onClick={openCreateDialog}>
+          <Button onClick={() => setCreateOpen(true)}>
             <Plus />
             Добавить бренд
           </Button>
@@ -95,9 +92,9 @@ export function AdminBrandsClient({ initialBrands }: Props) {
                         <Button
                           type='button'
                           variant='ghost'
-                          size='icon'
-                          onClick={() => openUpdateDialog(brand)}
-                          className='size-8 text-muted-foreground hover:text-foreground'
+                          size='icon-lg'
+                          onClick={() => setUpdateBrand(brand)}
+                          className='text-muted-foreground hover:text-foreground'
                         >
                           <Pencil className='size-4' />
                         </Button>
@@ -110,9 +107,9 @@ export function AdminBrandsClient({ initialBrands }: Props) {
                         <Button
                           type='button'
                           variant='ghost'
-                          size='icon'
-                          onClick={() => openDeleteDialog(brand)} // Передаем бренд для удаления
-                          className='size-8 text-muted-foreground hover:text-destructive'
+                          size='icon-lg'
+                          onClick={() => setDeleteBrand(brand)}
+                          className='text-muted-foreground hover:text-destructive'
                         >
                           <Trash2 className='size-4' />
                         </Button>
@@ -138,29 +135,28 @@ export function AdminBrandsClient({ initialBrands }: Props) {
         </div>
       </div>
 
-      {/* Диалог создания */}
-      <AdminBrandDialog
-        isOpen={createDialog.isOpen}
-        onClose={closeCreateDialog}
-        onSuccess={handleCreateSuccess}
-      />
-
-      {/* Диалог редактирования */}
-      {updateDialog.brand && (
+      {createOpen && (
         <AdminBrandDialog
-          isOpen={updateDialog.isOpen}
-          brand={updateDialog.brand}
-          onClose={closeUpdateDialog}
+          isOpen
+          onClose={() => setCreateOpen(false)}
+          onSuccess={handleCreateSuccess}
+        />
+      )}
+
+      {updateBrand && (
+        <AdminBrandDialog
+          isOpen
+          brand={updateBrand}
+          onClose={() => setUpdateBrand(null)}
           onSuccess={handleUpdateSuccess}
         />
       )}
 
-      {/* Диалог удаления */}
-      {deleteDialog.brand && (
+      {deleteBrand && (
         <AdminBrandDeleteDialog
-          isOpen={deleteDialog.isOpen}
-          brand={deleteDialog.brand}
-          onClose={closeDeleteDialog}
+          isOpen
+          brand={deleteBrand}
+          onClose={() => setDeleteBrand(null)}
           onSuccess={handleDeleteSuccess}
         />
       )}

@@ -1,7 +1,6 @@
 'use client'
 
 import { zodResolver } from '@hookform/resolvers/zod'
-import { useTransition } from 'react'
 import { Controller, useForm } from 'react-hook-form'
 import { toast } from 'sonner'
 
@@ -45,19 +44,17 @@ export function AdminCategoryDialog({
   parentId,
   level,
 }: Props) {
-  const [isPending, startTransition] = useTransition()
   const isUpdateMode = !!category
 
   const {
-    register,
+    control,
     handleSubmit,
     setValue,
-    control,
-    reset,
-    formState: { errors },
+    formState: { errors, isSubmitting },
   } = useForm<CreateCategoryInput>({
     resolver: zodResolver(createCategorySchema),
     mode: 'onChange',
+    shouldFocusError: false,
     defaultValues: {
       name: category?.name ?? '',
       slug: category?.slug ?? '',
@@ -65,32 +62,25 @@ export function AdminCategoryDialog({
     },
   })
 
-  function handleClose() {
-    reset()
+  async function onSubmit(values: CreateCategoryInput) {
+    const result = isUpdateMode
+      ? await updateAdminCategory({ id: category.id, ...values })
+      : await createAdminCategory({ ...values, parentId: parentId ?? null })
+
+    if (!result.success) {
+      toast.error(result.error)
+      return
+    }
+
+    toast.success(isUpdateMode ? 'Категория обновлена' : 'Категория создана')
+    onSuccess(result.data)
     onClose()
-  }
-
-  function onSubmit(values: CreateCategoryInput) {
-    startTransition(async () => {
-      const result = isUpdateMode
-        ? await updateAdminCategory({ id: category.id, ...values })
-        : await createAdminCategory({ ...values, parentId: parentId ?? null })
-
-      if (!result.success) {
-        toast.error(result.error)
-        return
-      }
-
-      toast.success(isUpdateMode ? 'Категория обновлена' : 'Категория создана')
-      onSuccess(result.data)
-      handleClose()
-    })
   }
 
   return (
     <Dialog
       open={isOpen}
-      onOpenChange={handleClose}
+      onOpenChange={onClose}
     >
       <DialogContent className='sm:max-w-110'>
         <DialogHeader>
@@ -117,35 +107,42 @@ export function AdminCategoryDialog({
         </DialogHeader>
 
         <form onSubmit={handleSubmit(onSubmit)}>
-          <FieldSet disabled={isPending}>
+          <FieldSet disabled={isSubmitting}>
             <FieldGroup>
               <Field>
-                <Input
-                  type='text'
-                  autoComplete='off'
-                  placeholder={
-                    isUpdateMode
-                      ? 'Название категории'
-                      : 'Название категории (например, Электроника)'
-                  }
-                  {...register('name', {
-                    onChange: (e) =>
-                      setValue('slug', generateSlug(e.target.value), {
-                        shouldValidate: true,
-                      }),
-                  })}
-                  className='h-10'
+                <Controller
+                  control={control}
+                  name='name'
+                  render={({ field }) => (
+                    <Input
+                      autoComplete='off'
+                      placeholder='Название категории'
+                      className='h-10'
+                      value={field.value}
+                      onChange={(e) => {
+                        field.onChange(e)
+                        setValue('slug', generateSlug(e.target.value), {
+                          shouldValidate: true,
+                        })
+                      }}
+                    />
+                  )}
                 />
                 <FieldError errors={[errors.name]} />
               </Field>
 
               <Field>
-                <Input
-                  type='text'
-                  autoComplete='off'
-                  placeholder='Адресная строка (slug)'
-                  {...register('slug')}
-                  className='h-10'
+                <Controller
+                  control={control}
+                  name='slug'
+                  render={({ field }) => (
+                    <Input
+                      autoComplete='off'
+                      placeholder='Адресная строка (slug)'
+                      className='h-10'
+                      {...field}
+                    />
+                  )}
                 />
                 <span className='px-1 text-[11px] text-muted-foreground'>
                   Генерируется автоматически на латинице
@@ -169,7 +166,7 @@ export function AdminCategoryDialog({
                     <Switch
                       checked={field.value}
                       onCheckedChange={field.onChange}
-                      disabled={isPending}
+                      disabled={isSubmitting}
                     />
                   </div>
                 )}
@@ -181,17 +178,17 @@ export function AdminCategoryDialog({
             <Button
               type='button'
               variant='outline'
-              onClick={handleClose}
-              disabled={isPending}
+              onClick={onClose}
+              disabled={isSubmitting}
             >
               Отмена
             </Button>
             <Button
               type='submit'
-              disabled={isPending}
+              disabled={isSubmitting}
               className='gap-2'
             >
-              {isPending && <Spinner data-icon='inline-start' />}
+              {isSubmitting && <Spinner data-icon='inline-start' />}
               {isUpdateMode ? 'Сохранить' : 'Создать'}
             </Button>
           </DialogFooter>

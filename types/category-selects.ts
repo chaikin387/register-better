@@ -146,8 +146,30 @@ export const categoryPageSelect = {
   children: {
     where: { isActive: true },
     orderBy: { sortOrder: 'asc' },
+    select: {
+      id: true,
+      slug: true,
+      name: true,
+      icon: true,
+      image: true,
 
-    select: categoryCardSelect,
+      children: {
+        where: { isActive: true },
+        orderBy: { sortOrder: 'asc' },
+
+        select: {
+          id: true,
+          slug: true,
+          name: true,
+
+          children: {
+            select: {
+              id: true,
+            },
+          },
+        },
+      },
+    },
   },
 } satisfies Prisma.CategorySelect
 

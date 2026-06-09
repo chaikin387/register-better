@@ -1,54 +1,41 @@
 'use client'
 
-import type { AdminBrandSelectItem } from '@/types/admin-brand.selects'
 import { useState } from 'react'
 
-interface DialogState {
-  isOpen: boolean
-  brand: AdminBrandSelectItem | null
-}
-
-const CLOSED: DialogState = { isOpen: false, brand: null }
+import type { AdminBrandSelectItem } from '@/types/admin-brand.selects'
 
 export function useAdminBrands(initialBrands: AdminBrandSelectItem[]) {
   const [brands, setBrands] = useState<AdminBrandSelectItem[]>(initialBrands)
-  const [createDialog, setCreateDialog] = useState<DialogState>(CLOSED)
-  const [updateDialog, setUpdateDialog] = useState<DialogState>(CLOSED)
-  const [deleteDialog, setDeleteDialog] = useState<DialogState>(CLOSED)
+  const [createOpen, setCreateOpen] = useState(false)
+  const [updateBrand, setUpdateBrand] = useState<AdminBrandSelectItem | null>(
+    null
+  )
+  const [deleteBrand, setDeleteBrand] = useState<AdminBrandSelectItem | null>(
+    null
+  )
 
-  const openCreateDialog = () => setCreateDialog({ isOpen: true, brand: null })
-  const closeCreateDialog = () => setCreateDialog(CLOSED)
-
-  const openUpdateDialog = (brand: AdminBrandSelectItem) =>
-    setUpdateDialog({ isOpen: true, brand })
-  const closeUpdateDialog = () => setUpdateDialog(CLOSED)
-
-  const openDeleteDialog = (brand: AdminBrandSelectItem) =>
-    setDeleteDialog({ isOpen: true, brand })
-  const closeDeleteDialog = () => setDeleteDialog(CLOSED)
-
-  const handleCreateSuccess = (brand: AdminBrandSelectItem) =>
+  function handleCreateSuccess(brand: AdminBrandSelectItem) {
     setBrands((prev) =>
       [...prev, brand].sort((a, b) => a.name.localeCompare(b.name))
     )
+  }
 
-  const handleUpdateSuccess = (updated: AdminBrandSelectItem) =>
+  function handleUpdateSuccess(updated: AdminBrandSelectItem) {
     setBrands((prev) => prev.map((b) => (b.id === updated.id ? updated : b)))
+  }
 
-  const handleDeleteSuccess = (id: string) =>
+  function handleDeleteSuccess(id: string) {
     setBrands((prev) => prev.filter((b) => b.id !== id))
+  }
 
   return {
     brands,
-    createDialog,
-    updateDialog,
-    deleteDialog,
-    openCreateDialog,
-    closeCreateDialog,
-    openUpdateDialog,
-    closeUpdateDialog,
-    openDeleteDialog,
-    closeDeleteDialog,
+    createOpen,
+    updateBrand,
+    deleteBrand,
+    setCreateOpen,
+    setUpdateBrand,
+    setDeleteBrand,
     handleCreateSuccess,
     handleUpdateSuccess,
     handleDeleteSuccess,

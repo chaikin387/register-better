@@ -51,6 +51,7 @@ export const adminProductSelect = {
       id: true,
       sku: true,
       price: true,
+      weight: true,
       stock: true,
       isActive: true,
     },

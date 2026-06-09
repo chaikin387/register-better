@@ -41,7 +41,13 @@ export async function createAdminProduct(
       })
 
       await tx.productVariant.create({
-        data: { productId: id, sku, price: 0, stock: 0 },
+        data: {
+          productId: id,
+          sku,
+          price: validatedData.price,
+          weight: validatedData.weight,
+          stock: 0,
+        },
       })
 
       return tx.product.findUniqueOrThrow({

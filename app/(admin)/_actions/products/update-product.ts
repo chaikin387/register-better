@@ -1,4 +1,3 @@
-// update-product.ts
 'use server'
 
 import { Prisma } from '@/app/generated/prisma/client'
@@ -25,16 +24,30 @@ export async function updateAdminProduct(
   try {
     const validatedData: UpdateProductOutput = updateProductSchema.parse(input)
 
-    const updatedProduct = await prisma.product.update({
-      where: { id: validatedData.id },
-      data: {
-        name: validatedData.name,
-        slug: validatedData.slug,
-        isActive: validatedData.isActive,
-        categoryId: validatedData.categoryId,
-        brandId: validatedData.brandId ?? null,
-      },
-      select: adminProductSelect,
+    const updatedProduct = await prisma.$transaction(async (tx) => {
+      await tx.product.update({
+        where: { id: validatedData.id },
+        data: {
+          name: validatedData.name,
+          slug: validatedData.slug,
+          isActive: validatedData.isActive,
+          categoryId: validatedData.categoryId,
+          brandId: validatedData.brandId ?? null,
+        },
+      })
+
+      await tx.productVariant.updateMany({
+        where: { productId: validatedData.id },
+        data: {
+          price: validatedData.price,
+          weight: validatedData.weight,
+        },
+      })
+
+      return tx.product.findUniqueOrThrow({
+        where: { id: validatedData.id },
+        select: adminProductSelect,
+      })
     })
 
     revalidatePath('/admin-panel/products')

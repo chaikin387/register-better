@@ -1,6 +1,13 @@
 'use client'
 
-import { ChevronRight, Pencil, Plus, ShoppingBag, Trash2 } from 'lucide-react'
+import {
+  ChevronRight,
+  Pencil,
+  Plus,
+  Scale,
+  ShoppingBag,
+  Trash2,
+} from 'lucide-react'
 import Link from 'next/link'
 
 import { Badge } from '@/components/ui/badge'
@@ -11,10 +18,12 @@ import {
   TooltipTrigger,
 } from '@/components/ui/tooltip'
 import { cn } from '@/lib/utils'
+
 import type { AdminProductItemSelect } from '@/types/admin-product-selects'
 
+import { formatPrice } from '@/utils/format-price'
+import { formatWeight } from '@/utils/format-weight'
 import { AdminProductDeleteDialog } from './AdminProductDeleteDialog'
-
 import { adminProductBreadcrumbs } from './admin-product-breadcrumbs'
 import { useAdminProducts } from './use-admin-products'
 
@@ -23,13 +32,8 @@ interface Props {
 }
 
 export function AdminProductsClient({ initialProducts }: Props) {
-  const {
-    products,
-    deleteDialog,
-    openDeleteDialog,
-    closeDeleteDialog,
-    handleDeleteSuccess,
-  } = useAdminProducts(initialProducts)
+  const { products, deleteProduct, setDeleteProduct, handleDeleteSuccess } =
+    useAdminProducts(initialProducts)
 
   return (
     <>
@@ -61,7 +65,10 @@ export function AdminProductsClient({ initialProducts }: Props) {
           ) : (
             <div className='space-y-2'>
               {products.map((product) => {
-                const mainSku = product.variants?.[0]?.sku ?? 'Нет SKU'
+                const variant = product.variants?.[0]
+                const mainSku = variant?.sku ?? 'Нет SKU'
+                const price = variant?.price ?? 0
+                const weight = variant?.weight ?? 0
                 const breadcrumbs = adminProductBreadcrumbs(product.category)
 
                 return (
@@ -72,18 +79,30 @@ export function AdminProductsClient({ initialProducts }: Props) {
                       !product.isActive && 'bg-muted/20 opacity-60'
                     )}
                   >
-                    <div className='flex min-w-0 flex-col gap-1'>
-                      {/* Верхняя строка: название, артикул, индикатор */}
-                      <div className='flex items-center gap-2'>
+                    {/* Левая часть: Основная инфомация */}
+                    <div className='flex min-w-0 flex-col gap-1.5'>
+                      {/* Верхняя строка: Название - Артикул - Бренд - Индикатор */}
+                      <div className='flex flex-wrap items-center gap-2'>
                         <span className='truncate text-sm font-medium tracking-tight'>
                           {product.name}
                         </span>
+
                         <Badge
                           variant='secondary'
                           className='px-1.5 py-0 font-mono text-[11px] font-normal tracking-wider select-all'
                         >
                           Арт: {mainSku}
                         </Badge>
+
+                        {product.brand && (
+                          <Badge
+                            variant='outline'
+                            className='border-primary/20 bg-primary/5 px-1.5 py-0 text-xs font-medium text-primary'
+                          >
+                            {product.brand.name}
+                          </Badge>
+                        )}
+
                         <span
                           className={cn(
                             'size-2 shrink-0 rounded-full',
@@ -94,7 +113,7 @@ export function AdminProductsClient({ initialProducts }: Props) {
                         />
                       </div>
 
-                      {/* Нижняя строка: путь категорий + бренд */}
+                      {/* Нижняя строка: Хлебные крошки */}
                       <div className='flex items-center gap-1 text-[11px] text-muted-foreground/90'>
                         {breadcrumbs.map((cat, i) => (
                           <span
@@ -107,54 +126,61 @@ export function AdminProductsClient({ initialProducts }: Props) {
                             <span>{cat.name}</span>
                           </span>
                         ))}
-
-                        {product.brand && (
-                          <>
-                            <span className='mx-1 text-muted-foreground/30'>
-                              ·
-                            </span>
-                            <span className='font-medium text-foreground/70'>
-                              {product.brand.name}
-                            </span>
-                          </>
-                        )}
                       </div>
                     </div>
 
-                    <div className='ml-4 flex shrink-0 items-center gap-0.5'>
-                      <Tooltip>
-                        <TooltipTrigger asChild>
-                          <Button
-                            asChild
-                            type='button'
-                            variant='ghost'
-                            size='icon'
-                            className='size-8 text-muted-foreground hover:text-foreground'
-                          >
-                            <Link
-                              href={`/admin-panel/products/${product.id}/${product.slug}/update`}
-                            >
-                              <Pencil className='size-4' />
-                            </Link>
-                          </Button>
-                        </TooltipTrigger>
-                        <TooltipContent>Редактировать</TooltipContent>
-                      </Tooltip>
+                    {/* Правая часть: Коммерческие данные (Цена, Вес) + Действия */}
+                    <div className='ml-4 flex shrink-0 items-center gap-4'>
+                      {/* Блок цены и веса */}
+                      <div className='flex flex-col items-end gap-0.5 text-right select-none'>
+                        <span className='text-sm font-semibold tracking-tight text-foreground'>
+                          {formatPrice(price)}
+                        </span>
+                        <span className='flex items-center gap-1 text-[10px] text-muted-foreground'>
+                          <Scale className='size-3 text-muted-foreground/60' />
+                          {formatWeight(weight)}
+                        </span>
+                      </div>
 
-                      <Tooltip>
-                        <TooltipTrigger asChild>
-                          <Button
-                            type='button'
-                            variant='ghost'
-                            size='icon'
-                            onClick={() => openDeleteDialog(product)}
-                            className='size-8 text-muted-foreground hover:text-destructive'
-                          >
-                            <Trash2 className='size-4' />
-                          </Button>
-                        </TooltipTrigger>
-                        <TooltipContent>Удалить товар</TooltipContent>
-                      </Tooltip>
+                      {/* Разделитель */}
+                      <div className='h-6 w-px bg-border' />
+
+                      {/* Кнопки управления */}
+                      <div className='flex items-center gap-0.5'>
+                        <Tooltip>
+                          <TooltipTrigger asChild>
+                            <Button
+                              asChild
+                              type='button'
+                              variant='ghost'
+                              size='icon'
+                              className='size-8 text-muted-foreground hover:text-foreground'
+                            >
+                              <Link
+                                href={`/admin-panel/products/${product.id}/${product.slug}/update`}
+                              >
+                                <Pencil className='size-4' />
+                              </Link>
+                            </Button>
+                          </TooltipTrigger>
+                          <TooltipContent>Редактировать</TooltipContent>
+                        </Tooltip>
+
+                        <Tooltip>
+                          <TooltipTrigger asChild>
+                            <Button
+                              type='button'
+                              variant='ghost'
+                              size='icon'
+                              onClick={() => setDeleteProduct(product)}
+                              className='size-8 text-muted-foreground hover:text-destructive'
+                            >
+                              <Trash2 className='size-4' />
+                            </Button>
+                          </TooltipTrigger>
+                          <TooltipContent>Удалить товар</TooltipContent>
+                        </Tooltip>
+                      </div>
                     </div>
                   </div>
                 )
@@ -175,11 +201,11 @@ export function AdminProductsClient({ initialProducts }: Props) {
         </div>
       </div>
 
-      {deleteDialog.product && (
+      {deleteProduct && (
         <AdminProductDeleteDialog
-          isOpen={deleteDialog.isOpen}
-          product={deleteDialog.product}
-          onClose={closeDeleteDialog}
+          isOpen
+          product={deleteProduct}
+          onClose={() => setDeleteProduct(null)}
           onSuccess={handleDeleteSuccess}
         />
       )}

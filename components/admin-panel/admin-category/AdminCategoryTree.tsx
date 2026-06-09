@@ -8,11 +8,16 @@ import {
   Pencil,
   Trash2,
 } from 'lucide-react'
-import { useState, useTransition } from 'react'
+import { useTransition } from 'react'
 import { toast } from 'sonner'
 
 import { swapCategoryOrder } from '@/app/(admin)/_actions/categories/swap-category-order'
 import { Button } from '@/components/ui/button'
+import {
+  Collapsible,
+  CollapsibleContent,
+  CollapsibleTrigger,
+} from '@/components/ui/collapsible'
 import {
   Tooltip,
   TooltipContent,
@@ -37,28 +42,21 @@ export function AdminCategoryTree({ category, prev, next, level = 1 }: Props) {
     openDeleteDialog,
     handleSwapSuccess,
   } = useAdminCategoryContext()
-
-  const [isExpanded, setIsExpanded] = useState(false)
   const [isPending, startTransition] = useTransition()
 
   const children = category.children ?? []
   const hasChildren = children.length > 0
-  const canCreateChild = level < 4
 
   function swap(sibling: AdminCategoryTreeSelect) {
     startTransition(async () => {
-      // Оптимистичный апдейт интерфейса (меняем местами локально)
       handleSwapSuccess(category.id, sibling.id)
-
       const result = await swapCategoryOrder(
         category.id,
         category.sortOrder,
         sibling.id,
         sibling.sortOrder
       )
-
       if (!result.success) {
-        // Откат изменений назад в случае ошибки на сервере
         handleSwapSuccess(category.id, sibling.id)
         toast.error(result.error)
       }
@@ -66,64 +64,47 @@ export function AdminCategoryTree({ category, prev, next, level = 1 }: Props) {
   }
 
   return (
-    <div className='flex flex-col gap-1.5'>
-      <div
-        data-level={level}
-        className={cn(
-          'flex items-center justify-between rounded-lg border bg-background p-2 transition-colors hover:bg-accent/40',
-          'data-[level="2"]:pl-6',
-          'data-[level="3"]:pl-10',
-          'data-[level="4"]:pl-14',
-          !category.isActive && 'bg-muted/20 opacity-60'
-        )}
-      >
-        <div className='flex min-w-0 items-center gap-3'>
-          <Button
-            type='button'
-            variant='ghost'
-            size='icon'
-            disabled={!hasChildren}
-            onClick={() => setIsExpanded((prev) => !prev)}
+    <Collapsible disabled={!hasChildren}>
+      <div className='flex items-center gap-3 rounded-lg border bg-background p-2 hover:bg-accent/40'>
+        <CollapsibleTrigger
+          disabled={!hasChildren}
+          className='group flex flex-1 items-center gap-3'
+        >
+          <ChevronRight
             className={cn(
-              'size-7 shrink-0 text-muted-foreground transition-transform disabled:opacity-0',
-              isExpanded && 'rotate-90'
+              'size-4 text-muted-foreground transition-transform group-data-[state=open]:rotate-90',
+              !hasChildren && 'opacity-0'
             )}
-          >
-            <ChevronRight className='size-4' />
-          </Button>
-
+          />
           <div className='flex min-w-0 flex-col'>
             <span className='truncate text-sm font-medium tracking-tight'>
               {category.name}
             </span>
-            <span className='truncate font-mono text-[10px] text-muted-foreground'>
+            <span className='text-[10px] text-muted-foreground'>
               /{category.slug}
             </span>
           </div>
-
-          <span className='shrink-0 rounded bg-secondary p-1 text-xs text-muted-foreground select-none'>
+          <span className='rounded-sm bg-accent/40 p-1 text-xs text-muted-foreground'>
             L{level}
           </span>
-
           <span
             className={cn(
               'size-2 shrink-0 rounded-full',
               category.isActive ? 'bg-green-500' : 'bg-muted-foreground/40'
             )}
           />
-        </div>
+        </CollapsibleTrigger>
 
-        <div className='ml-4 flex shrink-0 items-center gap-0.5'>
-          {/* Сортировка: Вверх */}
+        {/* Компактная панель действий (все кнопки в 1 строку) */}
+        <div className='flex shrink-0 items-center gap-0.5'>
           <Tooltip>
             <TooltipTrigger asChild>
               <Button
-                type='button'
+                size='icon-lg'
                 variant='ghost'
-                size='icon'
                 disabled={!prev || isPending}
                 onClick={() => prev && swap(prev)}
-                className='size-8 text-muted-foreground hover:text-foreground disabled:opacity-30'
+                className='text-muted-foreground hover:text-foreground disabled:opacity-30'
               >
                 <ArrowUp className='size-4' />
               </Button>
@@ -134,12 +115,11 @@ export function AdminCategoryTree({ category, prev, next, level = 1 }: Props) {
           <Tooltip>
             <TooltipTrigger asChild>
               <Button
-                type='button'
+                size='icon-lg'
                 variant='ghost'
-                size='icon'
                 disabled={!next || isPending}
                 onClick={() => next && swap(next)}
-                className='size-8 text-muted-foreground hover:text-foreground disabled:opacity-30'
+                className='text-muted-foreground hover:text-foreground disabled:opacity-30'
               >
                 <ArrowDown className='size-4' />
               </Button>
@@ -147,33 +127,28 @@ export function AdminCategoryTree({ category, prev, next, level = 1 }: Props) {
             <TooltipContent>Переместить вниз</TooltipContent>
           </Tooltip>
 
-          {/* Действие: Добавить подкатегорию */}
-          {canCreateChild && (
-            <Tooltip>
-              <TooltipTrigger asChild>
-                <Button
-                  type='button'
-                  variant='ghost'
-                  size='icon'
-                  onClick={() => openCreateDialog(category.id, level + 1)}
-                  className='size-8 text-muted-foreground hover:text-foreground'
-                >
-                  <FolderPlus className='size-4' />
-                </Button>
-              </TooltipTrigger>
-              <TooltipContent>Добавить подкатегорию</TooltipContent>
-            </Tooltip>
-          )}
-
-          {/* Действие: Редактировать */}
           <Tooltip>
             <TooltipTrigger asChild>
               <Button
-                type='button'
+                size='icon-lg'
                 variant='ghost'
-                size='icon'
+                disabled={level >= 4}
+                onClick={() => openCreateDialog(category.id, level + 1)}
+                className='text-muted-foreground hover:text-foreground disabled:opacity-30'
+              >
+                <FolderPlus className='size-4' />
+              </Button>
+            </TooltipTrigger>
+            <TooltipContent>Добавить подкатегорию</TooltipContent>
+          </Tooltip>
+
+          <Tooltip>
+            <TooltipTrigger asChild>
+              <Button
+                size='icon-lg'
+                variant='ghost'
                 onClick={() => openUpdateDialog(category)}
-                className='size-8 text-muted-foreground hover:text-foreground'
+                className='text-muted-foreground hover:text-foreground'
               >
                 <Pencil className='size-4' />
               </Button>
@@ -181,15 +156,13 @@ export function AdminCategoryTree({ category, prev, next, level = 1 }: Props) {
             <TooltipContent>Редактировать</TooltipContent>
           </Tooltip>
 
-          {/* Действие: Удалить */}
           <Tooltip>
             <TooltipTrigger asChild>
               <Button
-                type='button'
+                size='icon-lg'
                 variant='ghost'
-                size='icon'
                 onClick={() => openDeleteDialog(category)}
-                className='size-8 text-muted-foreground hover:text-destructive'
+                className='text-muted-foreground hover:text-destructive'
               >
                 <Trash2 className='size-4' />
               </Button>
@@ -199,20 +172,17 @@ export function AdminCategoryTree({ category, prev, next, level = 1 }: Props) {
         </div>
       </div>
 
-      {/* Рекурсивный рендер вложенных уровней (L2-L4) */}
-      {hasChildren && isExpanded && (
-        <>
-          {children.map((child, i) => (
-            <AdminCategoryTree
-              key={child.id}
-              category={child}
-              level={level + 1}
-              prev={children[i - 1]}
-              next={children[i + 1]}
-            />
-          ))}
-        </>
-      )}
-    </div>
+      <CollapsibleContent className='mt-1.5 ml-4 space-y-1.5'>
+        {children.map((child, i) => (
+          <AdminCategoryTree
+            key={child.id}
+            category={child}
+            prev={children[i - 1]}
+            next={children[i + 1]}
+            level={level + 1}
+          />
+        ))}
+      </CollapsibleContent>
+    </Collapsible>
   )
 }

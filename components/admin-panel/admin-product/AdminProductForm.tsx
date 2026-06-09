@@ -2,7 +2,6 @@
 
 import { zodResolver } from '@hookform/resolvers/zod'
 import { useRouter } from 'next/navigation'
-import { useTransition } from 'react'
 import { Controller, useForm } from 'react-hook-form'
 import { toast } from 'sonner'
 
@@ -38,41 +37,41 @@ interface Props {
 
 export function AdminProductForm({ product, categories, brands }: Props) {
   const router = useRouter()
-  const [isPending, startTransition] = useTransition()
   const isUpdateMode = !!product
 
   const {
-    register,
-    handleSubmit,
     control,
+    handleSubmit,
     setValue,
-    formState: { errors },
+    formState: { errors, isSubmitting },
   } = useForm<CreateProductInput>({
     resolver: zodResolver(createProductSchema),
     mode: 'onChange',
+    shouldFocusError: false,
     defaultValues: {
       name: product?.name ?? '',
       slug: product?.slug ?? '',
-      categoryId: product?.category.id,
+      categoryId: product?.category?.id,
       brandId: product?.brand?.id ?? null,
       isActive: product?.isActive ?? true,
+      price: product?.variants?.[0]?.price || '',
+      weight: product?.variants?.[0]?.weight || '',
     },
   })
 
-  function onSubmit(data: CreateProductInput) {
-    startTransition(async () => {
-      const result = isUpdateMode
-        ? await updateAdminProduct({ id: product.id, ...data })
-        : await createAdminProduct(data)
+  async function onSubmit(data: CreateProductInput) {
+    const result = isUpdateMode
+      ? await updateAdminProduct({ id: product.id, ...data })
+      : await createAdminProduct(data)
 
-      if (!result.success) {
-        toast.error(result.error)
-        return
-      }
+    if (!result.success) {
+      toast.error(result.error)
+      return
+    }
 
-      toast.success(isUpdateMode ? 'Товар обновлен' : 'Товар создан')
-      router.push('/admin-panel/products')
-    })
+    toast.success(isUpdateMode ? 'Товар обновлен' : 'Товар создан')
+    router.replace('/admin-panel/products')
+    router.refresh()
   }
 
   return (
@@ -92,7 +91,6 @@ export function AdminProductForm({ product, categories, brands }: Props) {
           </p>
         </div>
 
-        {/* Компактный переключатель активности в шапке */}
         <Controller
           control={control}
           name='isActive'
@@ -103,7 +101,7 @@ export function AdminProductForm({ product, categories, brands }: Props) {
                   <Switch
                     checked={field.value}
                     onCheckedChange={field.onChange}
-                    disabled={isPending}
+                    disabled={isSubmitting}
                   />
                 </div>
               </TooltipTrigger>
@@ -115,30 +113,36 @@ export function AdminProductForm({ product, categories, brands }: Props) {
         />
       </div>
 
-      {/* Название, Бренд и Slug в одну строку */}
       <div className='grid grid-cols-1 gap-4 md:grid-cols-3'>
-        {/* 1. Название */}
+        {/* Название */}
         <div className='space-y-1.5'>
           <Label htmlFor='name'>Название товара *</Label>
-          <Input
-            id='name'
-            placeholder='Введите название товара'
-            autoFocus
-            autoComplete='off'
-            disabled={isPending}
-            {...register('name', {
-              onChange: (e) =>
-                setValue('slug', generateSlug(e.target.value), {
-                  shouldValidate: true,
-                }),
-            })}
+          <Controller
+            control={control}
+            name='name'
+            render={({ field }) => (
+              <Input
+                id='name'
+                placeholder='Введите название товара'
+                autoFocus
+                autoComplete='off'
+                disabled={isSubmitting}
+                value={field.value}
+                onChange={(e) => {
+                  field.onChange(e)
+                  setValue('slug', generateSlug(e.target.value), {
+                    shouldValidate: true,
+                  })
+                }}
+              />
+            )}
           />
           {errors.name && (
             <p className='text-xs text-destructive'>{errors.name.message}</p>
           )}
         </div>
 
-        {/* 2. Бренд с лаконичной подсказкой снизу */}
+        {/* Бренд */}
         <div className='space-y-1.5'>
           <Label>Бренд</Label>
           <Controller
@@ -149,8 +153,7 @@ export function AdminProductForm({ product, categories, brands }: Props) {
                 brands={brands}
                 value={field.value}
                 onChange={field.onChange}
-                onClear={() => setValue('brandId', null)}
-                disabled={isPending}
+                disabled={isSubmitting}
               />
             )}
           />
@@ -159,16 +162,21 @@ export function AdminProductForm({ product, categories, brands }: Props) {
           </span>
         </div>
 
-        {/* 3. Автоматический Slug */}
+        {/* Slug */}
         <div className='space-y-1.5'>
           <Label htmlFor='slug'>Адресная строка (slug) *</Label>
-          <Input
-            id='slug'
-            type='text'
-            autoComplete='off'
-            placeholder='Адресная строка (slug)'
-            disabled={isPending}
-            {...register('slug')}
+          <Controller
+            control={control}
+            name='slug'
+            render={({ field }) => (
+              <Input
+                id='slug'
+                autoComplete='off'
+                placeholder='Адресная строка (slug)'
+                disabled={isSubmitting}
+                {...field}
+              />
+            )}
           />
           {errors.slug ? (
             <p className='text-xs text-destructive'>{errors.slug.message}</p>
@@ -191,7 +199,7 @@ export function AdminProductForm({ product, categories, brands }: Props) {
               categories={categories}
               value={field.value}
               onChange={field.onChange}
-              disabled={isPending}
+              disabled={isSubmitting}
             />
           )}
         />
@@ -202,20 +210,80 @@ export function AdminProductForm({ product, categories, brands }: Props) {
         )}
       </div>
 
+      <div className='grid grid-cols-1 gap-4 md:grid-cols-2'>
+        {/* Цена */}
+        <div className='space-y-1.5'>
+          <Label htmlFor='price'>Цена (₽) *</Label>
+          <Controller
+            control={control}
+            name='price'
+            render={({ field }) => (
+              <Input
+                id='price'
+                inputMode='numeric'
+                placeholder='Введите цену'
+                autoComplete='off'
+                disabled={isSubmitting}
+                value={field.value?.toString() ?? ''}
+                onChange={(e) =>
+                  field.onChange(e.target.value.replace(/\D/g, '') || '')
+                }
+              />
+            )}
+          />
+          {errors.price ? (
+            <p className='text-xs text-destructive'>{errors.price.message}</p>
+          ) : (
+            <span className='block px-1 text-[10px] leading-none text-muted-foreground'>
+              Розничная стоимость товара
+            </span>
+          )}
+        </div>
+
+        {/* Вес */}
+        <div className='space-y-1.5'>
+          <Label htmlFor='weight'>Вес (грамм) *</Label>
+          <Controller
+            control={control}
+            name='weight'
+            render={({ field }) => (
+              <Input
+                id='weight'
+                inputMode='numeric'
+                placeholder='Введите вес'
+                autoComplete='off'
+                disabled={isSubmitting}
+                value={field.value?.toString() ?? ''}
+                onChange={(e) =>
+                  field.onChange(e.target.value.replace(/\D/g, '') || '')
+                }
+              />
+            )}
+          />
+          {errors.weight ? (
+            <p className='text-xs text-destructive'>{errors.weight.message}</p>
+          ) : (
+            <span className='block px-1 text-[10px] leading-none text-muted-foreground'>
+              Вес в граммах для расчета доставки
+            </span>
+          )}
+        </div>
+      </div>
+
       <div className='flex gap-3 border-t pt-4'>
         <Button
           type='button'
           variant='outline'
-          disabled={isPending}
+          disabled={isSubmitting}
           onClick={() => router.back()}
         >
           Отмена
         </Button>
         <Button
           type='submit'
-          disabled={isPending}
+          disabled={isSubmitting}
         >
-          {isPending && <Spinner data-icon='inline-start' />}
+          {isSubmitting && <Spinner data-icon='inline-start' />}
           {isUpdateMode ? 'Сохранить изменения' : 'Создать товар'}
         </Button>
       </div>

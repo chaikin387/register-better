@@ -1,35 +1,23 @@
 'use client'
 
-import type { AdminProductItemSelect } from '@/types/admin-product-selects'
 import { useState } from 'react'
 
-interface DialogState {
-  isOpen: boolean
-  product: AdminProductItemSelect | null
-}
-
-const CLOSED: DialogState = { isOpen: false, product: null }
+import type { AdminProductItemSelect } from '@/types/admin-product-selects'
 
 export function useAdminProducts(initialProducts: AdminProductItemSelect[]) {
   const [products, setProducts] =
     useState<AdminProductItemSelect[]>(initialProducts)
-  const [deleteDialog, setDeleteDialog] = useState<DialogState>(CLOSED)
+  const [deleteProduct, setDeleteProduct] =
+    useState<AdminProductItemSelect | null>(null)
 
-  const openDeleteDialog = (product: AdminProductItemSelect) =>
-    setDeleteDialog({ isOpen: true, product })
-  const closeDeleteDialog = () => setDeleteDialog(CLOSED)
-
-  // На будущее: если при создании/апдейте товаров тоже решишь сделать диалоги вместо страниц,
-  // стейты под них уже будут легко расширяться здесь.
-
-  const handleDeleteSuccess = (id: string) =>
+  function handleDeleteSuccess(id: string) {
     setProducts((prev) => prev.filter((p) => p.id !== id))
+  }
 
   return {
     products,
-    deleteDialog,
-    openDeleteDialog,
-    closeDeleteDialog,
+    deleteProduct,
+    setDeleteProduct,
     handleDeleteSuccess,
   }
 }

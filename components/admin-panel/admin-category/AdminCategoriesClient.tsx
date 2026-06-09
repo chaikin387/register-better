@@ -19,14 +19,11 @@ export function AdminCategoriesClient({ initialCategories }: Props) {
   const {
     categories,
     createDialog,
-    UpdateDialog,
-    deleteDialog,
-    openCreateDialog,
-    openUpdateDialog,
-    openDeleteDialog,
-    closeCreateDialog,
-    closeUpdateDialog,
-    closeDeleteDialog,
+    updateCategory,
+    deleteCategory,
+    setCreateDialog,
+    setUpdateCategory,
+    setDeleteCategory,
     handleCreateSuccess,
     handleUpdateSuccess,
     handleDeleteSuccess,
@@ -36,9 +33,10 @@ export function AdminCategoriesClient({ initialCategories }: Props) {
   return (
     <AdminCategoryProvider
       value={{
-        openCreateDialog,
-        openUpdateDialog,
-        openDeleteDialog,
+        openCreateDialog: (parentId, level) =>
+          setCreateDialog({ parentId, level }),
+        openUpdateDialog: setUpdateCategory,
+        openDeleteDialog: setDeleteCategory,
         handleSwapSuccess,
       }}
     >
@@ -53,7 +51,7 @@ export function AdminCategoriesClient({ initialCategories }: Props) {
               Управление структурой категорий (максимум 4 уровня)
             </p>
           </div>
-          <Button onClick={() => openCreateDialog(null, 1)}>
+          <Button onClick={() => setCreateDialog({ parentId: null, level: 1 })}>
             <Plus />
             Создать категорию L1
           </Button>
@@ -90,28 +88,30 @@ export function AdminCategoriesClient({ initialCategories }: Props) {
         </div>
       </div>
 
-      <AdminCategoryDialog
-        isOpen={createDialog.isOpen}
-        parentId={createDialog.parentId}
-        level={createDialog.level}
-        onClose={closeCreateDialog}
-        onSuccess={handleCreateSuccess}
-      />
-
-      {UpdateDialog.category && (
+      {createDialog && (
         <AdminCategoryDialog
-          isOpen={UpdateDialog.isOpen}
-          category={UpdateDialog.category}
-          onClose={closeUpdateDialog}
+          isOpen
+          parentId={createDialog.parentId}
+          level={createDialog.level}
+          onClose={() => setCreateDialog(null)}
+          onSuccess={handleCreateSuccess}
+        />
+      )}
+
+      {updateCategory && (
+        <AdminCategoryDialog
+          isOpen
+          category={updateCategory}
+          onClose={() => setUpdateCategory(null)}
           onSuccess={handleUpdateSuccess}
         />
       )}
 
-      {deleteDialog.category && (
+      {deleteCategory && (
         <AdminCategoryDeleteDialog
-          isOpen={deleteDialog.isOpen}
-          category={deleteDialog.category}
-          onClose={closeDeleteDialog}
+          isOpen
+          category={deleteCategory}
+          onClose={() => setDeleteCategory(null)}
           onSuccess={handleDeleteSuccess}
         />
       )}

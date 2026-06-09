@@ -1,8 +1,6 @@
-// AdminBrandDialog.tsx
 'use client'
 
 import { zodResolver } from '@hookform/resolvers/zod'
-import { useTransition } from 'react'
 import { Controller, useForm } from 'react-hook-form'
 import { toast } from 'sonner'
 
@@ -34,19 +32,17 @@ interface Props {
 }
 
 export function AdminBrandDialog({ isOpen, onClose, onSuccess, brand }: Props) {
-  const [isPending, startTransition] = useTransition()
   const isUpdateMode = !!brand
 
   const {
-    register,
+    control,
     handleSubmit,
     setValue,
-    control,
-    reset,
-    formState: { errors },
+    formState: { errors, isSubmitting },
   } = useForm<CreateBrandInput>({
     resolver: zodResolver(createBrandSchema),
     mode: 'onChange',
+    shouldFocusError: false,
     defaultValues: {
       name: brand?.name ?? '',
       slug: brand?.slug ?? '',
@@ -54,32 +50,25 @@ export function AdminBrandDialog({ isOpen, onClose, onSuccess, brand }: Props) {
     },
   })
 
-  function handleClose() {
-    reset()
+  async function onSubmit(values: CreateBrandInput) {
+    const result = isUpdateMode
+      ? await updateAdminBrand({ id: brand.id, ...values })
+      : await createAdminBrand(values)
+
+    if (!result.success) {
+      toast.error(result.error)
+      return
+    }
+
+    toast.success(isUpdateMode ? 'Бренд обновлён' : 'Бренд создан')
+    onSuccess(result.data)
     onClose()
-  }
-
-  function onSubmit(values: CreateBrandInput) {
-    startTransition(async () => {
-      const result = isUpdateMode
-        ? await updateAdminBrand({ id: brand.id, ...values })
-        : await createAdminBrand(values)
-
-      if (!result.success) {
-        toast.error(result.error)
-        return
-      }
-
-      toast.success(isUpdateMode ? 'Бренд обновлён' : 'Бренд создан')
-      onSuccess(result.data)
-      handleClose()
-    })
   }
 
   return (
     <Dialog
       open={isOpen}
-      onOpenChange={handleClose}
+      onOpenChange={onClose}
     >
       <DialogContent className='sm:max-w-110'>
         <DialogHeader>
@@ -101,35 +90,42 @@ export function AdminBrandDialog({ isOpen, onClose, onSuccess, brand }: Props) {
         </DialogHeader>
 
         <form onSubmit={handleSubmit(onSubmit)}>
-          <FieldSet disabled={isPending}>
+          <FieldSet disabled={isSubmitting}>
             <FieldGroup>
               <Field>
-                <Input
-                  type='text'
-                  autoComplete='off'
-                  placeholder={
-                    isUpdateMode
-                      ? 'Название бренда'
-                      : 'Название бренда (например, Apple)'
-                  }
-                  {...register('name', {
-                    onChange: (e) =>
-                      setValue('slug', generateSlug(e.target.value), {
-                        shouldValidate: true,
-                      }),
-                  })}
-                  className='h-10'
+                <Controller
+                  control={control}
+                  name='name'
+                  render={({ field }) => (
+                    <Input
+                      autoComplete='off'
+                      placeholder='Название бренда'
+                      className='h-10'
+                      value={field.value}
+                      onChange={(e) => {
+                        field.onChange(e)
+                        setValue('slug', generateSlug(e.target.value), {
+                          shouldValidate: true,
+                        })
+                      }}
+                    />
+                  )}
                 />
                 <FieldError errors={[errors.name]} />
               </Field>
 
               <Field>
-                <Input
-                  type='text'
-                  autoComplete='off'
-                  placeholder='Адресная строка (slug)'
-                  {...register('slug')}
-                  className='h-10'
+                <Controller
+                  control={control}
+                  name='slug'
+                  render={({ field }) => (
+                    <Input
+                      autoComplete='off'
+                      placeholder='Адресная строка (slug)'
+                      className='h-10'
+                      {...field}
+                    />
+                  )}
                 />
                 <span className='px-1 text-[11px] text-muted-foreground'>
                   Генерируется автоматически на латинице
@@ -153,7 +149,7 @@ export function AdminBrandDialog({ isOpen, onClose, onSuccess, brand }: Props) {
                     <Switch
                       checked={field.value}
                       onCheckedChange={field.onChange}
-                      disabled={isPending}
+                      disabled={isSubmitting}
                     />
                   </div>
                 )}
@@ -165,17 +161,17 @@ export function AdminBrandDialog({ isOpen, onClose, onSuccess, brand }: Props) {
             <Button
               type='button'
               variant='outline'
-              onClick={handleClose}
-              disabled={isPending}
+              onClick={onClose}
+              disabled={isSubmitting}
             >
               Отмена
             </Button>
             <Button
               type='submit'
-              disabled={isPending}
+              disabled={isSubmitting}
               className='gap-2'
             >
-              {isPending && <Spinner data-icon='inline-start' />}
+              {isSubmitting && <Spinner data-icon='inline-start' />}
               {isUpdateMode ? 'Сохранить' : 'Создать'}
             </Button>
           </DialogFooter>

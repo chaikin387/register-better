@@ -2,21 +2,20 @@
 import { z } from 'zod'
 
 export const createProductSchema = z.object({
-  name: z
-    .string()
-    .trim()
-    .min(3, { error: 'Название должно быть от 3 символов' })
-    .max(255),
+  name: z.string().trim().min(3, { error: 'Введите название товара' }).max(255),
   slug: z
     .string()
     .trim()
-    .min(3, { error: 'Slug должен быть от 3 символов' })
+    .min(3, { error: 'Введите slug товара' })
     .max(150)
     .regex(/^[a-z0-9-]+$/, {
       error: 'Используйте только строчную латиницу, цифры и дефис',
     }),
   categoryId: z.string({ error: 'Выберите категорию' }),
   brandId: z.string({ error: 'Выберите бренд' }).nullable(),
+  price: z.coerce.number().int().min(1, { error: 'Введите цену' }),
+
+  weight: z.coerce.number().int().min(1, { error: 'Введите вес' }),
   isActive: z.boolean().default(true),
 })
 
