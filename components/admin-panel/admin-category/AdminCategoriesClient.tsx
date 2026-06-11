@@ -15,20 +15,17 @@ interface Props {
   initialCategories: AdminCategoryTreeSelect[]
 }
 
-export function AdminCategoriesClient({ initialCategories }: Props) {
+export function AdminCategoriesClient({
+  initialCategories: categories,
+}: Props) {
   const {
-    categories,
     createDialog,
     updateCategory,
     deleteCategory,
     setCreateDialog,
     setUpdateCategory,
     setDeleteCategory,
-    handleCreateSuccess,
-    handleUpdateSuccess,
-    handleDeleteSuccess,
-    handleSwapSuccess,
-  } = useAdminCatalog(initialCategories)
+  } = useAdminCatalog()
 
   return (
     <AdminCategoryProvider
@@ -37,18 +34,17 @@ export function AdminCategoriesClient({ initialCategories }: Props) {
           setCreateDialog({ parentId, level }),
         openUpdateDialog: setUpdateCategory,
         openDeleteDialog: setDeleteCategory,
-        handleSwapSuccess,
       }}
     >
       <div className='space-y-6 px-4 py-8'>
         <div className='flex items-center justify-between border-b pb-4'>
-          <div>
-            <h1 className='flex items-center gap-2 text-2xl font-bold tracking-tight'>
+          <div className='space-y-1'>
+            <h1 className='flex items-center gap-2 text-2xl font-bold'>
               <FolderTree className='size-6 text-muted-foreground' />
               Категории
             </h1>
-            <p className='mt-1 text-sm text-muted-foreground'>
-              Управление структурой категорий (максимум 4 уровня)
+            <p className='text-sm text-muted-foreground'>
+              Управление категориями товаров (максимум 4 уровня)
             </p>
           </div>
           <Button onClick={() => setCreateDialog({ parentId: null, level: 1 })}>
@@ -94,7 +90,6 @@ export function AdminCategoriesClient({ initialCategories }: Props) {
           parentId={createDialog.parentId}
           level={createDialog.level}
           onClose={() => setCreateDialog(null)}
-          onSuccess={handleCreateSuccess}
         />
       )}
 
@@ -103,7 +98,6 @@ export function AdminCategoriesClient({ initialCategories }: Props) {
           isOpen
           category={updateCategory}
           onClose={() => setUpdateCategory(null)}
-          onSuccess={handleUpdateSuccess}
         />
       )}
 
@@ -112,7 +106,6 @@ export function AdminCategoriesClient({ initialCategories }: Props) {
           isOpen
           category={deleteCategory}
           onClose={() => setDeleteCategory(null)}
-          onSuccess={handleDeleteSuccess}
         />
       )}
     </AdminCategoryProvider>

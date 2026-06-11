@@ -1,4 +1,3 @@
-// create-category.ts
 'use server'
 
 import { Prisma } from '@/app/generated/prisma/client'
@@ -32,15 +31,13 @@ export async function createAdminCategory(
         _max: { sortOrder: true },
       })
 
-      const nextSortOrder = (aggregation._max.sortOrder ?? -1) + 1
-
       return tx.category.create({
         data: {
           name: validatedData.name,
           slug: validatedData.slug,
           isActive: validatedData.isActive,
           parentId: input.parentId,
-          sortOrder: nextSortOrder,
+          sortOrder: (aggregation._max.sortOrder ?? -1) + 1,
         },
         select: adminCategorySelect,
       })
@@ -51,8 +48,6 @@ export async function createAdminCategory(
 
     return { success: true, data: newCategory }
   } catch (error) {
-    console.error('Ошибка при создании категории:', error)
-
     if (
       error instanceof Prisma.PrismaClientKnownRequestError &&
       error.code === 'P2002'
@@ -63,6 +58,7 @@ export async function createAdminCategory(
       }
     }
 
+    console.error('Ошибка при создании категории:', error)
     return { success: false, error: 'Не удалось создать категорию.' }
   }
 }

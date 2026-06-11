@@ -23,18 +23,12 @@ interface Props {
   isOpen: boolean
   brand: AdminBrandSelectItem
   onClose: () => void
-  onSuccess: (id: string) => void
 }
 
 const MAX_ATTEMPTS = 3
 const COOLDOWN_TIME = 60
 
-export function AdminBrandDeleteDialog({
-  isOpen,
-  brand,
-  onClose,
-  onSuccess,
-}: Props) {
+export function AdminBrandDeleteDialog({ isOpen, brand, onClose }: Props) {
   const [isPending, startTransition] = useTransition()
   const [attempts, setAttempts] = useState(0)
 
@@ -61,7 +55,6 @@ export function AdminBrandDeleteDialog({
       }
 
       toast.success('Бренд удалён')
-      onSuccess(result.id)
       setAttempts(0)
       onClose()
     })

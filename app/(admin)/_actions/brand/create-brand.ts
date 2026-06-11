@@ -1,4 +1,3 @@
-// @/app/(admin)/_actions/brands/create-brand.ts
 'use server'
 
 import { Prisma } from '@/app/generated/prisma/client'
@@ -39,18 +38,17 @@ export async function createAdminBrand(
 
     return { success: true, data: brand }
   } catch (error) {
-    console.error('Ошибка при создании бренда:', error)
-
     if (
       error instanceof Prisma.PrismaClientKnownRequestError &&
       error.code === 'P2002'
     ) {
-      const target = error.meta?.target
-      if (Array.isArray(target) && target.includes('slug')) {
-        return { success: false, error: 'Бренд с таким slug уже существует.' }
+      return {
+        success: false,
+        error: 'Бренд с таким названием уже существует.',
       }
     }
 
+    console.error('Ошибка при создании бренда:', error)
     return { success: false, error: 'Не удалось создать бренд.' }
   }
 }

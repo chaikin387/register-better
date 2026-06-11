@@ -1,6 +1,7 @@
 import {
   FolderTree,
   ShoppingBag,
+  SlidersHorizontal,
   Tag,
   Users,
   type LucideIcon,
@@ -40,6 +41,11 @@ export const adminMenuGroups: AdminMenuGroup[] = [
         title: 'Товары',
         url: '/admin-panel/products',
         icon: ShoppingBag,
+      },
+      {
+        title: 'Атрибуты',
+        url: '/admin-panel/attributes',
+        icon: SlidersHorizontal,
       },
     ],
   },

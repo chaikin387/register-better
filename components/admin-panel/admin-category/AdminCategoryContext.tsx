@@ -7,7 +7,6 @@ interface Props {
   openCreateDialog: (parentId: string | null, parentLevel: number) => void
   openUpdateDialog: (category: AdminCategoryTreeSelect) => void
   openDeleteDialog: (category: AdminCategoryTreeSelect) => void
-  handleSwapSuccess: (idA: string, idB: string) => void
 }
 
 const AdminCategoryContext = createContext<Props | null>(null)

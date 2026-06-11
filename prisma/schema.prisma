@@ -1,6 +1,7 @@
 generator client {
-   provider = "prisma-client"
-   output   = "../app/generated/prisma"
+   provider        = "prisma-client"
+   output          = "../app/generated/prisma"
+   previewFeatures = ["partialIndexes"]
 }
 
 datasource db {
@@ -117,7 +118,8 @@ model Category {
    products           Product[]
    categoryAttributes CategoryAttribute[]
 
-   @@unique([name, parentId])
+   @@unique([slug], where: { parentId: null })
+   @@unique([slug, parentId], where: { parentId: { not: null } })
    @@index([parentId])
    @@index([isActive])
    @@map("category")
@@ -160,6 +162,7 @@ model AttributeValue {
    attributeId String
    value       String   @db.VarChar(150)
    slug        String   @db.VarChar(150)
+   sortOrder   Int      @default(0)
    createdAt   DateTime @default(now())
    updatedAt   DateTime @updatedAt
 
@@ -193,7 +196,7 @@ model Product {
    variants   ProductVariant[]
    attributes ProductAttributeValue[]
 
-   @@unique([name, categoryId])
+   @@unique([slug, categoryId])
    @@index([categoryId])
    @@index([brandId])
    @@index([isActive])

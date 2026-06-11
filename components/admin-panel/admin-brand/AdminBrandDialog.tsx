@@ -27,11 +27,10 @@ import { createBrandSchema, type CreateBrandInput } from './create-brand.schema'
 interface Props {
   isOpen: boolean
   onClose: () => void
-  onSuccess: (brand: AdminBrandSelectItem) => void
   brand?: AdminBrandSelectItem
 }
 
-export function AdminBrandDialog({ isOpen, onClose, onSuccess, brand }: Props) {
+export function AdminBrandDialog({ isOpen, onClose, brand }: Props) {
   const isUpdateMode = !!brand
 
   const {
@@ -61,7 +60,6 @@ export function AdminBrandDialog({ isOpen, onClose, onSuccess, brand }: Props) {
     }
 
     toast.success(isUpdateMode ? 'Бренд обновлён' : 'Бренд создан')
-    onSuccess(result.data)
     onClose()
   }
 

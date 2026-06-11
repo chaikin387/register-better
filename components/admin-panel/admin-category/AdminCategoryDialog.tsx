@@ -30,7 +30,7 @@ import {
 interface Props {
   isOpen: boolean
   onClose: () => void
-  onSuccess: (category: AdminCategoryTreeSelect) => void
+
   category?: AdminCategoryTreeSelect
   parentId?: string | null
   level?: number
@@ -39,7 +39,7 @@ interface Props {
 export function AdminCategoryDialog({
   isOpen,
   onClose,
-  onSuccess,
+
   category,
   parentId,
   level,
@@ -73,7 +73,7 @@ export function AdminCategoryDialog({
     }
 
     toast.success(isUpdateMode ? 'Категория обновлена' : 'Категория создана')
-    onSuccess(result.data)
+
     onClose()
   }
 

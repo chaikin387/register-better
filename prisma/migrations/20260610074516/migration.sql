@@ -211,7 +211,10 @@ CREATE INDEX "category_parentId_idx" ON "category"("parentId");
 CREATE INDEX "category_isActive_idx" ON "category"("isActive");
 
 -- CreateIndex
-CREATE UNIQUE INDEX "category_name_parentId_key" ON "category"("name", "parentId");
+CREATE UNIQUE INDEX "category_slug_key" ON "category"("slug") WHERE ("parentId" IS NULL);
+
+-- CreateIndex
+CREATE UNIQUE INDEX "category_slug_parentId_key" ON "category"("slug", "parentId") WHERE ("parentId" IS NOT NULL);
 
 -- CreateIndex
 CREATE INDEX "category_attribute_categoryId_idx" ON "category_attribute"("categoryId");
@@ -241,7 +244,7 @@ CREATE INDEX "product_brandId_idx" ON "product"("brandId");
 CREATE INDEX "product_isActive_idx" ON "product"("isActive");
 
 -- CreateIndex
-CREATE UNIQUE INDEX "product_name_categoryId_key" ON "product"("name", "categoryId");
+CREATE UNIQUE INDEX "product_slug_categoryId_key" ON "product"("slug", "categoryId");
 
 -- CreateIndex
 CREATE UNIQUE INDEX "product_variant_sku_key" ON "product_variant"("sku");

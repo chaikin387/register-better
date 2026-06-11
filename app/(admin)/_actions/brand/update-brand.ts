@@ -1,4 +1,3 @@
-// @/app/(admin)/_actions/brands/update-brand.ts
 'use server'
 
 import { Prisma } from '@/app/generated/prisma/client'
@@ -40,18 +39,17 @@ export async function updateAdminBrand(
 
     return { success: true, data: brand }
   } catch (error) {
-    console.error('Ошибка при обновлении бренда:', error)
-
     if (
       error instanceof Prisma.PrismaClientKnownRequestError &&
       error.code === 'P2002'
     ) {
-      const target = error.meta?.target
-      if (Array.isArray(target) && target.includes('slug')) {
-        return { success: false, error: 'Бренд с таким slug уже существует.' }
+      return {
+        success: false,
+        error: 'Бренд с таким названием уже существует.',
       }
     }
 
-    return { success: false, error: 'Не удалось update бренд.' }
+    console.error('Ошибка при обновлении бренда:', error)
+    return { success: false, error: 'Не удалось обновить бренд.' }
   }
 }

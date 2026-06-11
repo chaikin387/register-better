@@ -41,7 +41,7 @@ export function AdminBrandSelect({ brands, value, onChange, disabled }: Props) {
               key={brand.id}
               value={brand}
             >
-              {brand.name}
+              <span className='truncate'>{brand.name}</span>
             </ComboboxItem>
           )}
         </ComboboxList>

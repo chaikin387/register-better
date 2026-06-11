@@ -23,7 +23,6 @@ interface Props {
   isOpen: boolean
   category: AdminCategoryTreeSelect
   onClose: () => void
-  onSuccess: (id: string) => void
 }
 
 const MAX_ATTEMPTS = 3
@@ -33,7 +32,6 @@ export function AdminCategoryDeleteDialog({
   isOpen,
   category,
   onClose,
-  onSuccess,
 }: Props) {
   const [isPending, startTransition] = useTransition()
   const [attempts, setAttempts] = useState(0)
@@ -65,7 +63,7 @@ export function AdminCategoryDeleteDialog({
       }
 
       toast.success('Категория удалена')
-      onSuccess(result.id)
+
       setAttempts(0)
       handleClose()
     })

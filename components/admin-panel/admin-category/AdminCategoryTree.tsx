@@ -8,7 +8,6 @@ import {
   Pencil,
   Trash2,
 } from 'lucide-react'
-import { useTransition } from 'react'
 import { toast } from 'sonner'
 
 import { swapCategoryOrder } from '@/app/(admin)/_actions/categories/swap-category-order'
@@ -36,36 +35,36 @@ interface Props {
 }
 
 export function AdminCategoryTree({ category, prev, next, level = 1 }: Props) {
-  const {
-    openCreateDialog,
-    openUpdateDialog,
-    openDeleteDialog,
-    handleSwapSuccess,
-  } = useAdminCategoryContext()
-  const [isPending, startTransition] = useTransition()
+  const { openCreateDialog, openUpdateDialog, openDeleteDialog } =
+    useAdminCategoryContext()
 
   const children = category.children ?? []
   const hasChildren = children.length > 0
 
-  function swap(sibling: AdminCategoryTreeSelect) {
-    startTransition(async () => {
-      handleSwapSuccess(category.id, sibling.id)
-      const result = await swapCategoryOrder(
-        category.id,
-        category.sortOrder,
-        sibling.id,
-        sibling.sortOrder
-      )
-      if (!result.success) {
-        handleSwapSuccess(category.id, sibling.id)
-        toast.error(result.error)
-      }
-    })
+  async function handleSwap(
+    current: AdminCategoryTreeSelect,
+    sibling: AdminCategoryTreeSelect
+  ) {
+    const result = await swapCategoryOrder(
+      current.id,
+      current.sortOrder,
+      sibling.id,
+      sibling.sortOrder
+    )
+
+    if (!result.success) {
+      toast.error(result.error)
+    }
   }
 
   return (
     <Collapsible disabled={!hasChildren}>
-      <div className='flex items-center gap-3 rounded-lg border bg-background p-2 hover:bg-accent/40'>
+      <div
+        className={cn(
+          'flex items-center justify-between gap-3 rounded-lg border bg-background p-2 transition-colors hover:bg-accent/40',
+          !category.isActive && 'opacity-60'
+        )}
+      >
         <CollapsibleTrigger
           disabled={!hasChildren}
           className='group flex flex-1 items-center gap-3'
@@ -76,6 +75,7 @@ export function AdminCategoryTree({ category, prev, next, level = 1 }: Props) {
               !hasChildren && 'opacity-0'
             )}
           />
+
           <div className='flex min-w-0 flex-col'>
             <span className='truncate text-sm font-medium tracking-tight'>
               {category.name}
@@ -84,9 +84,11 @@ export function AdminCategoryTree({ category, prev, next, level = 1 }: Props) {
               /{category.slug}
             </span>
           </div>
+
           <span className='rounded-sm bg-accent/40 p-1 text-xs text-muted-foreground'>
             L{level}
           </span>
+
           <span
             className={cn(
               'size-2 shrink-0 rounded-full',
@@ -95,16 +97,15 @@ export function AdminCategoryTree({ category, prev, next, level = 1 }: Props) {
           />
         </CollapsibleTrigger>
 
-        {/* Компактная панель действий (все кнопки в 1 строку) */}
         <div className='flex shrink-0 items-center gap-0.5'>
           <Tooltip>
             <TooltipTrigger asChild>
               <Button
-                size='icon-lg'
                 variant='ghost'
-                disabled={!prev || isPending}
-                onClick={() => prev && swap(prev)}
-                className='text-muted-foreground hover:text-foreground disabled:opacity-30'
+                size='icon-lg'
+                disabled={!prev}
+                onClick={() => prev && handleSwap(category, prev)}
+                className='text-muted-foreground hover:text-foreground'
               >
                 <ArrowUp className='size-4' />
               </Button>
@@ -115,11 +116,11 @@ export function AdminCategoryTree({ category, prev, next, level = 1 }: Props) {
           <Tooltip>
             <TooltipTrigger asChild>
               <Button
-                size='icon-lg'
                 variant='ghost'
-                disabled={!next || isPending}
-                onClick={() => next && swap(next)}
-                className='text-muted-foreground hover:text-foreground disabled:opacity-30'
+                size='icon-lg'
+                disabled={!next}
+                onClick={() => next && handleSwap(category, next)}
+                className='text-muted-foreground hover:text-foreground'
               >
                 <ArrowDown className='size-4' />
               </Button>
@@ -130,11 +131,11 @@ export function AdminCategoryTree({ category, prev, next, level = 1 }: Props) {
           <Tooltip>
             <TooltipTrigger asChild>
               <Button
-                size='icon-lg'
                 variant='ghost'
+                size='icon-lg'
                 disabled={level >= 4}
                 onClick={() => openCreateDialog(category.id, level + 1)}
-                className='text-muted-foreground hover:text-foreground disabled:opacity-30'
+                className='text-muted-foreground hover:text-foreground'
               >
                 <FolderPlus className='size-4' />
               </Button>
@@ -145,8 +146,8 @@ export function AdminCategoryTree({ category, prev, next, level = 1 }: Props) {
           <Tooltip>
             <TooltipTrigger asChild>
               <Button
-                size='icon-lg'
                 variant='ghost'
+                size='icon-lg'
                 onClick={() => openUpdateDialog(category)}
                 className='text-muted-foreground hover:text-foreground'
               >
@@ -159,8 +160,8 @@ export function AdminCategoryTree({ category, prev, next, level = 1 }: Props) {
           <Tooltip>
             <TooltipTrigger asChild>
               <Button
-                size='icon-lg'
                 variant='ghost'
+                size='icon-lg'
                 onClick={() => openDeleteDialog(category)}
                 className='text-muted-foreground hover:text-destructive'
               >
@@ -172,7 +173,7 @@ export function AdminCategoryTree({ category, prev, next, level = 1 }: Props) {
         </div>
       </div>
 
-      <CollapsibleContent className='mt-1.5 ml-4 space-y-1.5'>
+      <CollapsibleContent className='mt-1.5 ml-7 space-y-1.5'>
         {children.map((child, i) => (
           <AdminCategoryTree
             key={child.id}

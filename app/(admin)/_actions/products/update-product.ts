@@ -55,8 +55,6 @@ export async function updateAdminProduct(
 
     return { success: true, data: updatedProduct }
   } catch (error) {
-    console.error('Ошибка при обновлении товара:', error)
-
     if (
       error instanceof Prisma.PrismaClientKnownRequestError &&
       error.code === 'P2002'
@@ -67,6 +65,7 @@ export async function updateAdminProduct(
       }
     }
 
+    console.error('Ошибка при обновлении товара:', error)
     return { success: false, error: 'Не удалось обновить товар.' }
   }
 }

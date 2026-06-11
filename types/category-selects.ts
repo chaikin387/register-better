@@ -171,6 +171,13 @@ export const categoryPageSelect = {
       },
     },
   },
+  products: {
+    where: { isActive: true },
+    select: {
+      id: true,
+      name: true,
+    },
+  },
 } satisfies Prisma.CategorySelect
 
 export type CategoryCardSelect = Prisma.CategoryGetPayload<{

@@ -1,4 +1,3 @@
-// create-product.ts
 'use server'
 
 import { Prisma } from '@/app/generated/prisma/client'
@@ -61,8 +60,6 @@ export async function createAdminProduct(
 
     return { success: true, data: product }
   } catch (error) {
-    console.error('Ошибка при создании товара:', error)
-
     if (
       error instanceof Prisma.PrismaClientKnownRequestError &&
       error.code === 'P2002'
@@ -73,6 +70,7 @@ export async function createAdminProduct(
       }
     }
 
+    console.error('Ошибка при создании товара:', error)
     return { success: false, error: 'Не удалось создать товар.' }
   }
 }

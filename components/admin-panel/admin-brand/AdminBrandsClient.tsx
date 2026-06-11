@@ -19,30 +19,26 @@ interface Props {
   initialBrands: AdminBrandSelectItem[]
 }
 
-export function AdminBrandsClient({ initialBrands }: Props) {
+export function AdminBrandsClient({ initialBrands: brands }: Props) {
   const {
-    brands,
     createOpen,
     updateBrand,
     deleteBrand,
     setCreateOpen,
     setUpdateBrand,
     setDeleteBrand,
-    handleCreateSuccess,
-    handleUpdateSuccess,
-    handleDeleteSuccess,
-  } = useAdminBrands(initialBrands)
+  } = useAdminBrands()
 
   return (
     <>
       <div className='space-y-6 px-4 py-8'>
         <div className='flex items-center justify-between border-b pb-4'>
-          <div>
-            <h1 className='flex items-center gap-2 text-2xl font-bold tracking-tight'>
+          <div className='space-y-1'>
+            <h1 className='flex items-center gap-2 text-2xl font-bold'>
               <Tag className='size-6 text-muted-foreground' />
               Бренды
             </h1>
-            <p className='mt-1 text-sm text-muted-foreground'>
+            <p className='text-sm text-muted-foreground'>
               Управление брендами товаров
             </p>
           </div>
@@ -63,11 +59,11 @@ export function AdminBrandsClient({ initialBrands }: Props) {
                 <div
                   key={brand.id}
                   className={cn(
-                    'flex items-center justify-between rounded-lg border bg-background p-2 transition-colors hover:bg-accent/40',
-                    !brand.isActive && 'bg-muted/20 opacity-60'
+                    'flex items-center justify-between gap-3 rounded-lg border bg-background p-2 transition-colors hover:bg-accent/40',
+                    !brand.isActive && 'opacity-60'
                   )}
                 >
-                  <div className='flex min-w-0 items-center gap-3'>
+                  <div className='flex min-w-0 items-center gap-3 pl-7'>
                     <div className='flex min-w-0 flex-col'>
                       <span className='truncate text-sm font-medium'>
                         {brand.name}
@@ -86,7 +82,7 @@ export function AdminBrandsClient({ initialBrands }: Props) {
                     />
                   </div>
 
-                  <div className='ml-4 flex shrink-0 items-center gap-0.5'>
+                  <div className='flex shrink-0 items-center gap-0.5'>
                     <Tooltip>
                       <TooltipTrigger asChild>
                         <Button
@@ -139,7 +135,6 @@ export function AdminBrandsClient({ initialBrands }: Props) {
         <AdminBrandDialog
           isOpen
           onClose={() => setCreateOpen(false)}
-          onSuccess={handleCreateSuccess}
         />
       )}
 
@@ -148,7 +143,6 @@ export function AdminBrandsClient({ initialBrands }: Props) {
           isOpen
           brand={updateBrand}
           onClose={() => setUpdateBrand(null)}
-          onSuccess={handleUpdateSuccess}
         />
       )}
 
@@ -157,7 +151,6 @@ export function AdminBrandsClient({ initialBrands }: Props) {
           isOpen
           brand={deleteBrand}
           onClose={() => setDeleteBrand(null)}
-          onSuccess={handleDeleteSuccess}
         />
       )}
     </>

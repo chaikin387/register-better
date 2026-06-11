@@ -23,18 +23,12 @@ interface Props {
   isOpen: boolean
   product: AdminProductItemSelect
   onClose: () => void
-  onSuccess: (id: string) => void
 }
 
 const MAX_ATTEMPTS = 3
 const COOLDOWN_TIME = 60
 
-export function AdminProductDeleteDialog({
-  isOpen,
-  product,
-  onClose,
-  onSuccess,
-}: Props) {
+export function AdminProductDeleteDialog({ isOpen, product, onClose }: Props) {
   const [isPending, startTransition] = useTransition()
   const [attempts, setAttempts] = useState(0)
 
@@ -65,7 +59,6 @@ export function AdminProductDeleteDialog({
       }
 
       toast.success('Товар успешно удален')
-      onSuccess(result.id)
       setAttempts(0)
       handleClose()
     })

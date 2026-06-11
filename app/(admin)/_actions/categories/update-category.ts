@@ -1,4 +1,3 @@
-// update-category.ts
 'use server'
 
 import { Prisma } from '@/app/generated/prisma/client'
@@ -41,8 +40,6 @@ export async function updateAdminCategory(
 
     return { success: true, data: updatedCategory }
   } catch (error) {
-    console.error('Ошибка при обновлении категории:', error)
-
     if (
       error instanceof Prisma.PrismaClientKnownRequestError &&
       error.code === 'P2002'
@@ -53,6 +50,7 @@ export async function updateAdminCategory(
       }
     }
 
+    console.error('Ошибка при обновлении категории:', error)
     return { success: false, error: 'Не удалось обновить категорию.' }
   }
 }

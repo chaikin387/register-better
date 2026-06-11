@@ -1610,6 +1610,7 @@ export const AttributeValueScalarFieldEnum = {
   attributeId: 'attributeId',
   value: 'value',
   slug: 'slug',
+  sortOrder: 'sortOrder',
   createdAt: 'createdAt',
   updatedAt: 'updatedAt'
 } as const
