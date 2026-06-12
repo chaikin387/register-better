@@ -15,7 +15,7 @@ export async function getAdminAttributeById(
       select: adminAttributeSelect,
     })
   } catch (error) {
-    console.error(`Ошибка при получении атрибута ${id}:`, error)
+    console.error(`Ошибка при получении атрибута с ID ${id}:`, error)
     return null
   }
 }

@@ -1,8 +1,18 @@
 'use client'
 
-import { List, Pencil, Plus, SlidersHorizontal, Trash2 } from 'lucide-react'
+import {
+  ArrowDown,
+  ArrowUp,
+  List,
+  Pencil,
+  Plus,
+  SlidersHorizontal,
+  Trash2,
+} from 'lucide-react'
 import Link from 'next/link'
+import { toast } from 'sonner'
 
+import { swapAttributeOrder } from '@/app/(admin)/_actions/attribute/swap-attribute-order'
 import { Badge } from '@/components/ui/badge'
 import { Button } from '@/components/ui/button'
 import {
@@ -32,6 +42,21 @@ export function AdminAttributesClient({
     setDeleteAttribute,
   } = useAdminAttributes()
 
+  async function handleSwap(
+    current: AdminAttributeSelectItem,
+    sibling: AdminAttributeSelectItem
+  ) {
+    const result = await swapAttributeOrder(
+      current.id,
+      current.sortOrder,
+      sibling.id,
+      sibling.sortOrder
+    )
+    if (!result.success) {
+      toast.error(result.error)
+    }
+  }
+
   return (
     <>
       <div className='space-y-6 px-4 py-8'>
@@ -58,86 +83,123 @@ export function AdminAttributesClient({
             </p>
           ) : (
             <div className='space-y-2'>
-              {attributes.map((attribute) => (
-                <div
-                  key={attribute.id}
-                  className='flex items-center justify-between gap-3 rounded-lg border bg-background p-2 transition-colors hover:bg-accent/40'
-                >
-                  <div className='flex min-w-0 flex-col gap-0.5 pl-7'>
-                    <div className='flex items-center gap-2'>
-                      <span className='truncate text-sm font-medium'>
-                        {attribute.name}
+              {attributes.map((attribute, i) => {
+                const prev = attributes[i - 1]
+                const next = attributes[i + 1]
+
+                return (
+                  <div
+                    key={attribute.id}
+                    className='flex items-center justify-between gap-3 rounded-lg border bg-background p-2 transition-colors hover:bg-accent/40'
+                  >
+                    <div className='flex min-w-0 flex-col gap-0.5'>
+                      <div className='flex items-center gap-2'>
+                        <span className='truncate text-sm font-medium'>
+                          {attribute.name}
+                        </span>
+                        <Badge
+                          variant='secondary'
+                          className='shrink-0'
+                        >
+                          {attribute._count.values}
+                        </Badge>
+                      </div>
+                      <span className='truncate font-mono text-[10px] text-muted-foreground'>
+                        /{attribute.slug}
                       </span>
-                      <Badge
-                        variant='secondary'
-                        className='shrink-0'
-                      >
-                        {attribute._count.values}
-                      </Badge>
+                      {attribute.values.length > 0 && (
+                        <span className='truncate text-[11px] text-muted-foreground'>
+                          {attribute.values.map((v) => v.value).join(' · ')}
+                          {attribute._count.values > 5 && ' · ...'}
+                        </span>
+                      )}
                     </div>
-                    <span className='truncate font-mono text-[10px] text-muted-foreground'>
-                      /{attribute.slug}
-                    </span>
-                    {attribute.values.length > 0 && (
-                      <span className='truncate text-[11px] text-muted-foreground'>
-                        {attribute.values.map((v) => v.value).join(' · ')}
-                        {attribute._count.values > 5 && ' · ...'}
-                      </span>
-                    )}
-                  </div>
 
-                  <div className='flex shrink-0 items-center gap-0.5'>
-                    <Tooltip>
-                      <TooltipTrigger asChild>
-                        <Button
-                          type='button'
-                          variant='ghost'
-                          size='icon-lg'
-                          asChild
-                          className='text-muted-foreground hover:text-foreground'
-                        >
-                          <Link
-                            href={`/admin-panel/attributes/${attribute.id}`}
+                    <div className='flex shrink-0 items-center gap-0.5'>
+                      <Tooltip>
+                        <TooltipTrigger asChild>
+                          <Button
+                            type='button'
+                            variant='ghost'
+                            size='icon-lg'
+                            disabled={!prev}
+                            onClick={() => prev && handleSwap(attribute, prev)}
+                            className='text-muted-foreground hover:text-foreground disabled:opacity-30'
                           >
-                            <List className='size-4' />
-                          </Link>
-                        </Button>
-                      </TooltipTrigger>
-                      <TooltipContent>Значения</TooltipContent>
-                    </Tooltip>
+                            <ArrowUp className='size-4' />
+                          </Button>
+                        </TooltipTrigger>
+                        <TooltipContent>Переместить вверх</TooltipContent>
+                      </Tooltip>
 
-                    <Tooltip>
-                      <TooltipTrigger asChild>
-                        <Button
-                          type='button'
-                          variant='ghost'
-                          size='icon-lg'
-                          onClick={() => setUpdateAttribute(attribute)}
-                          className='text-muted-foreground hover:text-foreground'
-                        >
-                          <Pencil className='size-4' />
-                        </Button>
-                      </TooltipTrigger>
-                      <TooltipContent>Редактировать</TooltipContent>
-                    </Tooltip>
+                      <Tooltip>
+                        <TooltipTrigger asChild>
+                          <Button
+                            type='button'
+                            variant='ghost'
+                            size='icon-lg'
+                            disabled={!next}
+                            onClick={() => next && handleSwap(attribute, next)}
+                            className='text-muted-foreground hover:text-foreground disabled:opacity-30'
+                          >
+                            <ArrowDown className='size-4' />
+                          </Button>
+                        </TooltipTrigger>
+                        <TooltipContent>Переместить вниз</TooltipContent>
+                      </Tooltip>
 
-                    <Tooltip>
-                      <TooltipTrigger asChild>
-                        <Button
-                          type='button'
-                          variant='ghost'
-                          size='icon-lg'
-                          onClick={() => setDeleteAttribute(attribute)}
-                          className='text-muted-foreground hover:text-destructive'
-                        >
-                          <Trash2 className='size-4' />
-                        </Button>
-                      </TooltipTrigger>
-                      <TooltipContent>Удалить атрибут</TooltipContent>
-                    </Tooltip>
+                      <Tooltip>
+                        <TooltipTrigger asChild>
+                          <Button
+                            type='button'
+                            variant='ghost'
+                            size='icon-lg'
+                            asChild
+                            className='text-muted-foreground hover:text-foreground'
+                          >
+                            <Link
+                              href={`/admin-panel/attributes/${attribute.id}`}
+                            >
+                              <List className='size-4' />
+                            </Link>
+                          </Button>
+                        </TooltipTrigger>
+                        <TooltipContent>Значения</TooltipContent>
+                      </Tooltip>
+
+                      <Tooltip>
+                        <TooltipTrigger asChild>
+                          <Button
+                            type='button'
+                            variant='ghost'
+                            size='icon-lg'
+                            onClick={() => setUpdateAttribute(attribute)}
+                            className='text-muted-foreground hover:text-foreground'
+                          >
+                            <Pencil className='size-4' />
+                          </Button>
+                        </TooltipTrigger>
+                        <TooltipContent>Редактировать</TooltipContent>
+                      </Tooltip>
+
+                      <Tooltip>
+                        <TooltipTrigger asChild>
+                          <Button
+                            type='button'
+                            variant='ghost'
+                            size='icon-lg'
+                            onClick={() => setDeleteAttribute(attribute)}
+                            className='text-muted-foreground hover:text-destructive'
+                          >
+                            <Trash2 className='size-4' />
+                          </Button>
+                        </TooltipTrigger>
+                        <TooltipContent>Удалить атрибут</TooltipContent>
+                      </Tooltip>
+                    </div>
                   </div>
-                </div>
-              ))}
+                )
+              })}
             </div>
           )}
         </div>

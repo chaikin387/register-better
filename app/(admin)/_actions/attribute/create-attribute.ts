@@ -25,12 +25,19 @@ export async function createAdminAttribute(
     const validatedData: CreateAttributeOutput =
       createAttributeSchema.parse(input)
 
-    const attribute = await prisma.attribute.create({
-      data: {
-        name: validatedData.name,
-        slug: validatedData.slug,
-      },
-      select: adminAttributeSelect,
+    const attribute = await prisma.$transaction(async (tx) => {
+      const aggregation = await tx.attribute.aggregate({
+        _max: { sortOrder: true },
+      })
+
+      return tx.attribute.create({
+        data: {
+          name: validatedData.name,
+          slug: validatedData.slug,
+          sortOrder: (aggregation._max.sortOrder ?? -1) + 1,
+        },
+        select: adminAttributeSelect,
+      })
     })
 
     revalidatePath('/admin-panel/attributes')

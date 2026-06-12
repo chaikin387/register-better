@@ -11,7 +11,7 @@ export async function getAdminAttributes(): Promise<
 > {
   try {
     return await prisma.attribute.findMany({
-      orderBy: { name: 'asc' },
+      orderBy: { sortOrder: 'asc' },
       select: adminAttributeSelect,
     })
   } catch (error) {

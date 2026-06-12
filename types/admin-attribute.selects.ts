@@ -4,10 +4,11 @@ export const adminAttributeSelect = {
   id: true,
   name: true,
   slug: true,
+  sortOrder: true,
   createdAt: true,
   values: {
     select: { value: true },
-    orderBy: { value: 'asc' },
+    orderBy: { sortOrder: 'asc' },
     take: 5,
   },
   _count: {

@@ -3,29 +3,28 @@
 import prisma from '@/lib/prisma'
 import { revalidatePath } from 'next/cache'
 
-export async function swapAttributeValueOrder(
+export async function swapAttributeOrder(
   idA: string,
   sortOrderA: number,
   idB: string,
-  sortOrderB: number,
-  attributeId: string
+  sortOrderB: number
 ): Promise<{ success: boolean; error?: string }> {
   try {
     await prisma.$transaction([
-      prisma.attributeValue.update({
+      prisma.attribute.update({
         where: { id: idA },
         data: { sortOrder: sortOrderB },
       }),
-      prisma.attributeValue.update({
+      prisma.attribute.update({
         where: { id: idB },
         data: { sortOrder: sortOrderA },
       }),
     ])
 
-    revalidatePath(`/admin-panel/attributes/${attributeId}`)
+    revalidatePath('/admin-panel/attributes')
 
     return { success: true }
   } catch {
-    return { success: false, error: 'Не удалось изменить порядок значений.' }
+    return { success: false, error: 'Не удалось изменить порядок атрибутов.' }
   }
 }

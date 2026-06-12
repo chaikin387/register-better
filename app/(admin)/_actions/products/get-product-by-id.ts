@@ -6,9 +6,6 @@ import {
   adminProductSelect,
 } from '@/types/admin-product-selects'
 
-/**
- * Получение одного товара по ID для админ-панели
- */
 export async function getAdminProductById(
   id: string
 ): Promise<AdminProductItemSelect | null> {
