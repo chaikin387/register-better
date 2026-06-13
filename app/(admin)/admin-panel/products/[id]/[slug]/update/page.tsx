@@ -1,9 +1,9 @@
 import { Metadata } from 'next'
 import { notFound } from 'next/navigation'
 
-import { getAdminBrands } from '@/app/(admin)/_actions/brand/get-brand'
-import { getAdminCategories } from '@/app/(admin)/_actions/categories/get-category'
-import { getAdminProductById } from '@/app/(admin)/_actions/products/get-product-by-id'
+import { getAdminBrands } from '@/app/(admin)/_actions/admin-brand/get-brand'
+import { getAdminCategories } from '@/app/(admin)/_actions/admin-category/get-category'
+import { getAdminProductById } from '@/app/(admin)/_actions/admin-product/get-product-by-id'
 import { AdminProductForm } from '@/components/admin-panel/admin-product/AdminProductForm'
 
 export const metadata: Metadata = {

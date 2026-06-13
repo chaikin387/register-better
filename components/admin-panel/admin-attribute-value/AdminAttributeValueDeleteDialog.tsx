@@ -4,7 +4,7 @@ import { Trash2Icon } from 'lucide-react'
 import { useState, useTransition } from 'react'
 import { toast } from 'sonner'
 
-import { deleteAdminAttributeValue } from '@/app/(admin)/_actions/attribute/delete-attribute-value'
+import { deleteAdminAttributeValue } from '@/app/(admin)/_actions/admin-atribute-value/delete-attribute-value'
 import { useCountdown } from '@/components/auth/hooks/use-countdown'
 import {
   AlertDialog,

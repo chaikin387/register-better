@@ -4,8 +4,8 @@ import { zodResolver } from '@hookform/resolvers/zod'
 import { Controller, useForm } from 'react-hook-form'
 import { toast } from 'sonner'
 
-import { createAdminCategory } from '@/app/(admin)/_actions/categories/create-category'
-import { updateAdminCategory } from '@/app/(admin)/_actions/categories/update-category'
+import { createAdminCategory } from '@/app/(admin)/_actions/admin-category/create-category'
+import { updateAdminCategory } from '@/app/(admin)/_actions/admin-category/update-category'
 import { Button } from '@/components/ui/button'
 import {
   Dialog,
@@ -30,7 +30,6 @@ import {
 interface Props {
   isOpen: boolean
   onClose: () => void
-
   category?: AdminCategoryTreeSelect
   parentId?: string | null
   level?: number
@@ -39,7 +38,6 @@ interface Props {
 export function AdminCategoryDialog({
   isOpen,
   onClose,
-
   category,
   parentId,
   level,

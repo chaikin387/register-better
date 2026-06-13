@@ -1,7 +1,8 @@
 import { AdminCategoriesClient } from '@/components/admin-panel/admin-category/AdminCategoriesClient'
 
 import { Metadata } from 'next'
-import { getAdminCategories } from '../../_actions/categories/get-category'
+import { getAdminAttributes } from '../../_actions/admin-attribute/get-attributes'
+import { getAdminCategories } from '../../_actions/admin-category/get-category'
 
 export const metadata: Metadata = {
   title: 'Категории | Админ-панель',
@@ -9,7 +10,15 @@ export const metadata: Metadata = {
 }
 
 export default async function CategoriesPage() {
-  const initialCategories = await getAdminCategories()
+  const [categories, allAttributes] = await Promise.all([
+    getAdminCategories(),
+    getAdminAttributes(),
+  ])
 
-  return <AdminCategoriesClient initialCategories={initialCategories} />
+  return (
+    <AdminCategoriesClient
+      initialCategories={categories}
+      allAttributes={allAttributes}
+    />
+  )
 }

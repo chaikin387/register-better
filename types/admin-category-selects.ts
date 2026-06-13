@@ -1,5 +1,11 @@
 import { Prisma } from '@/app/generated/prisma/client'
 
+const categoryAttributeCount = {
+  _count: {
+    select: { categoryAttributes: true },
+  },
+} as const
+
 export const adminCategorySelect = {
   id: true,
   slug: true,
@@ -9,6 +15,7 @@ export const adminCategorySelect = {
   isActive: true,
   sortOrder: true,
   parentId: true,
+  ...categoryAttributeCount,
   children: {
     orderBy: { sortOrder: 'asc' },
     select: {
@@ -20,6 +27,7 @@ export const adminCategorySelect = {
       isActive: true,
       sortOrder: true,
       parentId: true,
+      ...categoryAttributeCount,
       children: {
         orderBy: { sortOrder: 'asc' },
         select: {
@@ -31,6 +39,7 @@ export const adminCategorySelect = {
           isActive: true,
           sortOrder: true,
           parentId: true,
+          ...categoryAttributeCount,
           children: {
             orderBy: { sortOrder: 'asc' },
             select: {
@@ -42,6 +51,7 @@ export const adminCategorySelect = {
               isActive: true,
               sortOrder: true,
               parentId: true,
+              ...categoryAttributeCount,
             },
           },
         },

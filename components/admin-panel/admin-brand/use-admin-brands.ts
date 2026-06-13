@@ -1,8 +1,7 @@
 'use client'
 
-import { useState } from 'react'
-
 import type { AdminBrandSelectItem } from '@/types/admin-brand.selects'
+import { useState } from 'react'
 
 export function useAdminBrands() {
   const [createOpen, setCreateOpen] = useState(false)

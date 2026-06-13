@@ -1,6 +1,6 @@
 import { AdminProductsClient } from '@/components/admin-panel/admin-product/AdminProductsClient'
 import { Metadata } from 'next'
-import { getAdminProducts } from '../../_actions/products/get-product'
+import { getAdminProducts } from '../../_actions/admin-product/get-product'
 
 export const metadata: Metadata = {
   title: 'Товары | Админ-панель',

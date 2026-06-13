@@ -12,7 +12,7 @@ import {
 import Link from 'next/link'
 import { toast } from 'sonner'
 
-import { swapAttributeOrder } from '@/app/(admin)/_actions/attribute/swap-attribute-order'
+import { swapAttributeOrder } from '@/app/(admin)/_actions/admin-attribute/swap-attribute-order'
 import { Badge } from '@/components/ui/badge'
 import { Button } from '@/components/ui/button'
 import {

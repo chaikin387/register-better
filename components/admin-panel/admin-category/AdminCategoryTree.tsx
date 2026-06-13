@@ -6,11 +6,12 @@ import {
   ChevronRight,
   FolderPlus,
   Pencil,
+  SlidersHorizontal,
   Trash2,
 } from 'lucide-react'
 import { toast } from 'sonner'
 
-import { swapCategoryOrder } from '@/app/(admin)/_actions/categories/swap-category-order'
+import { swapCategoryOrder } from '@/app/(admin)/_actions/admin-category/swap-category-order'
 import { Button } from '@/components/ui/button'
 import {
   Collapsible,
@@ -35,11 +36,16 @@ interface Props {
 }
 
 export function AdminCategoryTree({ category, prev, next, level = 1 }: Props) {
-  const { openCreateDialog, openUpdateDialog, openDeleteDialog } =
-    useAdminCategoryContext()
+  const {
+    openCreateDialog,
+    openUpdateDialog,
+    openDeleteDialog,
+    openAttributesDialog,
+  } = useAdminCategoryContext()
 
   const children = category.children ?? []
   const hasChildren = children.length > 0
+  const attributeCount = category._count.categoryAttributes
 
   async function handleSwap(
     current: AdminCategoryTreeSelect,
@@ -105,7 +111,7 @@ export function AdminCategoryTree({ category, prev, next, level = 1 }: Props) {
                 size='icon-lg'
                 disabled={!prev}
                 onClick={() => prev && handleSwap(category, prev)}
-                className='text-muted-foreground hover:text-foreground'
+                className='text-muted-foreground hover:text-foreground disabled:opacity-30'
               >
                 <ArrowUp className='size-4' />
               </Button>
@@ -120,7 +126,7 @@ export function AdminCategoryTree({ category, prev, next, level = 1 }: Props) {
                 size='icon-lg'
                 disabled={!next}
                 onClick={() => next && handleSwap(category, next)}
-                className='text-muted-foreground hover:text-foreground'
+                className='text-muted-foreground hover:text-foreground disabled:opacity-30'
               >
                 <ArrowDown className='size-4' />
               </Button>
@@ -135,12 +141,33 @@ export function AdminCategoryTree({ category, prev, next, level = 1 }: Props) {
                 size='icon-lg'
                 disabled={level >= 4}
                 onClick={() => openCreateDialog(category.id, level + 1)}
-                className='text-muted-foreground hover:text-foreground'
+                className='text-muted-foreground hover:text-foreground disabled:opacity-30'
               >
                 <FolderPlus className='size-4' />
               </Button>
             </TooltipTrigger>
             <TooltipContent>Добавить подкатегорию</TooltipContent>
+          </Tooltip>
+
+          <Tooltip>
+            <TooltipTrigger asChild>
+              <Button
+                variant='ghost'
+                size='icon-lg'
+                onClick={() => openAttributesDialog(category)}
+                className='relative text-muted-foreground hover:text-foreground'
+              >
+                <SlidersHorizontal className='size-4' />
+                {attributeCount > 0 && (
+                  <span className='absolute -top-0.5 -right-0.5 flex size-3.5 items-center justify-center rounded-full bg-primary text-[9px] leading-none text-primary-foreground'>
+                    {attributeCount}
+                  </span>
+                )}
+              </Button>
+            </TooltipTrigger>
+            <TooltipContent>
+              Атрибуты{attributeCount > 0 ? ` (${attributeCount})` : ''}
+            </TooltipContent>
           </Tooltip>
 
           <Tooltip>

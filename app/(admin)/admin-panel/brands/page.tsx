@@ -1,6 +1,6 @@
 import { AdminBrandsClient } from '@/components/admin-panel/admin-brand/AdminBrandsClient'
 import { Metadata } from 'next'
-import { getAdminBrands } from '../../_actions/brand/get-brand'
+import { getAdminBrands } from '../../_actions/admin-brand/get-brand'
 
 export const metadata: Metadata = {
   title: 'Бренды | Админ-панель',

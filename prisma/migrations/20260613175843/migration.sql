@@ -105,6 +105,7 @@ CREATE TABLE "attribute" (
     "id" TEXT NOT NULL,
     "slug" VARCHAR(100) NOT NULL,
     "name" VARCHAR(150) NOT NULL,
+    "sortOrder" INTEGER NOT NULL DEFAULT 0,
     "createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
     "updatedAt" TIMESTAMP(3) NOT NULL,
 
@@ -117,6 +118,7 @@ CREATE TABLE "attribute_value" (
     "attributeId" TEXT NOT NULL,
     "value" VARCHAR(150) NOT NULL,
     "slug" VARCHAR(150) NOT NULL,
+    "sortOrder" INTEGER NOT NULL DEFAULT 0,
     "createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
     "updatedAt" TIMESTAMP(3) NOT NULL,
 

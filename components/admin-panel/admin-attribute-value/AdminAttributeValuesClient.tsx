@@ -12,7 +12,6 @@ import {
 import Link from 'next/link'
 import { toast } from 'sonner'
 
-import { swapAttributeValueOrder } from '@/app/(admin)/_actions/attribute/swap-attribute-value-order'
 import { Button } from '@/components/ui/button'
 import {
   Tooltip,
@@ -22,6 +21,7 @@ import {
 import type { AdminAttributeValueSelectItem } from '@/types/admin-attribute-value.selects'
 import type { AdminAttributeSelectItem } from '@/types/admin-attribute.selects'
 
+import { swapAttributeValueOrder } from '@/app/(admin)/_actions/admin-atribute-value/swap-attribute-value-order'
 import { AdminAttributeValueDeleteDialog } from './AdminAttributeValueDeleteDialog'
 import { AdminAttributeValueDialog } from './AdminAttributeValueDialog'
 import { useAdminAttributeValues } from './use-admin-attribute-values'

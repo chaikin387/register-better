@@ -1,6 +1,6 @@
 import { Metadata } from 'next'
 
-import { getAdminAttributes } from '@/app/(admin)/_actions/attribute/get-attributes'
+import { getAdminAttributes } from '@/app/(admin)/_actions/admin-attribute/get-attributes'
 import { AdminAttributesClient } from '@/components/admin-panel/admin-attribute/AdminAttributesClient'
 
 export const metadata: Metadata = {

@@ -3,29 +3,36 @@
 import { FolderTree, Plus } from 'lucide-react'
 
 import { Button } from '@/components/ui/button'
+import type { AdminAttributeSelectItem } from '@/types/admin-attribute.selects'
 import type { AdminCategoryTreeSelect } from '@/types/admin-category-selects'
 
+import { AdminCategoryAttributeDialog } from '../admin-category-attribute/AdminCategoryAttributeDialog'
 import { AdminCategoryProvider } from './AdminCategoryContext'
 import { AdminCategoryDeleteDialog } from './AdminCategoryDeleteDialog'
 import { AdminCategoryDialog } from './AdminCategoryDialog'
 import { AdminCategoryTree } from './AdminCategoryTree'
-import { useAdminCatalog } from './use-admin-catalog'
+import { useAdminCategories } from './use-admin-categories'
 
 interface Props {
   initialCategories: AdminCategoryTreeSelect[]
+  allAttributes: AdminAttributeSelectItem[]
 }
 
 export function AdminCategoriesClient({
   initialCategories: categories,
+  allAttributes,
 }: Props) {
   const {
     createDialog,
     updateCategory,
     deleteCategory,
+    attributesDialog,
     setCreateDialog,
     setUpdateCategory,
     setDeleteCategory,
-  } = useAdminCatalog()
+    setAttributesDialog,
+    openAttributesDialog,
+  } = useAdminCategories()
 
   return (
     <AdminCategoryProvider
@@ -34,6 +41,7 @@ export function AdminCategoriesClient({
           setCreateDialog({ parentId, level }),
         openUpdateDialog: setUpdateCategory,
         openDeleteDialog: setDeleteCategory,
+        openAttributesDialog,
       }}
     >
       <div className='space-y-6 px-4 py-8'>
@@ -106,6 +114,16 @@ export function AdminCategoriesClient({
           isOpen
           category={deleteCategory}
           onClose={() => setDeleteCategory(null)}
+        />
+      )}
+
+      {attributesDialog && (
+        <AdminCategoryAttributeDialog
+          isOpen
+          category={attributesDialog.category}
+          initialCategoryAttributes={attributesDialog.categoryAttributes}
+          allAttributes={allAttributes}
+          onClose={() => setAttributesDialog(null)}
         />
       )}
     </AdminCategoryProvider>

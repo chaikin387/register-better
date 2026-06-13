@@ -12,6 +12,18 @@ export async function deleteAdminAttributeValue(
   attributeId: string
 ): Promise<ActionResult> {
   try {
+    const hasProducts = await prisma.productAttributeValue.findFirst({
+      where: { attributeValueId: id },
+      select: { productId: true },
+    })
+
+    if (hasProducts) {
+      return {
+        success: false,
+        error: 'Нельзя удалить значение — оно используется в товарах.',
+      }
+    }
+
     await prisma.attributeValue.delete({ where: { id } })
 
     revalidatePath(`/admin-panel/attributes/${attributeId}`)

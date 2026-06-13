@@ -1,8 +1,8 @@
 import { Metadata } from 'next'
 import { notFound } from 'next/navigation'
 
-import { getAdminAttributeById } from '@/app/(admin)/_actions/attribute/get-attribute-by-id'
-import { getAdminAttributeValues } from '@/app/(admin)/_actions/attribute/get-attribute-values'
+import { getAdminAttributeValues } from '@/app/(admin)/_actions/admin-atribute-value/get-attribute-values'
+import { getAdminAttributeById } from '@/app/(admin)/_actions/admin-attribute/get-attribute-by-id'
 import { AdminAttributeValuesClient } from '@/components/admin-panel/admin-attribute-value/AdminAttributeValuesClient'
 
 type Props = {

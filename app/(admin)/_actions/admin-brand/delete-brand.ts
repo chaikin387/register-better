@@ -1,8 +1,7 @@
 'use server'
 
-import { revalidatePath } from 'next/cache'
-
 import prisma from '@/lib/prisma'
+import { revalidatePath } from 'next/cache'
 
 type ActionResult =
   | { success: true; id: string }
@@ -18,7 +17,7 @@ export async function deleteAdminBrand(id: string): Promise<ActionResult> {
     if (hasProducts) {
       return {
         success: false,
-        error: 'Нельзя удалить бренд, к которому привязаны товары.',
+        error: 'Нельзя удалить бренд — к нему привязаны товары.',
       }
     }
 

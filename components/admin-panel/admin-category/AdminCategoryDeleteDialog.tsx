@@ -4,7 +4,7 @@ import { Trash2Icon } from 'lucide-react'
 import { useState, useTransition } from 'react'
 import { toast } from 'sonner'
 
-import { deleteAdminCategory } from '@/app/(admin)/_actions/categories/delete-category'
+import { deleteAdminCategory } from '@/app/(admin)/_actions/admin-category/delete-category'
 import { useCountdown } from '@/components/auth/hooks/use-countdown'
 import {
   AlertDialog,
@@ -43,10 +43,6 @@ export function AdminCategoryDeleteDialog({
     }
   )
 
-  function handleClose() {
-    onClose()
-  }
-
   function handleConfirm(e: React.MouseEvent<HTMLButtonElement>) {
     e.preventDefault()
     if (isPending || countdown > 0) return
@@ -65,14 +61,14 @@ export function AdminCategoryDeleteDialog({
       toast.success('Категория удалена')
 
       setAttempts(0)
-      handleClose()
+      onClose()
     })
   }
 
   return (
     <AlertDialog
       open={isOpen}
-      onOpenChange={handleClose}
+      onOpenChange={onClose}
     >
       <AlertDialogContent size='sm'>
         <AlertDialogHeader>

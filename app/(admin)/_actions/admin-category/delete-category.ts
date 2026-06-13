@@ -17,7 +17,7 @@ export async function deleteAdminCategory(id: string): Promise<ActionResult> {
     if (hasChildren) {
       return {
         success: false,
-        error: 'Нельзя удалить категорию, содержащую подкатегории.',
+        error: 'Нельзя удалить категорию — она содержит подкатегории.',
       }
     }
 
@@ -29,7 +29,7 @@ export async function deleteAdminCategory(id: string): Promise<ActionResult> {
     if (hasProducts) {
       return {
         success: false,
-        error: 'Нельзя удалить категорию, к которой привязаны товары.',
+        error: 'Нельзя удалить категорию — к ней привязаны товары.',
       }
     }
 

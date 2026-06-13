@@ -1,5 +1,5 @@
-import { getAdminBrands } from '@/app/(admin)/_actions/brand/get-brand'
-import { getAdminCategories } from '@/app/(admin)/_actions/categories/get-category'
+import { getAdminBrands } from '@/app/(admin)/_actions/admin-brand/get-brand'
+import { getAdminCategories } from '@/app/(admin)/_actions/admin-category/get-category'
 import { AdminProductForm } from '@/components/admin-panel/admin-product/AdminProductForm'
 
 import { Metadata } from 'next'

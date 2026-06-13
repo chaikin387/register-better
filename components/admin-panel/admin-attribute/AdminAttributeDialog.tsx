@@ -4,8 +4,8 @@ import { zodResolver } from '@hookform/resolvers/zod'
 import { Controller, useForm } from 'react-hook-form'
 import { toast } from 'sonner'
 
-import { createAdminAttribute } from '@/app/(admin)/_actions/attribute/create-attribute'
-import { updateAdminAttribute } from '@/app/(admin)/_actions/attribute/update-attribute'
+import { createAdminAttribute } from '@/app/(admin)/_actions/admin-attribute/create-attribute'
+import { updateAdminAttribute } from '@/app/(admin)/_actions/admin-attribute/update-attribute'
 import { Button } from '@/components/ui/button'
 import {
   Dialog,

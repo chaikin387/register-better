@@ -4,8 +4,8 @@ import { zodResolver } from '@hookform/resolvers/zod'
 import { Controller, useForm } from 'react-hook-form'
 import { toast } from 'sonner'
 
-import { createAdminBrand } from '@/app/(admin)/_actions/brand/create-brand'
-import { updateAdminBrand } from '@/app/(admin)/_actions/brand/update-brand'
+import { createAdminBrand } from '@/app/(admin)/_actions/admin-brand/create-brand'
+import { updateAdminBrand } from '@/app/(admin)/_actions/admin-brand/update-brand'
 import { Button } from '@/components/ui/button'
 import {
   Dialog,

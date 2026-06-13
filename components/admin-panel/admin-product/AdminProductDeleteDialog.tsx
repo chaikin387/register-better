@@ -4,7 +4,7 @@ import { Trash2Icon } from 'lucide-react'
 import { useState, useTransition } from 'react'
 import { toast } from 'sonner'
 
-import { deleteAdminProduct } from '@/app/(admin)/_actions/products/delete-product'
+import { deleteAdminProduct } from '@/app/(admin)/_actions/admin-product/delete-product'
 import { useCountdown } from '@/components/auth/hooks/use-countdown'
 import {
   AlertDialog,
@@ -39,10 +39,6 @@ export function AdminProductDeleteDialog({ isOpen, product, onClose }: Props) {
     }
   )
 
-  function handleClose() {
-    onClose()
-  }
-
   function handleConfirm(e: React.MouseEvent<HTMLButtonElement>) {
     e.preventDefault()
     if (isPending || countdown > 0) return
@@ -60,14 +56,14 @@ export function AdminProductDeleteDialog({ isOpen, product, onClose }: Props) {
 
       toast.success('Товар успешно удален')
       setAttempts(0)
-      handleClose()
+      onClose()
     })
   }
 
   return (
     <AlertDialog
       open={isOpen}
-      onOpenChange={handleClose}
+      onOpenChange={onClose}
     >
       <AlertDialogContent size='sm'>
         <AlertDialogHeader>
