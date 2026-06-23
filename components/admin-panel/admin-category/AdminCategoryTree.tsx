@@ -73,34 +73,45 @@ export function AdminCategoryTree({ category, prev, next, level = 1 }: Props) {
       >
         <CollapsibleTrigger
           disabled={!hasChildren}
-          className='group flex flex-1 items-center gap-3'
+          className='group flex min-w-0 flex-1 items-center gap-3'
         >
           <ChevronRight
             className={cn(
-              'size-4 text-muted-foreground transition-transform group-data-[state=open]:rotate-90',
+              'size-4 shrink-0 text-muted-foreground transition-transform group-data-[state=open]:rotate-90',
               !hasChildren && 'opacity-0'
             )}
           />
 
-          <div className='flex min-w-0 flex-col'>
-            <span className='truncate text-sm font-medium tracking-tight'>
-              {category.name}
-            </span>
-            <span className='text-[10px] text-muted-foreground'>
-              /{category.slug}
-            </span>
-          </div>
+          <div className='flex min-w-0 flex-col gap-1'>
+            <div className='flex items-center gap-3'>
+              <span className='shrink-0 rounded-sm bg-accent/40 p-1 text-xs text-muted-foreground'>
+                L{level}
+              </span>
 
-          <span className='rounded-sm bg-accent/40 p-1 text-xs text-muted-foreground'>
-            L{level}
-          </span>
+              <span className='truncate text-sm font-medium tracking-tight'>
+                {category.name}
+              </span>
 
-          <span
-            className={cn(
-              'size-2 shrink-0 rounded-full',
-              category.isActive ? 'bg-green-500' : 'bg-muted-foreground/40'
+              <span className='truncate text-[10px] text-muted-foreground'>
+                /{category.slug}
+              </span>
+
+              <span
+                className={cn(
+                  'size-2 shrink-0 rounded-full',
+                  category.isActive ? 'bg-green-500' : 'bg-muted-foreground/40'
+                )}
+              />
+            </div>
+
+            {attributeCount > 0 && (
+              <p className='truncate text-left text-[11px] text-muted-foreground'>
+                {category.categoryAttributes
+                  .map((ca) => ca.attribute.name)
+                  .join(' · ')}
+              </p>
             )}
-          />
+          </div>
         </CollapsibleTrigger>
 
         <div className='flex shrink-0 items-center gap-0.5'>

@@ -4,7 +4,7 @@ import { Trash2Icon } from 'lucide-react'
 import { useState, useTransition } from 'react'
 import { toast } from 'sonner'
 
-import { deleteAdminAttributeValue } from '@/app/(admin)/_actions/admin-atribute-value/delete-attribute-value'
+import { deleteAdminAttributeValue } from '@/app/(admin)/_actions/admin-attribute-value/delete-attribute-value'
 import { useCountdown } from '@/components/auth/hooks/use-countdown'
 import {
   AlertDialog,
@@ -17,6 +17,7 @@ import {
   AlertDialogMedia,
   AlertDialogTitle,
 } from '@/components/ui/alert-dialog'
+import { Spinner } from '@/components/ui/spinner'
 import type { AdminAttributeValueSelectItem } from '@/types/admin-attribute-value.selects'
 
 interface Props {
@@ -105,6 +106,7 @@ export function AdminAttributeValueDeleteDialog({
             onClick={handleConfirm}
             disabled={isPending || countdown > 0}
           >
+            {isPending && <Spinner />}
             Удалить
           </AlertDialogAction>
         </AlertDialogFooter>

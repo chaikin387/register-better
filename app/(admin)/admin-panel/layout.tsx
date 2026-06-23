@@ -11,10 +11,8 @@ export default function AdminPanelLayout({
     <SidebarProvider>
       <AdminSidebar />
       <SidebarInset>
-        <main className='flex flex-1 flex-col'>
-          <AdminSidebarHeader />
-          {children}
-        </main>
+        <AdminSidebarHeader />
+        {children}
       </SidebarInset>
     </SidebarProvider>
   )

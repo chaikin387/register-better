@@ -21,9 +21,9 @@ import type { AdminAttributeSelectItem } from '@/types/admin-attribute.selects'
 import type { AdminCategoryAttributeSelectItem } from '@/types/admin-category-attribute'
 import type { AdminCategoryTreeSelect } from '@/types/admin-category-selects'
 
-import { createAdminCategoryAttribute } from '@/app/(admin)/_actions/admin-category-atribute/create-category-attribute'
-import { deleteAdminCategoryAttribute } from '@/app/(admin)/_actions/admin-category-atribute/delete-category-attribute'
-import { swapCategoryAttributeOrder } from '@/app/(admin)/_actions/admin-category-atribute/swap-category-attribute-order'
+import { createAdminCategoryAttribute } from '@/app/(admin)/_actions/admin-category-attribute/create-category-attribute'
+import { deleteAdminCategoryAttribute } from '@/app/(admin)/_actions/admin-category-attribute/delete-category-attribute'
+import { swapCategoryAttributeOrder } from '@/app/(admin)/_actions/admin-category-attribute/swap-category-attribute-order'
 import { AdminCategoryAttributeSelect } from './AdminCategoryAttributeSelect'
 
 interface Props {
@@ -88,7 +88,7 @@ export function AdminCategoryAttributeDialog({
       open={isOpen}
       onOpenChange={onClose}
     >
-      <DialogContent className='sm:max-w-110'>
+      <DialogContent className='sm:max-w-164'>
         <DialogHeader>
           <DialogTitle className='flex items-center gap-2'>
             <SlidersHorizontal className='size-4 text-muted-foreground' />
@@ -125,7 +125,7 @@ export function AdminCategoryAttributeDialog({
                       <span className='truncate text-sm font-medium'>
                         {ca.attribute.name}
                       </span>
-                      <span className='truncate font-mono text-[10px] text-muted-foreground'>
+                      <span className='truncate text-[10px] text-muted-foreground'>
                         /{ca.attribute.slug}
                       </span>
                     </div>

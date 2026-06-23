@@ -80,7 +80,7 @@ export function AdminCategoryDialog({
       open={isOpen}
       onOpenChange={onClose}
     >
-      <DialogContent className='sm:max-w-110'>
+      <DialogContent className='sm:max-w-164'>
         <DialogHeader>
           <DialogTitle>
             {isUpdateMode ? 'Редактировать категорию' : 'Создать категорию'}
@@ -89,16 +89,14 @@ export function AdminCategoryDialog({
             {isUpdateMode ? (
               <>
                 Изменение параметров категории{' '}
-                <span className='font-mono font-bold text-foreground'>
+                <span className='font-bold text-foreground'>
                   {category.name}
                 </span>
               </>
             ) : (
               <>
                 Добавление новой категории на уровень{' '}
-                <span className='font-mono font-bold text-foreground'>
-                  L{level}
-                </span>
+                <span className='font-bold text-foreground'>L{level}</span>
               </>
             )}
           </DialogDescription>
@@ -172,7 +170,7 @@ export function AdminCategoryDialog({
             </FieldGroup>
           </FieldSet>
 
-          <DialogFooter className='mt-6 gap-2 sm:gap-0'>
+          <DialogFooter>
             <Button
               type='button'
               variant='outline'
@@ -184,9 +182,8 @@ export function AdminCategoryDialog({
             <Button
               type='submit'
               disabled={isSubmitting}
-              className='gap-2'
             >
-              {isSubmitting && <Spinner data-icon='inline-start' />}
+              {isSubmitting && <Spinner />}
               {isUpdateMode ? 'Сохранить' : 'Создать'}
             </Button>
           </DialogFooter>

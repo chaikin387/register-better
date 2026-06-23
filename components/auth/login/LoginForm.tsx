@@ -207,9 +207,7 @@ export const LoginForm = () => {
                     </>
                   ) : (
                     <>
-                      {isSubmittingPassword && (
-                        <Spinner data-icon='inline-start' />
-                      )}
+                      {isSubmittingPassword && <Spinner />}
                       Войти
                     </>
                   )}
@@ -274,7 +272,7 @@ export const LoginForm = () => {
                           ) : (
                             <>
                               {isSending ? (
-                                <Spinner data-icon='inline-start' />
+                                <Spinner />
                               ) : codeSent ? (
                                 <RefreshCw className='size-3' />
                               ) : (
@@ -326,7 +324,7 @@ export const LoginForm = () => {
                   disabled={disabledOtp.submit}
                   className='mt-5 w-full'
                 >
-                  {isSubmittingOtp && <Spinner data-icon='inline-start' />}
+                  {isSubmittingOtp && <Spinner />}
                   Войти
                 </Button>
               </form>

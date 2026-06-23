@@ -158,7 +158,7 @@ export function AdminProductForm({ product, categories, brands }: Props) {
             )}
           />
           <span className='block px-1 text-[10px] leading-none text-muted-foreground'>
-            Если бренда нет — оставьте пустым
+            Если бренда нет, оставьте поле пустым
           </span>
         </div>
 
@@ -270,7 +270,7 @@ export function AdminProductForm({ product, categories, brands }: Props) {
         </div>
       </div>
 
-      <div className='flex gap-3 border-t pt-4'>
+      <div className='flex gap-2 border-t pt-4'>
         <Button
           type='button'
           variant='outline'
@@ -283,7 +283,7 @@ export function AdminProductForm({ product, categories, brands }: Props) {
           type='submit'
           disabled={isSubmitting}
         >
-          {isSubmitting && <Spinner data-icon='inline-start' />}
+          {isSubmitting && <Spinner />}
           {isUpdateMode ? 'Сохранить изменения' : 'Создать товар'}
         </Button>
       </div>

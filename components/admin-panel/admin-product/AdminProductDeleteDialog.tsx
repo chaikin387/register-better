@@ -17,6 +17,7 @@ import {
   AlertDialogMedia,
   AlertDialogTitle,
 } from '@/components/ui/alert-dialog'
+import { Spinner } from '@/components/ui/spinner'
 import type { AdminProductItemSelect } from '@/types/admin-product-selects'
 
 interface Props {
@@ -98,6 +99,7 @@ export function AdminProductDeleteDialog({ isOpen, product, onClose }: Props) {
             onClick={handleConfirm}
             disabled={isPending || countdown > 0}
           >
+            {isPending && <Spinner />}
             Удалить
           </AlertDialogAction>
         </AlertDialogFooter>

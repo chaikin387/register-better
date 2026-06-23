@@ -17,6 +17,7 @@ import {
   AlertDialogMedia,
   AlertDialogTitle,
 } from '@/components/ui/alert-dialog'
+import { Spinner } from '@/components/ui/spinner'
 import type { AdminCategoryTreeSelect } from '@/types/admin-category-selects'
 
 interface Props {
@@ -102,6 +103,7 @@ export function AdminCategoryDeleteDialog({
             onClick={handleConfirm}
             disabled={isPending || countdown > 0}
           >
+            {isPending && <Spinner />}
             Удалить
           </AlertDialogAction>
         </AlertDialogFooter>

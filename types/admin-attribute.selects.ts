@@ -9,7 +9,6 @@ export const adminAttributeSelect = {
   values: {
     select: { value: true },
     orderBy: { sortOrder: 'asc' },
-    take: 5,
   },
   _count: {
     select: { values: true },

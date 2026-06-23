@@ -1,12 +1,14 @@
 import { Prisma } from '@/app/generated/prisma/client'
 
-const categoryAttributeCount = {
-  _count: {
-    select: { categoryAttributes: true },
+const categoryAttributesPreview = {
+  _count: { select: { categoryAttributes: true } },
+  categoryAttributes: {
+    orderBy: { sortOrder: 'asc' as const },
+    select: { attribute: { select: { name: true } } },
   },
 } as const
 
-export const adminCategorySelect = {
+const level4 = {
   id: true,
   slug: true,
   name: true,
@@ -15,44 +17,22 @@ export const adminCategorySelect = {
   isActive: true,
   sortOrder: true,
   parentId: true,
-  ...categoryAttributeCount,
+  ...categoryAttributesPreview,
+} as const
+
+export const adminCategorySelect = {
+  ...level4,
   children: {
-    orderBy: { sortOrder: 'asc' },
+    orderBy: { sortOrder: 'asc' as const },
     select: {
-      id: true,
-      slug: true,
-      name: true,
-      icon: true,
-      image: true,
-      isActive: true,
-      sortOrder: true,
-      parentId: true,
-      ...categoryAttributeCount,
+      ...level4,
       children: {
-        orderBy: { sortOrder: 'asc' },
+        orderBy: { sortOrder: 'asc' as const },
         select: {
-          id: true,
-          slug: true,
-          name: true,
-          icon: true,
-          image: true,
-          isActive: true,
-          sortOrder: true,
-          parentId: true,
-          ...categoryAttributeCount,
+          ...level4,
           children: {
-            orderBy: { sortOrder: 'asc' },
-            select: {
-              id: true,
-              slug: true,
-              name: true,
-              icon: true,
-              image: true,
-              isActive: true,
-              sortOrder: true,
-              parentId: true,
-              ...categoryAttributeCount,
-            },
+            orderBy: { sortOrder: 'asc' as const },
+            select: level4,
           },
         },
       },

@@ -1,5 +1,17 @@
 'use client'
 
+import {
+  ChevronRight,
+  Pencil,
+  Plus,
+  Scale,
+  ShoppingBag,
+  SlidersHorizontal,
+  Trash2,
+} from 'lucide-react'
+import Link from 'next/link'
+import React from 'react'
+
 import { Badge } from '@/components/ui/badge'
 import { Button } from '@/components/ui/button'
 import { Separator } from '@/components/ui/separator'
@@ -12,16 +24,8 @@ import { cn } from '@/lib/utils'
 import type { AdminProductItemSelect } from '@/types/admin-product-selects'
 import { formatPrice } from '@/utils/format-price'
 import { formatWeight } from '@/utils/format-weight'
-import {
-  ChevronRight,
-  Pencil,
-  Plus,
-  Scale,
-  ShoppingBag,
-  Trash2,
-} from 'lucide-react'
-import Link from 'next/link'
-import React from 'react'
+
+import { AdminProductCategoryAttributeDialog } from './AdminProductCategoryAttributeDialog'
 import { AdminProductDeleteDialog } from './AdminProductDeleteDialog'
 import { adminProductBreadcrumbs } from './admin-product-breadcrumbs'
 import { useAdminProducts } from './use-admin-products'
@@ -31,12 +35,18 @@ interface Props {
 }
 
 export function AdminProductsClient({ initialProducts: products }: Props) {
-  const { deleteProduct, setDeleteProduct } = useAdminProducts()
+  const {
+    deleteProduct,
+    attributesDialog,
+    setDeleteProduct,
+    setAttributesDialog,
+    openAttributesDialog,
+  } = useAdminProducts()
 
   return (
-    <div className='space-y-6 px-4 py-8'>
-      <div className='flex items-center justify-between border-b pb-4'>
-        <div className='space-y-1'>
+    <section className='space-y-6 px-4 py-8'>
+      <div className='flex items-end justify-between border-b pb-4'>
+        <div className='flex flex-col gap-1'>
           <h1 className='flex items-center gap-2 text-2xl font-bold'>
             <ShoppingBag className='size-6 text-muted-foreground' />
             Товары
@@ -61,23 +71,24 @@ export function AdminProductsClient({ initialProducts: products }: Props) {
           <div className='space-y-2'>
             {products.map((product) => {
               const variant = product.variants?.[0]
+              const attributeCount = product._count.attributes
 
               return (
                 <div
                   key={product.id}
                   className={cn(
-                    'flex items-center justify-between gap-3 rounded-lg border bg-background p-2 transition-colors hover:bg-accent/40',
+                    'flex items-center justify-between gap-3 rounded-lg border bg-background px-3 py-2 hover:bg-accent/40',
                     !product.isActive && 'opacity-60'
                   )}
                 >
-                  <div className='flex flex-col gap-1 pl-7'>
+                  <div className='flex flex-col gap-1'>
                     <div className='flex flex-wrap items-center gap-2'>
                       <span className='truncate text-sm font-medium'>
                         {product.name}
                       </span>
 
                       <Badge variant='secondary'>
-                        Арт: {variant?.sku ?? 'Нет SKU'}
+                        Арт: {variant?.sku ?? 'Нет артикула'}
                       </Badge>
 
                       {product.brand && (
@@ -115,7 +126,6 @@ export function AdminProductsClient({ initialProducts: products }: Props) {
                       <span className='font-medium'>
                         {formatPrice(variant?.price ?? 0)}
                       </span>
-
                       <div className='flex items-center gap-1'>
                         <Scale className='size-3 opacity-60' />
                         <span className='text-xs text-muted-foreground'>
@@ -127,6 +137,29 @@ export function AdminProductsClient({ initialProducts: products }: Props) {
                     <Separator orientation='vertical' />
 
                     <div className='flex shrink-0 items-center gap-0.5'>
+                      <Tooltip>
+                        <TooltipTrigger asChild>
+                          <Button
+                            type='button'
+                            variant='ghost'
+                            size='icon-lg'
+                            onClick={() => openAttributesDialog(product)}
+                            className='relative text-muted-foreground hover:text-foreground'
+                          >
+                            <SlidersHorizontal className='size-4' />
+                            {attributeCount > 0 && (
+                              <span className='absolute -top-0.5 -right-0.5 flex size-3.5 items-center justify-center rounded-full bg-primary text-[9px] leading-none text-primary-foreground'>
+                                {attributeCount}
+                              </span>
+                            )}
+                          </Button>
+                        </TooltipTrigger>
+                        <TooltipContent>
+                          Характеристики
+                          {attributeCount > 0 ? ` (${attributeCount})` : ''}
+                        </TooltipContent>
+                      </Tooltip>
+
                       <Tooltip>
                         <TooltipTrigger asChild>
                           <Button
@@ -174,7 +207,6 @@ export function AdminProductsClient({ initialProducts: products }: Props) {
           <span className='size-2 rounded-full bg-green-500' />
           Активен
         </span>
-
         <span className='flex items-center gap-1.5'>
           <span className='size-2 rounded-full bg-muted-foreground/40' />
           Неактивен
@@ -188,6 +220,15 @@ export function AdminProductsClient({ initialProducts: products }: Props) {
           onClose={() => setDeleteProduct(null)}
         />
       )}
-    </div>
+
+      {attributesDialog && (
+        <AdminProductCategoryAttributeDialog
+          isOpen
+          product={attributesDialog.product}
+          categoryAttributes={attributesDialog.categoryAttributes}
+          onClose={() => setAttributesDialog(null)}
+        />
+      )}
+    </section>
   )
 }

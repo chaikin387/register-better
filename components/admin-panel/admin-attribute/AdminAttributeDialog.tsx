@@ -75,7 +75,7 @@ export function AdminAttributeDialog({
       open={isOpen}
       onOpenChange={onClose}
     >
-      <DialogContent className='sm:max-w-110'>
+      <DialogContent className='sm:max-w-164'>
         <DialogHeader>
           <DialogTitle>
             {isUpdateMode ? 'Редактировать атрибут' : 'Создать атрибут'}
@@ -84,7 +84,7 @@ export function AdminAttributeDialog({
             {isUpdateMode ? (
               <>
                 Изменение параметров атрибута{' '}
-                <span className='font-mono font-bold text-foreground'>
+                <span className='font-bold text-foreground'>
                   {attribute.name}
                 </span>
               </>
@@ -132,7 +132,7 @@ export function AdminAttributeDialog({
                     />
                   )}
                 />
-                <span className='px-1 text-[11px] text-muted-foreground'>
+                <span className='mb-4 text-[11px] text-muted-foreground'>
                   Генерируется автоматически на латинице
                 </span>
                 <FieldError errors={[errors.slug]} />
@@ -140,7 +140,7 @@ export function AdminAttributeDialog({
             </FieldGroup>
           </FieldSet>
 
-          <DialogFooter className='mt-6 gap-2 sm:gap-0'>
+          <DialogFooter>
             <Button
               type='button'
               variant='outline'
@@ -152,9 +152,8 @@ export function AdminAttributeDialog({
             <Button
               type='submit'
               disabled={isSubmitting}
-              className='gap-2'
             >
-              {isSubmitting && <Spinner data-icon='inline-start' />}
+              {isSubmitting && <Spinner />}
               {isUpdateMode ? 'Сохранить' : 'Создать'}
             </Button>
           </DialogFooter>

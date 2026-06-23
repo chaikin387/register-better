@@ -2,14 +2,33 @@
 
 import { useState } from 'react'
 
+import { getAdminProductCategoryAttribute } from '@/app/(admin)/_actions/admin-product/get-product-category-attribute'
+import { AdminProductCategoryAttributeItem } from '@/types/admin-product-category-attribute.selects'
 import type { AdminProductItemSelect } from '@/types/admin-product-selects'
+
+interface AttributesDialogState {
+  product: AdminProductItemSelect
+  categoryAttributes: AdminProductCategoryAttributeItem[]
+}
 
 export function useAdminProducts() {
   const [deleteProduct, setDeleteProduct] =
     useState<AdminProductItemSelect | null>(null)
+  const [attributesDialog, setAttributesDialog] =
+    useState<AttributesDialogState | null>(null)
+
+  async function openAttributesDialog(product: AdminProductItemSelect) {
+    const categoryAttributes = await getAdminProductCategoryAttribute(
+      product.category.id
+    )
+    setAttributesDialog({ product, categoryAttributes })
+  }
 
   return {
     deleteProduct,
+    attributesDialog,
     setDeleteProduct,
+    setAttributesDialog,
+    openAttributesDialog,
   }
 }

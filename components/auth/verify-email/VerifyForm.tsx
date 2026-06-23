@@ -143,7 +143,7 @@ export const VerifyEmailForm = ({ emailFromUrl }: Props) => {
                       ) : (
                         <>
                           {isSending ? (
-                            <Spinner data-icon='inline-start' />
+                            <Spinner />
                           ) : codeSent ? (
                             <RefreshCw className='size-3' />
                           ) : (
@@ -195,7 +195,7 @@ export const VerifyEmailForm = ({ emailFromUrl }: Props) => {
               disabled={disabled.submit}
               className='mt-5 w-full'
             >
-              {isSubmitting && <Spinner data-icon='inline-start' />}
+              {isSubmitting && <Spinner />}
               Подтвердить и войти
             </Button>
           </form>

@@ -13,7 +13,6 @@ import Link from 'next/link'
 import { toast } from 'sonner'
 
 import { swapAttributeOrder } from '@/app/(admin)/_actions/admin-attribute/swap-attribute-order'
-import { Badge } from '@/components/ui/badge'
 import { Button } from '@/components/ui/button'
 import {
   Tooltip,
@@ -59,9 +58,9 @@ export function AdminAttributesClient({
 
   return (
     <>
-      <div className='space-y-6 px-4 py-8'>
-        <div className='flex items-center justify-between border-b pb-4'>
-          <div className='space-y-1'>
+      <section className='space-y-6 px-4 py-8'>
+        <div className='flex items-end justify-between border-b pb-4'>
+          <div className='flex flex-col gap-1'>
             <h1 className='flex items-center gap-2 text-2xl font-bold'>
               <SlidersHorizontal className='size-6 text-muted-foreground' />
               Атрибуты
@@ -76,7 +75,7 @@ export function AdminAttributesClient({
           </Button>
         </div>
 
-        <div className='max-w-3xl rounded-xl border bg-card p-6'>
+        <div className='max-w-4xl rounded-xl border bg-card p-6'>
           {attributes.length === 0 ? (
             <p className='py-10 text-center text-sm text-muted-foreground'>
               Атрибутов пока нет. Добавьте первый.
@@ -90,28 +89,23 @@ export function AdminAttributesClient({
                 return (
                   <div
                     key={attribute.id}
-                    className='flex items-center justify-between gap-3 rounded-lg border bg-background p-2 transition-colors hover:bg-accent/40'
+                    className='flex items-center justify-between gap-3 rounded-lg border bg-background px-3 py-2 hover:bg-accent/40'
                   >
-                    <div className='flex min-w-0 flex-col gap-0.5'>
-                      <div className='flex items-center gap-2'>
-                        <span className='truncate text-sm font-medium'>
+                    <div className='flex min-w-0 flex-col gap-1'>
+                      <div className='flex items-center gap-3'>
+                        <span className='truncate text-sm font-medium tracking-tight'>
                           {attribute.name}
                         </span>
-                        <Badge
-                          variant='secondary'
-                          className='shrink-0'
-                        >
-                          {attribute._count.values}
-                        </Badge>
-                      </div>
-                      <span className='truncate font-mono text-[10px] text-muted-foreground'>
-                        /{attribute.slug}
-                      </span>
-                      {attribute.values.length > 0 && (
-                        <span className='truncate text-[11px] text-muted-foreground'>
-                          {attribute.values.map((v) => v.value).join(' · ')}
-                          {attribute._count.values > 5 && ' · ...'}
+
+                        <span className='truncate text-[10px] text-muted-foreground'>
+                          /{attribute.slug}
                         </span>
+                      </div>
+
+                      {attribute.values.length > 0 && (
+                        <p className='truncate text-[11px] text-muted-foreground'>
+                          {attribute.values.map((v) => v.value).join(' · ')}
+                        </p>
                       )}
                     </div>
 
@@ -155,16 +149,23 @@ export function AdminAttributesClient({
                             variant='ghost'
                             size='icon-lg'
                             asChild
-                            className='text-muted-foreground hover:text-foreground'
+                            className='relative text-muted-foreground hover:text-foreground'
                           >
                             <Link
                               href={`/admin-panel/attributes/${attribute.id}`}
                             >
                               <List className='size-4' />
+                              {attribute._count.values > 0 && (
+                                <span className='absolute -top-0.5 -right-0.5 flex size-3.5 items-center justify-center rounded-full bg-primary text-[9px] leading-none text-primary-foreground'>
+                                  {attribute._count.values}
+                                </span>
+                              )}
                             </Link>
                           </Button>
                         </TooltipTrigger>
-                        <TooltipContent>Значения</TooltipContent>
+                        <TooltipContent>
+                          Значения ({attribute._count.values})
+                        </TooltipContent>
                       </Tooltip>
 
                       <Tooltip>
@@ -203,7 +204,7 @@ export function AdminAttributesClient({
             </div>
           )}
         </div>
-      </div>
+      </section>
 
       {createOpen && (
         <AdminAttributeDialog

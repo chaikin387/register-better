@@ -60,7 +60,7 @@ export const ProfileClient = ({ session }: Props) => {
           onClick={() => fileRef.current?.click()}
           className='absolute -right-1 -bottom-1 rounded-full'
         >
-          {avatarLoading ? <Spinner data-icon='inline-start' /> : <Pencil />}
+          {avatarLoading ? <Spinner /> : <Pencil />}
         </Button>
 
         {user.image && (
@@ -106,7 +106,7 @@ export const ProfileClient = ({ session }: Props) => {
                 disabled={nameLoading}
                 onClick={onSave}
               >
-                {nameLoading ? <Spinner data-icon='inline-start' /> : <Check />}
+                {nameLoading ? <Spinner /> : <Check />}
               </Button>
               <Button
                 size='icon-lg'

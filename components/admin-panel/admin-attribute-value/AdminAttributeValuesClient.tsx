@@ -21,7 +21,7 @@ import {
 import type { AdminAttributeValueSelectItem } from '@/types/admin-attribute-value.selects'
 import type { AdminAttributeSelectItem } from '@/types/admin-attribute.selects'
 
-import { swapAttributeValueOrder } from '@/app/(admin)/_actions/admin-atribute-value/swap-attribute-value-order'
+import { swapAttributeValueOrder } from '@/app/(admin)/_actions/admin-attribute-value/swap-attribute-value-order'
 import { AdminAttributeValueDeleteDialog } from './AdminAttributeValueDeleteDialog'
 import { AdminAttributeValueDialog } from './AdminAttributeValueDialog'
 import { useAdminAttributeValues } from './use-admin-attribute-values'
@@ -62,10 +62,9 @@ export function AdminAttributeValuesClient({
 
   return (
     <>
-      <div className='space-y-6 px-4 py-8'>
-        {/* Хедер остается без изменений */}
-        <div className='flex items-center justify-between border-b pb-4'>
-          <div className='space-y-1'>
+      <section className='space-y-6 px-4 py-8'>
+        <div className='flex items-end justify-between border-b pb-4'>
+          <div className='flex flex-col gap-1'>
             <div className='flex items-center gap-2'>
               <Button
                 asChild
@@ -92,7 +91,7 @@ export function AdminAttributeValuesClient({
         </div>
 
         {/* Список элементов */}
-        <div className='max-w-3xl rounded-xl border bg-card p-6'>
+        <div className='max-w-4xl rounded-xl border bg-card p-6'>
           {values.length === 0 ? (
             <p className='py-10 text-center text-sm text-muted-foreground'>
               Значений пока нет. Добавьте первое.
@@ -106,13 +105,13 @@ export function AdminAttributeValuesClient({
                 return (
                   <div
                     key={value.id}
-                    className='flex items-center justify-between gap-3 rounded-lg border bg-background p-2 transition-colors hover:bg-accent/40'
+                    className='flex items-center justify-between gap-3 rounded-lg border bg-background px-3 py-2 hover:bg-accent/40'
                   >
-                    <div className='flex min-w-0 flex-col pl-7'>
+                    <div className='flex min-w-0 flex-1 items-center gap-3'>
                       <span className='truncate text-sm font-medium tracking-tight'>
                         {value.value}
                       </span>
-                      <span className='truncate font-mono text-[10px] text-muted-foreground'>
+                      <span className='truncate text-[10px] text-muted-foreground'>
                         /{value.slug}
                       </span>
                     </div>
@@ -182,7 +181,7 @@ export function AdminAttributeValuesClient({
             </div>
           )}
         </div>
-      </div>
+      </section>
 
       {createOpen && (
         <AdminAttributeValueDialog

@@ -31,9 +31,9 @@ export function AdminBrandsClient({ initialBrands: brands }: Props) {
 
   return (
     <>
-      <div className='space-y-6 px-4 py-8'>
-        <div className='flex items-center justify-between border-b pb-4'>
-          <div className='space-y-1'>
+      <section className='space-y-6 px-4 py-8'>
+        <div className='flex items-end justify-between border-b pb-4'>
+          <div className='flex flex-col gap-1'>
             <h1 className='flex items-center gap-2 text-2xl font-bold'>
               <Tag className='size-6 text-muted-foreground' />
               Бренды
@@ -48,7 +48,7 @@ export function AdminBrandsClient({ initialBrands: brands }: Props) {
           </Button>
         </div>
 
-        <div className='max-w-3xl rounded-xl border bg-card p-6'>
+        <div className='max-w-4xl rounded-xl border bg-card p-6'>
           {brands.length === 0 ? (
             <p className='py-10 text-center text-sm text-muted-foreground'>
               Брендов пока нет. Добавьте первый.
@@ -59,19 +59,18 @@ export function AdminBrandsClient({ initialBrands: brands }: Props) {
                 <div
                   key={brand.id}
                   className={cn(
-                    'flex items-center justify-between gap-3 rounded-lg border bg-background p-2 transition-colors hover:bg-accent/40',
+                    'flex items-center justify-between gap-3 rounded-lg border bg-background px-3 py-2 hover:bg-accent/40',
                     !brand.isActive && 'opacity-60'
                   )}
                 >
-                  <div className='flex min-w-0 items-center gap-3 pl-7'>
-                    <div className='flex min-w-0 flex-col'>
-                      <span className='truncate text-sm font-medium'>
-                        {brand.name}
-                      </span>
-                      <span className='truncate font-mono text-[10px] text-muted-foreground'>
-                        /{brand.slug}
-                      </span>
-                    </div>
+                  <div className='flex min-w-0 items-center gap-3'>
+                    <span className='truncate text-sm font-medium'>
+                      {brand.name}
+                    </span>
+                    <span className='truncate text-[10px] text-muted-foreground'>
+                      /{brand.slug}
+                    </span>
+
                     <span
                       className={cn(
                         'size-2 shrink-0 rounded-full',
@@ -129,7 +128,7 @@ export function AdminBrandsClient({ initialBrands: brands }: Props) {
             Неактивен
           </span>
         </div>
-      </div>
+      </section>
 
       {createOpen && (
         <AdminBrandDialog

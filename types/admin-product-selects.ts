@@ -12,25 +12,18 @@ export const adminProductSelect = {
       id: true,
       slug: true,
       name: true,
-
       parent: {
         select: {
           id: true,
           slug: true,
           name: true,
-
           parent: {
             select: {
               id: true,
               slug: true,
               name: true,
-
               parent: {
-                select: {
-                  id: true,
-                  slug: true,
-                  name: true,
-                },
+                select: { id: true, slug: true, name: true },
               },
             },
           },
@@ -40,10 +33,7 @@ export const adminProductSelect = {
   },
 
   brand: {
-    select: {
-      id: true,
-      name: true,
-    },
+    select: { id: true, name: true },
   },
 
   variants: {
@@ -54,7 +44,37 @@ export const adminProductSelect = {
       weight: true,
       stock: true,
       isActive: true,
+      attributes: {
+        select: {
+          attributeValueId: true,
+          attributeValue: {
+            select: {
+              id: true,
+              value: true,
+              attributeId: true,
+            },
+          },
+        },
+      },
     },
+  },
+
+  attributes: {
+    select: {
+      attributeValueId: true,
+      attributeValue: {
+        select: {
+          id: true,
+          value: true,
+          attributeId: true,
+          attribute: { select: { id: true, name: true } },
+        },
+      },
+    },
+  },
+
+  _count: {
+    select: { attributes: true },
   },
 } satisfies Prisma.ProductSelect
 

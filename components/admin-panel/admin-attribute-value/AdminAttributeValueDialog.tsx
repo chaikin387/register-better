@@ -4,8 +4,8 @@ import { zodResolver } from '@hookform/resolvers/zod'
 import { Controller, useForm } from 'react-hook-form'
 import { toast } from 'sonner'
 
-import { createAdminAttributeValue } from '@/app/(admin)/_actions/admin-atribute-value/create-attribute-value'
-import { updateAdminAttributeValue } from '@/app/(admin)/_actions/admin-atribute-value/update-attribute-value'
+import { createAdminAttributeValue } from '@/app/(admin)/_actions/admin-attribute-value/create-attribute-value'
+import { updateAdminAttributeValue } from '@/app/(admin)/_actions/admin-attribute-value/update-attribute-value'
 import { Button } from '@/components/ui/button'
 import {
   Dialog,
@@ -78,7 +78,7 @@ export function AdminAttributeValueDialog({
       open={isOpen}
       onOpenChange={onClose}
     >
-      <DialogContent className='sm:max-w-110'>
+      <DialogContent className='sm:max-w-164'>
         <DialogHeader>
           <DialogTitle>
             {isUpdateMode ? 'Редактировать значение' : 'Добавить значение'}
@@ -87,9 +87,7 @@ export function AdminAttributeValueDialog({
             {isUpdateMode ? (
               <>
                 Изменение значения{' '}
-                <span className='font-mono font-bold text-foreground'>
-                  {value.value}
-                </span>
+                <span className='font-bold text-foreground'>{value.value}</span>
               </>
             ) : (
               'Добавление нового значения атрибута'
@@ -135,7 +133,7 @@ export function AdminAttributeValueDialog({
                     />
                   )}
                 />
-                <span className='px-1 text-[11px] text-muted-foreground'>
+                <span className='mb-4 text-[11px] text-muted-foreground'>
                   Генерируется автоматически на латинице
                 </span>
                 <FieldError errors={[errors.slug]} />
@@ -143,7 +141,7 @@ export function AdminAttributeValueDialog({
             </FieldGroup>
           </FieldSet>
 
-          <DialogFooter className='mt-6 gap-2 sm:gap-0'>
+          <DialogFooter>
             <Button
               type='button'
               variant='outline'
@@ -155,9 +153,8 @@ export function AdminAttributeValueDialog({
             <Button
               type='submit'
               disabled={isSubmitting}
-              className='gap-2'
             >
-              {isSubmitting && <Spinner data-icon='inline-start' />}
+              {isSubmitting && <Spinner />}
               {isUpdateMode ? 'Сохранить' : 'Добавить'}
             </Button>
           </DialogFooter>

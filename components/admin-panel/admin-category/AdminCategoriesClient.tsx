@@ -44,9 +44,9 @@ export function AdminCategoriesClient({
         openAttributesDialog,
       }}
     >
-      <div className='space-y-6 px-4 py-8'>
-        <div className='flex items-center justify-between border-b pb-4'>
-          <div className='space-y-1'>
+      <section className='space-y-6 px-4 py-8'>
+        <div className='flex items-end justify-between border-b pb-4'>
+          <div className='flex flex-col gap-1'>
             <h1 className='flex items-center gap-2 text-2xl font-bold'>
               <FolderTree className='size-6 text-muted-foreground' />
               Категории
@@ -61,7 +61,7 @@ export function AdminCategoriesClient({
           </Button>
         </div>
 
-        <div className='max-w-3xl rounded-xl border bg-card p-6'>
+        <div className='max-w-4xl rounded-xl border bg-card p-6'>
           {categories.length === 0 ? (
             <p className='py-10 text-center text-sm text-muted-foreground'>
               Категорий пока нет. Создайте первую корневую категорию.
@@ -90,7 +90,7 @@ export function AdminCategoriesClient({
             Неактивна
           </span>
         </div>
-      </div>
+      </section>
 
       {createDialog && (
         <AdminCategoryDialog

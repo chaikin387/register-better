@@ -2,7 +2,7 @@
 
 import { useState } from 'react'
 
-import { getAdminCategoryAttributes } from '@/app/(admin)/_actions/admin-category-atribute/get-category-atribute'
+import { getAdminCategoryAttributes } from '@/app/(admin)/_actions/admin-category-attribute/get-category-attribute'
 import type { AdminCategoryAttributeSelectItem } from '@/types/admin-category-attribute'
 import type { AdminCategoryTreeSelect } from '@/types/admin-category-selects'
 
