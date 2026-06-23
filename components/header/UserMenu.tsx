@@ -15,10 +15,11 @@ import Image from 'next/image'
 import Link from 'next/link'
 import { useRouter } from 'next/navigation'
 import { getInitialsAvatar } from './initials-avatar'
+import { Navigate } from './use-navigate'
 
 interface Props {
   session: Session | null
-  navigate: (href: string) => (e: React.MouseEvent) => void
+  navigate: Navigate
 }
 
 export const UserMenu = ({ session, navigate }: Props) => {
@@ -53,6 +54,11 @@ export const UserMenu = ({ session, navigate }: Props) => {
     )
   }
 
+  function handleInteractOutside(event: Event) {
+    const target = event.target as Element
+    if (target.closest('[data-header-popover-ignore]')) event.preventDefault()
+  }
+
   return (
     <DropdownMenu modal={false}>
       <DropdownMenuTrigger asChild>
@@ -81,12 +87,9 @@ export const UserMenu = ({ session, navigate }: Props) => {
       <DropdownMenuContent
         align='end'
         sideOffset={8}
-        className='w-56'
-        onInteractOutside={(e) => {
-          const target = e.target as HTMLElement
-          if (target.closest('[data-keep-profile]')) e.preventDefault()
-        }}
+        onInteractOutside={handleInteractOutside}
         onCloseAutoFocus={(e) => e.preventDefault()}
+        className='w-56'
       >
         <div className='flex flex-col space-y-1 p-2'>
           <p className='text-sm leading-none font-medium'>

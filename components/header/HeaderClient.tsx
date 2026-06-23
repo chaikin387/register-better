@@ -3,14 +3,20 @@
 import { Button } from '@/components/ui/button'
 import { Session } from '@/lib/auth'
 import { CategoryTreeSelect } from '@/types/category-selects'
-import { Menu, ShoppingBag } from 'lucide-react'
+import { Menu, ShoppingBag, X } from 'lucide-react'
 import Link from 'next/link'
 import { useState } from 'react'
 import { CatalogMenu } from '../catalog/CatalogMenu'
-import { useEscapeKey } from '../catalog/use-escape-key'
+import {
+  Popover,
+  PopoverAnchor,
+  PopoverContent,
+  PopoverTrigger,
+} from '../ui/popover'
+import { Spinner } from '../ui/spinner'
 import { ModeToggle } from './ModeToggle'
-import { UserMenu } from './UserMenu'
 import { useNavigate } from './use-navigate'
+import { UserMenu } from './UserMenu'
 
 interface Props {
   session: Session | null
@@ -19,78 +25,99 @@ interface Props {
 
 export const HeaderClient = ({ session, categories }: Props) => {
   const [open, setOpen] = useState(false)
-  const { navigate, isPending } = useNavigate(() => setOpen(false))
+  const { navigate, isPending } = useNavigate(setOpen)
 
-  useEscapeKey(open, () => setOpen(false))
-
-  const handleClose = (e: React.MouseEvent) => {
-    const target = e.target as HTMLElement
-    if (target.closest('[data-keep-catalog]')) return
-    setOpen(false)
+  function handleInteractOutside(event: Event) {
+    const target = event.target as Element
+    if (target.closest('[data-header-popover-ignore]')) event.preventDefault()
   }
 
   return (
-    <>
-      <div
-        className='bg-background'
-        onClick={handleClose}
-      >
-        <div className='container mx-auto flex h-8 items-center px-4 text-sm text-muted-foreground'>
-          Санкт-Петербург
+    <header className='sticky -top-9 z-50'>
+      <div className='h-9 border-b border-border/60 bg-muted text-xs text-muted-foreground'>
+        <div className='container mx-auto flex h-full items-center justify-between px-4'>
+          <nav className='flex gap-5 font-medium'>
+            <Link
+              href='/buyers'
+              className='hover:text-primary'
+            >
+              Покупателям
+            </Link>
+            <Link
+              href='/sellers'
+              className='hover:text-primary'
+            >
+              Продавцам
+            </Link>
+            <Link
+              href='/partners'
+              className='hover:text-primary'
+            >
+              Партнерам
+            </Link>
+          </nav>
+          <span className='hidden sm:block'>
+            Служба поддержки: 8 (800) 555-35-35
+          </span>
         </div>
       </div>
 
-      <header
-        className='sticky top-0 z-50 border-b bg-background'
-        onClick={handleClose}
+      <Popover
+        open={open}
+        onOpenChange={setOpen}
+        modal={true}
       >
-        <div className='container mx-auto flex h-16 items-center justify-between gap-6 px-4'>
-          <div className='flex items-center gap-2'>
-            <Link
-              href='/'
-              onClick={navigate('/')}
-              className='flex items-baseline gap-2'
-            >
-              <ShoppingBag />
-            </Link>
+        <div className='h-16 border-b bg-background'>
+          <PopoverAnchor asChild>
+            <div className='pointer-events-auto container mx-auto flex h-full items-center justify-between px-4'>
+              <div className='flex items-center gap-4'>
+                <Link
+                  href='/'
+                  onClick={navigate('/')}
+                  className='flex items-baseline gap-2'
+                >
+                  <ShoppingBag />
+                </Link>
 
-            <Button
-              data-keep-catalog
-              onClick={() => setOpen((v) => !v)}
-            >
-              <Menu />
-              Каталог
-            </Button>
-          </div>
+                <PopoverTrigger asChild>
+                  <Button
+                    variant={open ? 'secondary' : 'default'}
+                    size='lg'
+                  >
+                    {isPending ? <Spinner /> : open ? <X /> : <Menu />}
+                    Каталог
+                  </Button>
+                </PopoverTrigger>
+              </div>
 
-          <div className='flex items-center gap-2'>
-            <ModeToggle />
-            <UserMenu
-              session={session}
+              {/* Правая часть */}
+              <div className='flex items-center gap-2'>
+                <ModeToggle />
+                <UserMenu
+                  session={session}
+                  navigate={navigate}
+                />
+              </div>
+            </div>
+          </PopoverAnchor>
+        </div>
+
+        <PopoverContent
+          side='bottom'
+          align='start'
+          sideOffset={0}
+          onInteractOutside={handleInteractOutside}
+          onCloseAutoFocus={(e) => e.preventDefault()}
+          className='h-screen w-screen rounded-none bg-background'
+        >
+          <div className='container mx-auto px-4 py-8'>
+            <CatalogMenu
+              categories={categories}
               navigate={navigate}
             />
           </div>
-        </div>
-
-        {open && (
-          <div
-            data-catalog-open
-            data-keep-catalog
-            className='absolute inset-x-0 top-full z-50 h-[calc(100dvh-100%)] overflow-y-auto border-t bg-popover'
-          >
-            <div className='container mx-auto px-4 py-8'>
-              <CatalogMenu
-                categories={categories}
-                navigate={navigate}
-              />
-            </div>
-          </div>
-        )}
-
-        {isPending && (
-          <div className='absolute inset-x-0 top-full z-1001 h-[calc(100dvh-100%)] bg-popover' />
-        )}
-      </header>
-    </>
+        </PopoverContent>
+      </Popover>
+    </header>
   )
 }

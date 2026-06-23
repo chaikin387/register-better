@@ -16,7 +16,7 @@
     "analyze": "next experimental-analyze"
   },
   "dependencies": {
-    "@aws-sdk/client-s3": "^3.1073.0",
+    "@aws-sdk/client-s3": "^3.1075.0",
     "@base-ui/react": "^1.6.0",
     "@floating-ui/react": "^0.27.19",
     "@hookform/resolvers": "^5.4.0",
@@ -28,7 +28,7 @@
     "clsx": "^2.1.1",
     "cmdk": "^1.1.1",
     "dotenv": "^17.4.2",
-    "focus-trap-react": "^12.0.2",
+    "focus-trap-react": "^12.0.3",
     "input-otp": "^1.4.2",
     "lucide-react": "^1.21.0",
     "next": "16.2.9",

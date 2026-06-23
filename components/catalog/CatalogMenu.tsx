@@ -4,12 +4,13 @@ import { CategoryTreeSelect } from '@/types/category-selects'
 import * as Icons from 'lucide-react'
 import Link from 'next/link'
 import { useState } from 'react'
+import { Navigate } from '../header/use-navigate'
 import { Button } from '../ui/button'
 import { L3Item } from './L3Item'
 
 interface CatalogMenuProps {
   categories: CategoryTreeSelect[]
-  navigate: (href: string) => (e: React.MouseEvent) => void
+  navigate: Navigate
 }
 
 export const CatalogMenu = ({ categories, navigate }: CatalogMenuProps) => {

@@ -3,7 +3,6 @@ import {
   flip,
   offset,
   safePolygon,
-  shift,
   useFloating,
   useHover,
   useInteractions,
@@ -17,17 +16,22 @@ export const useCatalogFloat = (enabled: boolean) => {
     open,
     onOpenChange: setOpen,
     placement: 'right-start',
-    middleware: [offset(8), flip({ padding: 12 }), shift({ padding: 12 })],
+    middleware: [offset(8), flip()],
     whileElementsMounted: autoUpdate,
   })
 
   const { getReferenceProps, getFloatingProps } = useInteractions([
     useHover(context, {
       enabled,
-      delay: { open: 50, close: 100 },
-      handleClose: safePolygon({ buffer: 1 }),
+      handleClose: safePolygon(),
     }),
   ])
 
-  return { open, refs, floatingStyles, getReferenceProps, getFloatingProps }
+  return {
+    open,
+    refs,
+    floatingStyles,
+    getReferenceProps,
+    getFloatingProps,
+  }
 }

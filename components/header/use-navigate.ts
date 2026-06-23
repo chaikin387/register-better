@@ -3,6 +3,10 @@
 import { usePathname, useRouter } from 'next/navigation'
 import { useTransition } from 'react'
 
+export type Navigate = (
+  href: string
+) => (e: React.MouseEvent<HTMLAnchorElement>) => void
+
 export function useNavigate(setOpen: (open: boolean) => void) {
   const [isPending, startTransition] = useTransition()
   const router = useRouter()

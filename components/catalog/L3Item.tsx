@@ -3,11 +3,12 @@
 import { CategoryTreeSelect } from '@/types/category-selects'
 import { ChevronRight } from 'lucide-react'
 import Link from 'next/link'
+import { Navigate } from '../header/use-navigate'
 import { useCatalogFloat } from './use-catalog-float'
 
 interface Props {
   l3: CategoryTreeSelect['children'][number]['children'][number]
-  navigate: (href: string) => (e: React.MouseEvent) => void
+  navigate: Navigate
 }
 
 export const L3Item = ({ l3, navigate }: Props) => {

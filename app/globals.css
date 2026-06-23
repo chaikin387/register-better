@@ -123,11 +123,4 @@
   body {
     @apply bg-background text-foreground;
   }
-  /* html {
-    @apply font-sans;
-    scrollbar-gutter: stable;
-  }
-  html:has([data-catalog-open]) {
-    overflow: hidden;
-  } */
 }
