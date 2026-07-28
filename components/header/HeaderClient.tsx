@@ -74,6 +74,7 @@ export const HeaderClient = ({ session, categories }: Props) => {
                 <Link
                   href='/'
                   onClick={navigate('/')}
+                  data-header-popover-ignore
                   className='flex items-baseline gap-2'
                 >
                   <ShoppingBag />
@@ -81,8 +82,9 @@ export const HeaderClient = ({ session, categories }: Props) => {
 
                 <PopoverTrigger asChild>
                   <Button
-                    variant={open ? 'secondary' : 'default'}
+                    variant='default'
                     size='lg'
+                    className='active:translate-y-px data-[state=open]:translate-y-px'
                   >
                     {isPending ? <Spinner /> : open ? <X /> : <Menu />}
                     Каталог
@@ -103,12 +105,10 @@ export const HeaderClient = ({ session, categories }: Props) => {
         </div>
 
         <PopoverContent
-          side='bottom'
-          align='start'
           sideOffset={0}
           onInteractOutside={handleInteractOutside}
           onCloseAutoFocus={(e) => e.preventDefault()}
-          className='h-screen w-screen rounded-none bg-background'
+          className='h-(--radix-popover-content-available-height) w-(--radix-popover-content-available-width) overflow-y-auto rounded-none border-none bg-background outline-none'
         >
           <div className='container mx-auto px-4 py-8'>
             <CatalogMenu

@@ -16,7 +16,7 @@ type Props = {
 }
 
 export default async function UpdateProductPage({ params }: Props) {
-  const { id } = await params // slug не нужен — ищем только по id
+  const { id } = await params
 
   const [product, categories, brands] = await Promise.all([
     getAdminProductById(id),

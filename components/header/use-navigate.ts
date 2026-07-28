@@ -14,7 +14,14 @@ export function useNavigate(setOpen: (open: boolean) => void) {
 
   function navigate(href: string) {
     return function handleClick(e: React.MouseEvent<HTMLAnchorElement>) {
-      if (e.metaKey || e.ctrlKey || e.shiftKey || e.altKey || e.button !== 0)
+      if (
+        e.defaultPrevented ||
+        e.metaKey ||
+        e.ctrlKey ||
+        e.shiftKey ||
+        e.altKey ||
+        e.button !== 0
+      )
         return
 
       e.preventDefault()

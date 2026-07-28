@@ -47,6 +47,7 @@ export const UserMenu = ({ session, navigate }: Props) => {
         <Link
           href='/login'
           onClick={navigate('/login')}
+          data-header-popover-ignore
         >
           <UserIcon />
         </Link>
@@ -73,7 +74,6 @@ export const UserMenu = ({ session, navigate }: Props) => {
               alt=''
               width={36}
               height={36}
-              preload
               className='aspect-square bg-secondary object-cover'
             />
           ) : (

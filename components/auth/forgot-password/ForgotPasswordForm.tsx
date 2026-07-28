@@ -2,7 +2,7 @@
 'use client'
 
 import { zodResolver } from '@hookform/resolvers/zod'
-import { ArrowLeft, Eye, EyeOff, RefreshCw, Send } from 'lucide-react'
+import { ArrowLeft, Eye, EyeOff, Send } from 'lucide-react'
 import Link from 'next/link'
 import { useEffect, useRef, useState } from 'react'
 import { useForm, useWatch } from 'react-hook-form'
@@ -195,7 +195,7 @@ export const ForgotPasswordForm = () => {
                     >
                       {countdown > 0 ? (
                         <>
-                          Повторно отправить код через{' '}
+                          Повторно отправить через{' '}
                           <span className='font-medium text-destructive tabular-nums'>
                             {countdown}с
                           </span>
@@ -204,14 +204,10 @@ export const ForgotPasswordForm = () => {
                         <>
                           {isSending ? (
                             <Spinner />
-                          ) : codeSent ? (
-                            <RefreshCw className='size-3' />
                           ) : (
                             <Send className='size-3' />
                           )}
-                          {codeSent
-                            ? 'Повторно отправить код'
-                            : 'Отправить код'}
+                          Отправить код
                         </>
                       )}
                     </Button>
